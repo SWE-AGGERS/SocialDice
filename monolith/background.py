@@ -20,3 +20,11 @@ def fetch_all_runs():
 
     return runs_fetched
 
+
+# @celery.task
+# def increase_like(story_id):
+#     q = Story.query.filter_by(id=story_id)
+#
+#
+#
+# def decrease_like(story_id):
