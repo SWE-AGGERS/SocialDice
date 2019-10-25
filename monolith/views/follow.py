@@ -19,7 +19,7 @@ def _follow_user(userid):
 	# rise alreadyFollowedException
 
 	# add to follower_table the tuple (follower_id, followed_id)
-	# return OK
+	# return OK + number of followers
 
 
 # Unfollow a writer
@@ -32,22 +32,41 @@ def _unfollow_user(userid):
 	# rise notFollowedException
 
 	# remove from follower_table the tuple (follower_id, followed_id)
-	#return OK
+	#return OK + number of followers
 
 
 # TODO: add to the API doc
-# Show the follower list
-@follow.route('/followers')
-def followers():
+# return the followers list
+@follow.route('/followers/list')
+@login_required
+def _followers_list():
     # followers = get_followers()
-    # return render_template("users.html", users=followers)
+    # return json Ok, followers
 
 # TODO: add to the API doc
-# Show the follower list
-@follow.route('/followed')
-def followed():
+# Return the followed list
+@follow.route('/followed/list')
+@login_required
+def _followed_list():
     # followed = get_followed()
-    # return render_template("users.html", users=followed)
+    # return json OK, followed
+
+
+# TODO: add to API doc
+# return number of followers
+@follow.route('/followers', methods=['GET'])
+@login_required
+def _followers_numer():
+	# return json with OK, and the number
+
+
+# TODO: add to API doc
+# return number of followers
+@follow.route('/followed', methods=['GET'])
+@login_required
+def _followed_numer():
+	# return json with OK, and the number
+
 
 
 # =============================================================================
@@ -55,13 +74,23 @@ def followed():
 # =============================================================================
 
 # Get the list of followers of the user_id
-def get_followers(user_id):
+def _get_followers(user_id):
 	return []
+
 
 # Get the list of users who follows the user_id
-def get_followed(user_id):
+def _get_followed(user_id):
 	return []
 
+
+# Get the number of followers
+def _get_followers_number(user_id):
+	return size(_get_followers(user_id))
+
+
+# Get the number of followed
+def _get_followed_number(user_id):
+	return size(_get_followed(user_id))
 # =============================================================================
 # Exceptions
 # =============================================================================
@@ -73,7 +102,7 @@ def get_followed(user_id):
 
 import unittest
  
-class TestFollow(unittest.TestCase):
+class TestFollowFunction(unittest.TestCase):
  
     def test_get_followers(self):
         # push in the followers_table tuples
@@ -94,9 +123,11 @@ class TestFollow(unittest.TestCase):
         # assert empty
         # delete tuples
 
+    def test_followers_number(self):
+    	# TODO
 
-    
- 
- 
+    def test_followed_number(self):
+    	# TODO
+
 if __name__ == '__main__':
     unittest.main()
