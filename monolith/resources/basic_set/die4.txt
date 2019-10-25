@@ -1,6 +1,6 @@
 ladder
 car
-fir
+fire
 bang
 hat
 hamburger

@@ -1,4 +1,5 @@
 import random as rnd
+from enum import Enum
 
 class Die:
 
@@ -18,6 +19,7 @@ class Die:
             return self.pip
         else:
             raise IndexError("throw_die(): empty die error.")
+
         
 class DiceSet:
 
