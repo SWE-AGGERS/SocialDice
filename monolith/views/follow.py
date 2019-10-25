@@ -1,14 +1,12 @@
-from flask import Blueprint, redirect, render_template, request
+from flask import Blueprint, redirect, render_template, request, jsonify
 from monolith.database import db, User
-from monolith.auth import admin_required
 from monolith.forms import UserForm
-from flask_login import (current_user, login_user, logout_user,
-                         login_required)
+from flask_login import current_user, login_required 
 
 follow = Blueprint('follow', __name__)
 
 # Follow a writer
-@follow.route('/follow/<userid>', methods=['POST'])
+@follow.route('/follow/<int:userid>', methods=['POST'])
 @login_required
 def _follow_user(userid):
 	# get the user who want followng userid
@@ -16,40 +14,50 @@ def _follow_user(userid):
 
 
 	# if user already followed
-	# rise alreadyFollowedException
+    if userid == subject:
+       # TODO: Gestire
 
 	# add to follower_table the tuple (follower_id, followed_id)
-	# return OK + number of followers
+    # TODO
+	# return OK + number of followed
+    return jsonify({"followed": _get_followed_number(subject)})
 
 
 # Unfollow a writer
-@follow.route('/follow/<userid>', methods=['DELETE'])
+@follow.route('/follow/<int:userid>', methods=['DELETE'])
 @login_required
 def _unfollow_user(userid):
 	#get the user who want to unfollow userid
+    subject = current_user.id
 
-	#if user not followed
-	# rise notFollowedException
+    if userid == subject:
+        # TODO: Gestire
+
+	# if user not followed
+    if not _is_follower(subject, userid):
+        # TODO: Gestire
 
 	# remove from follower_table the tuple (follower_id, followed_id)
+    # TODO
 	# return OK + number of followers
-
+    return jsonify({"followed": _get_followed_number(subject)})
 
 # TODO: add to the API doc
 # return the followers list
-@follow.route('/followers/list')
+@follow.route('/followers/list', methods=['GET'])
 @login_required
 def _followers_list():
-    # followers = get_followers()
-    # return json Ok, followers
+    subject = current_user.id
+    return jsonify({"followers": get_followers(subject)})
 
 # TODO: add to the API doc
 # Return the followed list
-@follow.route('/followed/list')
+@follow.route('/followed/list', methods=['GET'])
 @login_required
 def _followed_list():
-    # followed = get_followed()
-    # return json OK, followed
+    subject = current_user.id
+    return jsonify({"followed": get_followed(subject)})
+
 
 
 # TODO: add to API doc
@@ -92,24 +100,11 @@ def _get_followers_number(user_id):
 def _get_followed_number(user_id):
 	return size(_get_followed(user_id))
 
-
-# =============================================================================
-# Exceptions
-# =============================================================================
-class alreadyFollowedException(Exception):
-    """User already followed"""
-    pass
-
-
-class notFollowedException(Exception):
-    """User not in the follower's list"""
-    pass
-
-
-class selfUserException(Exception):
-    """Cannot self-follow"""
-    pass
-
+# check if user_a follow user_b
+def _is_follower()
+    """check if user_a follow user_b"""
+    # TODO
+    return False
 # =============================================================================
 # TEST
 # =============================================================================
@@ -142,6 +137,29 @@ class TestFollowFunction(unittest.TestCase):
 
     def test_followed_number(self):
     	# TODO
+
+    def test_is_follower(self):
+        # push in the followers_table (id_1, id_2)
+        
+        # _is_follower(id_1, id_1)
+        # assert fail
+
+        # _is_follower(id_1, id_2)
+        # assert OK
+
+        # _is_follower(id_2, id_1)
+        # assert fail
+
+        # _is_follower(id_1, id_3)
+        # assert fail
+
+        # _is_follower(id_3, id_1)
+        # assert fail
+
+        # _is_follower(id_3, id_4)
+        # assert fail
+
+
 
 if __name__ == '__main__':
     unittest.main()
