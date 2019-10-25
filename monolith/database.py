@@ -83,4 +83,3 @@ class Dislike(db.Model):
     disliker = relationship('User', foreign_keys='Dislike.disliker_id')
 
     marked = db.Column(db.Boolean, default=False)  # True iff it has been counted in Story.likes
-

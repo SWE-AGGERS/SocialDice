@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request
+from flask import Blueprint, redirect, render_template, request, jsonify, abort
 from monolith.database import db, Story, Like
 from monolith.auth import admin_required, current_user
 from flask_login import (current_user, login_user, logout_user,
@@ -7,10 +7,12 @@ from monolith.forms import UserForm
 
 stories = Blueprint('stories', __name__)
 
+
 @stories.route('/stories')
 def _stories(message=''):
     allstories = db.session.query(Story)
-    return render_template("stories.html", message=message, stories=allstories, like_it_url="http://127.0.0.1:5000/stories/like/")
+    return render_template("stories.html", message=message, stories=allstories,
+                           like_it_url="http://127.0.0.1:5000/stories/like/")
 
 
 @stories.route('/stories/like/<authorid>/<storyid>')
@@ -28,3 +30,13 @@ def _like(authorid, storyid):
     else:
         message = 'You\'ve already liked this story!'
     return _stories(message)
+
+
+@stories.route('/stories/<storyid>', methods=['GET'])
+def get_story_detail(storyid):
+    q = db.session.query(Story).filter_by(id=storyid)
+    story = q.first()
+    if story is not None:
+        return render_template("story_detail.html", story=story)
+    else:
+        abort(404)
