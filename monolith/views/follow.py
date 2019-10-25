@@ -83,11 +83,13 @@ def _followed_numer():
 
 # Get the list of followers of the user_id
 def _get_followers(user_id):
+    # TODO
 	return []
 
 
 # Get the list of users who follows the user_id
 def _get_followed(user_id):
+    # TODO
 	return []
 
 
