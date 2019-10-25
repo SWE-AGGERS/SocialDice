@@ -32,7 +32,7 @@ def _unfollow_user(userid):
 	# rise notFollowedException
 
 	# remove from follower_table the tuple (follower_id, followed_id)
-	#return OK + number of followers
+	# return OK + number of followers
 
 
 # TODO: add to the API doc
@@ -91,10 +91,24 @@ def _get_followers_number(user_id):
 # Get the number of followed
 def _get_followed_number(user_id):
 	return size(_get_followed(user_id))
+
+
 # =============================================================================
 # Exceptions
 # =============================================================================
+class alreadyFollowedException(Exception):
+    """User already followed"""
+    pass
 
+
+class notFollowedException(Exception):
+    """User not in the follower's list"""
+    pass
+
+
+class selfUserException(Exception):
+    """Cannot self-follow"""
+    pass
 
 # =============================================================================
 # TEST
