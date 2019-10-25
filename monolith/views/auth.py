@@ -27,7 +27,7 @@ def logout():
     return redirect('/')
 
 
-@auth.route("signup", methods=['POST','GET'])
+@auth.route("/signup", methods=['POST','GET'])
 def signup():
     if request.method == 'POST':
         data = request.get_json()
