@@ -59,8 +59,8 @@ class Story(db.Model):
 class Reaction(db.Model):
     __tablename__ = 'reaction'
 
-    reaction_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    reaction = relationship('User', foreign_keys='Reaction.reaction_id')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    reaction = relationship('User', foreign_keys='Reaction.user_id')
 
     story_id = db.Column(db.Integer, db.ForeignKey('story.id'), primary_key=True)
     author = relationship('Story', foreign_keys='Reaction.story_id')
@@ -70,7 +70,7 @@ class Reaction(db.Model):
     marked = db.Column(db.Boolean, default=False)  # True iff it has been counted in Story.likes
 
     def to_string(self):
-        return 'liker_id: ' + str(self.reaction_id) + \
+        return 'liker_id: ' + str(self.user_id) + \
                 '\nstory_id: ' + str(self.story_id) + \
                 '\ntype: ' + str(self.type)
 

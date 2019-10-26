@@ -5,7 +5,7 @@
     <ul>
       {% for story in stories %}
       <li>
-      "{{story.text}}"    Likes: {{story.likes}} ({{story.date}})
+      "{{story.text}}"    Likes: {{story.likes}} Dislikes: {{story.dislikes}} ({{story.date}})
       <a href="http://127.0.0.1:5000/story/{{story.id}}/reaction/1">Like it!</a>
       <a href="http://127.0.0.1:5000/story/{{story.id}}/reaction/2">Dislike it!</a>
 
