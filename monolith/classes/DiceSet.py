@@ -4,7 +4,7 @@ import os
 import glob
 
 # list of all available dice sets
-_DICE_SETS = {}
+_DICE_SETS = [{'id':1, 'name':'basic', 'folder':'./monolith/resources/basic_set'}]
 
 class Die:
 
@@ -29,11 +29,18 @@ class Die:
         
 class DiceSet:
 
-    def __init__(self, dice_folder):
+    def __init__(self, set_name):
         self.dice = []
         self.pips = []
-        # TODO: check if dice_folder is a valid path
-        # FIXME: order not correct
+        
+        dice_folder = ""
+        for e in _DICE_SETS:
+            if e['name'] == set_name:
+                dice_folder = e['folder']
+
+        if dice_folder == "":
+            raise Exception("Dice set not found")
+
         folder = glob.glob(os.path.join(dice_folder, '*.txt'))
         sorted(folder)
 
@@ -44,7 +51,7 @@ class DiceSet:
 
     def throw_dice(self):
         for i in range(len(self.dice)):
-            self.pips[i] = self.dice[i].throw_die()
+            self.pips.append(self.dice[i].throw_die())
         return self.pips
 
 import unittest

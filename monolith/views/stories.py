@@ -1,17 +1,22 @@
 from flask import Blueprint, redirect, render_template, request
 from monolith.database import db, Story, Like
 from monolith.auth import admin_required, current_user
-from monolith.classes import DiceSe
+from monolith.classes.DiceSet import DiceSet
 from flask_login import (current_user, login_user, logout_user,
                          login_required)
 from monolith.forms import UserForm
 
 stories = Blueprint('stories', __name__)
 
-@stories.route('/stories')
+@stories.route('/stories', methods=['POST', 'GET'])
 def _stories(message=''):
-    allstories = db.session.query(Story)
-    return render_template("stories.html", message=message, stories=allstories, like_it_url="http://127.0.0.1:5000/stories/like/")
+    if 'POST' == request.method:
+        # Create a new story
+
+    if 'GET' == request.method:
+        # Go to the feed
+        allstories = db.session.query(Story)
+        return render_template("stories.html", message=message, stories=allstories, like_it_url="http://127.0.0.1:5000/stories/like/")
 
 
 @stories.route('/stories/like/<authorid>/<storyid>')
@@ -31,6 +36,8 @@ def _like(authorid, storyid):
     return _stories(message)
 
 
-@stories.route('/rolldice/<int:dicenumber>/<int:dicesetid>')
+@stories.route('/rolldice/<int:dicenumber>/<string:dicesetid>')
 @login_required
 def _roll(dicenumber, dicesetid):
+    dice = DiceSet(dicesetid)
+    return dice.throw_dice()
