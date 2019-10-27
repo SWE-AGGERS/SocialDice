@@ -1,3 +1,5 @@
+
+{% if current_user.is_authenticated %}
 {% extends "layout.html" %}
 {% block title %}
     Index Page
@@ -5,8 +7,6 @@
 
 {% block content %}
 <h1>Storytellers</h1>
-
-{% if current_user.is_authenticated %}
   Hi {{ current_user.firstname }}! <a href="/logout">Logout</a>
 
   
@@ -19,9 +19,8 @@
       </div>
     {% endfor %}
 
-
+{% endblock %}
 {% else %}
   Hi Anonymous, <a href="/login">Log in</a>
 {% endif %}
 
-{% endblock %}
