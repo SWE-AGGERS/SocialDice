@@ -1,23 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Story detail</title>
-</head>
-<body>
-<h1>
-Story detail
-</h1>
-<h2>
-    author: {{ story.author.firstname }}
-    <br/>
-    written on: {{ story.date }}
-</h2>
-<h3>
-    likes: {{ story.likes }} {% if story.dislikes is not none %} dislikes: {{ story.dislikes }} {% endif %}
-</h3>
-<p>
-    {{ story.text }}
-</p>
-</body>
-</html>
+{% extends "layout.html" %}
+{% block title %}
+    Story detail
+{% endblock %}
+
+{% block content %}
+    <h1>
+        Story detail
+    </h1>
+    <h2>
+        author: {{ story.author.firstname }}
+        <br/>
+        written on: {{ story.date }}
+    </h2>
+    <h3>
+        likes: {{ story.likes }} {% if story.dislikes is not none %} dislikes: {{ story.dislikes }} {% endif %}
+    </h3>
+    <p>
+        {{ story.text }}
+    </p>
+{% endblock %}
