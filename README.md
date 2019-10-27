@@ -1,4 +1,5 @@
 # SocialDice
+[![Build Status](https://travis-ci.org/SWE-AGGERS/SocialDice.svg?branch=reactions)](https://travis-ci.org/SWE-AGGERS/SocialDice)
 ### Get Started
 * python3 -m venv venv
 * . ./venv/bin/activate
