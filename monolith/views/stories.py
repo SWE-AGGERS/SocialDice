@@ -12,6 +12,10 @@ stories = Blueprint('stories', __name__)
 def _stories(message=''):
     if 'POST' == request.method:
         # Create a new story
+        new_story = Story()
+        new_story.author_id = current_user.id
+        new_story.likes = 0
+        new_story.dislikes = 0
 
     if 'GET' == request.method:
         # Go to the feed
@@ -36,7 +40,7 @@ def _like(authorid, storyid):
     return _stories(message)
 
 
-@stories.route('/rolldice/<int:dicenumber>/<string:dicesetid>')
+@stories.route('/rolldice/<int:dicenumber>/<string:dicesetid>', methods=['GET'])
 @login_required
 def _roll(dicenumber, dicesetid):
     dice = DiceSet(dicesetid)
