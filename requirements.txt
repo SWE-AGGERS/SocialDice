@@ -6,3 +6,5 @@ flask-wtf
 flask-sqlalchemy
 pip-tools
 sqlalchemy
+nltk
+pytest-cov
