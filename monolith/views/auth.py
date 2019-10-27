@@ -4,7 +4,7 @@ from flask_login import (current_user, login_user, logout_user,
 
 from monolith.database import db, User
 from monolith.forms import LoginForm
-
+from monolith.forms import UserForm
 auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -25,3 +25,26 @@ def login():
 def logout():
     logout_user()
     return redirect('/')
+
+
+@auth.route("/signup", methods=['POST','GET'])
+def signup():
+    if request.method == 'POST':
+        data = request.get_json()
+        q = db.session.query(User).filter(User.email == data['email'])
+        check = q.first()
+        if check is None:
+            user = User()
+            user.firstname = data['firstname']
+            user.lastname = data['lastname']
+            user.email = data['email']
+            user.dateofbirth = data['dateofbirth']
+            user.set_password(data['password'])
+            db.session.add(user)
+            db.session.commit()
+        else:
+            form = UserForm()
+            return render_template('signup.html', form=form, error=True, message="The email was used before. Please change the email!" )
+    if request.method == 'GET':
+        form = UserForm()
+        return render_template('signup.html', form=form)
