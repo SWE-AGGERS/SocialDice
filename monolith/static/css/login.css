@@ -27,6 +27,19 @@ input[type=submit] {
     border-radius: 10px;
     color: #ffffff;
 }
+
+
+input[type=submit]:hover {
+    float: left;
+    height:30px;
+    border: 1px solid #000000;
+    width:100%;
+    margin-top:10px;
+    margin-bottom: 10px;
+    background: green;
+    border-radius: 10px;
+    color: #ffffff;
+}
 form{
   width:100%;
   float: left;
