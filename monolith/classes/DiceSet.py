@@ -27,7 +27,7 @@ class DiceSet:
 
     def throw_dice(self):
         for i in range(len(self.dice)):
-            self.pips[i] = dice[i].throw_die()
+            self.pips[i] = self.dice[i].throw_die()
         return self.pips
 
 import unittest

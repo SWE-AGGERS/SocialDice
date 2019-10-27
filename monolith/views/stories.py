@@ -7,6 +7,7 @@ from monolith.forms import UserForm
 
 stories = Blueprint('stories', __name__)
 
+
 @stories.route('/stories')
 def _stories(message=''):
     allstories = db.session.query(Story)
