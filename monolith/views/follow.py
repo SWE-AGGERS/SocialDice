@@ -1,7 +1,8 @@
 from flask import Blueprint, redirect, render_template, request, jsonify
-from monolith.database import db, User
+from monolith.database import db, User, Followers
 from monolith.forms import UserForm
-from flask_login import current_user, login_required 
+from monolith.app import create_app as app
+from flask_login import current_user, login_required
 
 follow = Blueprint('follow', __name__)
 
@@ -9,17 +10,25 @@ follow = Blueprint('follow', __name__)
 @follow.route('/follow/<int:userid>', methods=['POST'])
 @login_required
 def _follow_user(userid):
-	# get the user who want followng userid
-	subject = current_user.id
+    # get the user who want following userid
+    subject = current_user.id
 
 
-	# if user already followed
+    # if user already followed
     if userid == subject:
-       # TODO: Gestire
+        return jsonify({"followed": -1})
 
-	# add to follower_table the tuple (follower_id, followed_id)
-    # TODO
-	# return OK + number of followed
+    # add to follower_table the tuple (follower_id, followed_id)
+    item = Follower()
+    item.follower_id = subject
+    item.followed_id = userid
+    try:
+        db.session.add(item)
+        db.session.commit()
+    except:
+        return jsonify({"followed": -1})
+
+    # return OK + number of followed
     return jsonify({"followed": _get_followed_number(subject)})
 
 
@@ -27,19 +36,26 @@ def _follow_user(userid):
 @follow.route('/follow/<int:userid>', methods=['DELETE'])
 @login_required
 def _unfollow_user(userid):
-	#get the user who want to unfollow userid
+    #get the user who want to unfollow userid
     subject = current_user.id
 
     if userid == subject:
-        # TODO: Gestire
+        jsonify({"followed": -1})
 
-	# if user not followed
+    # if user not followed
     if not _is_follower(subject, userid):
-        # TODO: Gestire
+        jsonify({"followed": -1})
 
-	# remove from follower_table the tuple (follower_id, followed_id)
-    # TODO
-	# return OK + number of followers
+    # remove from follower_table the tuple (follower_id, followed_id)
+    item = Follower()
+    item.follower_id = subject
+    item.followed_id = userid
+    try:
+        db.session.delete(item)
+        db.session.commit()
+    except:
+        return jsonify({"followed": -1})
+    # return OK + number of followers
     return jsonify({"followed": _get_followed_number(subject)})
 
 # TODO: add to the API doc
@@ -65,7 +81,8 @@ def _followed_list():
 @follow.route('/followers', methods=['GET'])
 @login_required
 def _followers_numer():
-	# return json with OK, and the number
+    # return json with OK, and the number
+    return jsonify({"followers": _get_followers_number(current_user.id)})
 
 
 # TODO: add to API doc
@@ -73,7 +90,9 @@ def _followers_numer():
 @follow.route('/followed', methods=['GET'])
 @login_required
 def _followed_numer():
-	# return json with OK, and the number
+    # return json with OK, and the number
+    return jsonify({"followed": _get_followed_number(current_user.id)})
+
 
 
 
@@ -82,31 +101,33 @@ def _followed_numer():
 # =============================================================================
 
 # Get the list of followers of the user_id
-def _get_followers(user_id):
-    # TODO
-	return []
-
+def _get_followers_of(user_id):
+    L = Followers.query.filter_by(follower_id=user_id).all()
+    return L
 
 # Get the list of users who follows the user_id
-def _get_followed(user_id):
-    # TODO
-	return []
+def _get_followed_by(user_id):
+    L = Followers.query.filter_by(followed_id=user_id).all()
+    return L
 
 
 # Get the number of followers
 def _get_followers_number(user_id):
-	return size(_get_followers(user_id))
+    return size(_get_followers_of(user_id))
 
 
 # Get the number of followed
 def _get_followed_number(user_id):
-	return size(_get_followed(user_id))
+    return size(_get_followed_by(user_id))
 
 # check if user_a follow user_b
-def _is_follower()
+def _is_follower(user_a, user_b):
     """check if user_a follow user_b"""
-    # TODO
-    return False
+    item = Followers.query.filter_by(follower_id=user_a, followed_id=user_b).first()
+    if item is None:
+        return False
+    else:
+        return True
 # =============================================================================
 # TEST
 # =============================================================================
@@ -115,51 +136,153 @@ import unittest
  
 class TestFollowFunction(unittest.TestCase):
  
-    def test_get_followers(self):
+    def test_get_followers_of(self):
         # push in the followers_table tuples
-        # create correct_answer
+        item_1 = Followers()
+        item_1.follower_id = 1
+        item_1.followed_id = 2
+        db.session.add(item_1)
+        db.session.commit()
+
+        item_2 = Follower()
+        item_2.follower_id = 3
+        item_2.followed_id = 2
+        db.sesssion.add(item_2)
+        db.session.commit()
+
         # call get_followers
+        followers_1 = _get_followers_of(2)
+        followers_2 = _get_followers_of(1)
+
         # assert correct 1
-        # assert correct 2
+        self.assertEqual(followers_1, [1,3])
+
         # assert empty
+        self.assertEqual(followers_2, [])
         # delete tuples
+        db.session.delete(item_1)
+        db.session.delete(item_2)
+        db.session.commit()
 
 
-    def test_get_followed(self):
-    	# push in the followers_table tuples
-        # create correct_answer
-        # call get_followers
+    def test_get_followed_by(self):
+        # push in the followers_table tuples
+        item_1 = Followers()
+        item_1.follower_id = 1
+        item_1.followed_id = 2
+        db.sessione.add(item_1)
+        db.session.commit()
+
+        item_2 = Followers()
+        item_2.follower_id = 1
+        item_2.follower_id = 3
+        db.sesssion.add(item_2)
+        db.session.commit()
+
+        # call get_followed
+        followed_1 = _get_followed_by(1)
+        followed_2 = _get_followed_by(2)
         # assert correct 1
-        # assert correct 2
+        self.assertEqual(followed_1, [2,3])
+
         # assert empty
+        self.assertEqual(followed_2, [])
+
         # delete tuples
+        db.session.delete(item_1)
+        db.session.commit()
+        db.session.delete(item_2)
+        db.session.commit()
 
     def test_followers_number(self):
-    	# TODO
+        # push in the followers_table tuples
+        item_1 = Followers()
+        item_1.follower_id = 1
+        item_1.followed_id = 2
+        db.sessione.add(item_1)
+        db.session.commit()
+
+        item_2 = Followers()
+        item_2.follower_id = 3
+        item_2.follower_id = 2
+        db.sesssion.add(item_2)
+        db.session.commit()
+
+        # call get_followers
+        followers_1 = _get_followers_number(2)
+        followers_2 = _get_followers_number(1)
+
+        # assert correct 1
+        self.assertEqual(followers_1, 2)
+
+        # assert empty
+        self.assertEqual(followers_2, 0)
+        # delete tuples
+        db.session.delete(item_1)
+        db.session.delete(item_2)
+        db.session.commit()
 
     def test_followed_number(self):
-    	# TODO
+        # push in the followers_table tuples
+        item_1 = Followers()
+        item_1.follower_id = 1
+        item_1.followed_id = 2
+        db.session.add(item_1)
+        db.session.commit()
+
+        item_2 = Followers()
+        item_2.follower_id = 1
+        item_2.follower_id = 3
+        db.sesssion.add(item_2)
+        db.session.commit()
+
+        item_3 = Followers()
+        item_3.follower_id = 3
+        item_3.follower_id = 2
+        db.sesssion.add(item_3)
+        db.session.commit()
+
+        # call get_followed
+        followed_1 = _get_followed_number(1)
+        followed_2 = _get_followed_number(2)
+
+        # assert correct 1
+        self.assertEqual(followed_1, 2)
+
+        # assert empty
+        self.assertEqual(followed_2, 0)
+
+        # delete tuples
+        db.session.delete(item_1)
+        db.session.delete(item_2)
+        db.session.delete(item_3)
+        db.session.commit()
+
 
     def test_is_follower(self):
         # push in the followers_table (id_1, id_2)
+        item_1 = Followers()
+        item_1.follower_id = 1
+        item_1.follower_id = 2
+        db.session.add(item_1)
         
         # _is_follower(id_1, id_1)
-        # assert fail
+        self.assertFalse(_is_follower(1,1))
 
         # _is_follower(id_1, id_2)
-        # assert OK
+        self.assertTrue(_is_follower(1,2))
 
         # _is_follower(id_2, id_1)
-        # assert fail
+        self.assertFalse(_is_follower(2,1))
 
         # _is_follower(id_1, id_3)
-        # assert fail
+        self.assertFalse(_is_follower(1,3))
 
         # _is_follower(id_3, id_1)
-        # assert fail
+        self.assertFalse(_is_follower(3,1))
 
         # _is_follower(id_3, id_4)
-        # assert fail
+        self.assertFalse(_is_follower(4,5))
 
 
 

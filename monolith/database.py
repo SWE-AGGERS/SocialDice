@@ -84,3 +84,20 @@ class Dislike(db.Model):
 
     marked = db.Column(db.Boolean, default=False)  # True iff it has been counted in Story.likes
 
+# ================================================================================================
+# Followers Table
+# ================================================================================================
+
+class Followers(db.Model):
+    """Followers Table: 
+    (A, B) -> User A follow user B 
+    (A is the follower, B is the followed)"""
+    __tablename__ = 'followers'
+    followed_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    followed = relationship('User', foreign_keys='Followers.followed_id')
+
+    follower_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    follower = relationship('User', foreign_keys='Followers.follower_id')
+
+
+
