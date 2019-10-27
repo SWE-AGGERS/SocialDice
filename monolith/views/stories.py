@@ -5,19 +5,20 @@ from flask_login import (current_user, login_user, logout_user,
                          login_required)
 from monolith.forms import UserForm
 from monolith.background import celery, update_reactions
+from monolith.config import _SERVER_IP
+
 
 stories = Blueprint('stories', __name__)
 
 @stories.route('/stories')
 def _stories(message=''):
     allstories = db.session.query(Story)
-    return render_template("stories.html", message=message, stories=allstories)
+    return render_template("stories.html", message=message, stories=allstories, server_ip=_SERVER_IP)
 
 
 @stories.route('/story/<storyid>/reaction/<reactiontype>', methods=['GET', 'PUSH'])
 @login_required
 def _reaction(storyid, reactiontype):
-    print(str(current_user.id))
     # check if story exist
     q = Story.query.filter_by(id=storyid).first()
     if q is None:
@@ -30,7 +31,6 @@ def _reaction(storyid, reactiontype):
         if old_reaction is None:
             new_reaction = Reaction()
             new_reaction.user_id = current_user.id
-            # new_reaction.reaction_id = 1
             new_reaction.story_id = storyid
             new_reaction.type = reactiontype
             db.session.add(new_reaction)

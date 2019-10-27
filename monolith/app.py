@@ -5,13 +5,17 @@ from monolith.views import blueprints
 from monolith.auth import login_manager
 import datetime
 
-def create_app():
+def create_app(debug=False):
     app = Flask(__name__)
     app.config['WTF_CSRF_SECRET_KEY'] = 'A SECRET KEY'
     app.config['SECRET_KEY'] = 'ANOTHER ONE'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///storytellers.db'
-    app.config['SQLALCHEMY_ECHO'] = True
-    # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    # DEBUGGING AND TESTING
+    app.config['SQLALCHEMY_ECHO'] = False
+    app.config['TESTING'] = debug
+    app.config['WTF_CSRF_ENABLED'] = not debug
+    app.config['LOGIN_DISABLED'] = True
 
     for bp in blueprints:
         app.register_blueprint(bp)
@@ -52,4 +56,4 @@ def create_app():
 
 if __name__ == '__main__':
     app = create_app()
-    app.run()
+    app.run(debug=True)
