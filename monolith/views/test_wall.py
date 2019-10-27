@@ -53,7 +53,11 @@ class MyTestCase(unittest.TestCase):
         stories = []
         for s in q:
             s: Story
-            stories.append({'story_id': s.id, 'text': s.text})
+            stories.append(
+                {'story_id': s.id,
+                 'text': s.text,
+                 'likes': s.likes,
+                 'dislikes': s.dislikes})
 
         reply = app.get('/wall/' + str(user.id))
         body = json.loads(str(reply.data, 'utf8'))
@@ -62,16 +66,7 @@ class MyTestCase(unittest.TestCase):
             "firstname" : user.firstname,
             "lastname": user.lastname,
             "email": user.email,
-            "stories": [
-                {
-                    "story_id": stories[0]['story_id'],
-                    "text": stories[0]['text']
-                },
-                {
-                    "story_id": stories[1]['story_id'],
-                    "text": stories[1]['text']
-                }
-            ]
+            "stories": stories
         })
 
 

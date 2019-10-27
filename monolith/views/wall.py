@@ -14,10 +14,9 @@ def _strava_auth_url(config):
 @wall.route('/wall')
 def getmywall():
     if current_user is not None and hasattr(current_user, 'id'):
-        stories = db.session.query(Story).filter(Story.author_id == current_user.id)
+        return getawall(current_user.id)
     else:
-        stories = None
-    return render_template("index.html", stories=stories)
+        return getawall(-1)
 
 
 @wall.route('/wall/<user_id>')
@@ -31,8 +30,14 @@ def getawall(user_id):
     user_stories = []
     for s in q:
         s: Story
-        story = {}
-        user_stories.append({'story_id': s.id, 'text': s.text})
+
+        user_stories.append(
+            {'story_id': s.id,
+             'text': s.text,
+             'likes': s.likes,
+             'dislikes': s.dislikes
+             })
+        #user_stories.append(s)
 
     return jsonify(firstname=user.firstname,
                    lastname=user.lastname,
