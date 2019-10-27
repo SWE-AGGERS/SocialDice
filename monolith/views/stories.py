@@ -1,6 +1,7 @@
 from flask import Blueprint, redirect, render_template, request
 from monolith.database import db, Story, Like
 from monolith.auth import admin_required, current_user
+from monolith.classes import DiceSe
 from flask_login import (current_user, login_user, logout_user,
                          login_required)
 from monolith.forms import UserForm
@@ -28,3 +29,8 @@ def _like(authorid, storyid):
     else:
         message = 'You\'ve already liked this story!'
     return _stories(message)
+
+
+@stories.route('/rolldice/<int:dicenumber>/<int:dicesetid>')
+@login_required
+def _roll(dicenumber, dicesetid):
