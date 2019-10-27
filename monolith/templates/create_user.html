@@ -1,5 +1,5 @@
-<html>
- <body>
+{% extends "layout.html" %}
+{% block content %}
   <form action="" method="POST">
     {{ form.hidden_tag() }}
     <dl>
@@ -16,6 +16,5 @@
     <p>
     <input type=submit value="Submit">
   </form>
- </body>
-</html>
 
+{% endblock %}

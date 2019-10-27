@@ -1,3 +1,9 @@
+{% extends "layout.html" %}
+{% block title %}
+    Index Page
+{% endblock %}
+
+{% block content %}
 <h1>Storytellers</h1>
 
 {% if current_user.is_authenticated %}
@@ -17,3 +23,5 @@
 {% else %}
   Hi Anonymous, <a href="/login">Log in</a>
 {% endif %}
+
+{% endblock %}

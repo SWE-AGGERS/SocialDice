@@ -1,5 +1,8 @@
-<html>
-  <body>
+{% extends "layout.html" %}
+{% block title %}
+    Users
+{% endblock %}
+{% block content %}
     <h1>User List</h1>
     <ul>
       {% for user in users: %}
@@ -8,5 +11,4 @@
       </li>
       {% endfor %}
     </ul>
-  </body>
-</html>
+{% endblock %}
