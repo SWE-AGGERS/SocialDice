@@ -1,9 +1,12 @@
-<html>
-  <body>
+{% extends "layout.html" %}
+{% block title %}
+    Stories
+{% endblock %}
+{% block content %}
     <h1>Story List</h1>
     <h5>{{message}}</h5>
     <ul>
-      {% for story in stories: %}
+      {% for story in stories %}
       <li>
       "{{story.text}}"    Likes: {{story.likes}} ({{story.date}})
       {% if current_user.is_authenticated %}
@@ -12,5 +15,4 @@
       </li>
       {% endfor %}
     </ul>
-  </body>
-</html>
+{% endblock %}

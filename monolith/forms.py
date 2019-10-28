@@ -9,6 +9,7 @@ class LoginForm(FlaskForm):
     display = ['email', 'password']
 
 
+
 class UserForm(FlaskForm):
     email = f.StringField('email', validators=[DataRequired()])
     firstname = f.StringField('firstname', validators=[DataRequired()])
