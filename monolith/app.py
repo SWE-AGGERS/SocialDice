@@ -11,6 +11,8 @@ def create_app():
     app.config['SECRET_KEY'] = 'ANOTHER ONE'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///storytellers.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['WTF_CSRF_ENABLED'] = False
+    app.config['DEBUG'] = True
 
     for bp in blueprints:
         app.register_blueprint(bp)
@@ -51,5 +53,6 @@ def create_app():
 
 
 if __name__ == '__main__':
+
     app = create_app()
     app.run()

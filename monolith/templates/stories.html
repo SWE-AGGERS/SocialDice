@@ -10,7 +10,8 @@
       <li>
       "{{story.text}}"    Likes: {{story.likes}} ({{story.date}})
       {% if current_user.is_authenticated %}
-      <a href="{{like_it_url}}{{story.author.id}}/{{story.id}}">Like it!</a>
+      <a href="{{like_it_url}}/{{story.id}}/0">Like it!</a>
+      <a href="{{like_it_url}}/{{story.id}}/1">Dislike it!</a>
       {% endif %}
       </li>
       {% endfor %}
