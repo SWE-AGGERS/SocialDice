@@ -1,0 +1,24 @@
+.story_detail-reactions{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid #d8d8d8;
+    border-bottom: 1px solid #d8d8d8;
+}
+
+.story_detail-faces{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid #d8d8d8;
+}
+
+.story_detail-faces .face{
+    font-weight: bold;
+}
+
+.story_detail-reactions .likes {
+    margin-right: 20px;
+}
+
+.card{
+    margin-top: 1em;
+}

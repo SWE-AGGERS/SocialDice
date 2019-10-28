@@ -8,6 +8,7 @@ from monolith.forms import UserForm, StoryForm
 
 stories = Blueprint('stories', __name__)
 
+
 @stories.route('/stories', methods=['POST', 'GET'])
 def _stories(message=''):
     form = StoryForm()
@@ -17,7 +18,7 @@ def _stories(message=''):
         new_story.author_id = current_user.id
         new_story.likes = 0
         new_story.dislikes = 0
-        new_story.roll = {'dice':['bike', 'tulip', 'happy', 'cat', 'ladder', 'rain']}
+        new_story.roll = {'dice': ['bike', 'tulip', 'happy', 'cat', 'ladder', 'rain']}
         if form.validate_on_submit():
             text = form.data['text']
             new_story.text = text
@@ -28,7 +29,8 @@ def _stories(message=''):
     if 'GET' == request.method:
         # Go to the feed
         allstories = db.session.query(Story)
-        return render_template("stories.html", form=form, message=message, stories=allstories, like_it_url="http://127.0.0.1:5000/stories/like/")
+        return render_template("stories.html", form=form, message=message, stories=allstories,
+                               like_it_url="http://127.0.0.1:5000/stories/like/")
 
 
 @stories.route('/stories/like/<authorid>/<storyid>')
@@ -57,6 +59,7 @@ def get_story_detail(storyid):
         return render_template("story_detail.html", story=story)
     else:
         abort(404)
+
 
 @stories.route('/rolldice/<int:dicenumber>/<string:dicesetid>', methods=['GET'])
 @login_required
