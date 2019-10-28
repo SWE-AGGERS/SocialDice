@@ -2,6 +2,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 import enum
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.sqlite import JSON
 import datetime as dt
 from flask_sqlalchemy import SQLAlchemy
 
@@ -44,7 +45,7 @@ class Story(db.Model):
     __tablename__ = 'story'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     text = db.Column(db.Text(1000)) # around 200 (English) words 
-    roll = db.Column(db.ARRAY(db.String)) # textual representation (labels) of dice faces
+    roll = db.Column(db.JSON) # textual representation (labels) of dice faces {dice:[...]}
     date = db.Column(db.DateTime)
     likes = db.Column(db.Integer) # will store the number of likes, periodically updated in background
     dislikes = db.Column(db.Integer) # will store the number of likes, periodically updated in background
