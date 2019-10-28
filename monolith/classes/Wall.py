@@ -1,18 +1,39 @@
+from monolith.database import Story, User
+
+
+class PlainStory(dict):
+    story_id: int
+    text: str
+    likes: int
+    dislikes: int
+
+    def __init__(self, story: Story):
+        super().__init__()
+        self.story_id = story.id
+        self.text = story.text
+        self.likes = story.likes
+        self.dislikes = story.dislikes
+
+
 class Wall:
     storyLimit: int = 50
+    id: int
+    email: str
+    firstname: str
+    lastname: str
 
-    def __init__(self, user_id: int, email: str, firstname: str, lastname:str, stories):
-        self.id = user_id
-        self.email = email
-        self.firstname = firstname
-        self.lastname = lastname
-        self.stories_view = stories
+    def __init__(self, author: User):
+        self.id = author.id
+        self.email = author.email
+        self.firstname = author.firstname
+        self.lastname = author.lastname
+        self.stories = []#stories
 
-    def add_story(self, new_story):
-        if len(self.stories_view) >= self.storyLimit:
-            self.stories_view.pop(0)
+    def add_story(self, new_story: Story):
+        if len(self.stories) >= self.storyLimit:
+            self.stories.pop(0)
 
-        self.stories_view.append(new_story)
+        self.stories.append(PlainStory(new_story))
 
 
 import unittest

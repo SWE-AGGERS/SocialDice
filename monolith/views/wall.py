@@ -1,10 +1,14 @@
 from flask import Blueprint, render_template, jsonify
 
+from monolith.classes.Wall import Wall
 from monolith.database import db, Story, Like, User
 from monolith.auth import current_user
 
 
 wall = Blueprint('wall', __name__)
+
+def User_not_found():
+    return jsonify({'code': 404, 'msg': 'User not found'})
 
 
 def _strava_auth_url(config):
@@ -16,21 +20,29 @@ def getmywall():
     if current_user is not None and hasattr(current_user, 'id'):
         return getawall(current_user.id)
     else:
-        return getawall(-1)
+        return User_not_found()
 
 
 @wall.route('/wall/<user_id>')
+def renderWall(user_id):
+    json_wall = getawall(user_id)
+    render_template("index.html", wall=json_wall.data)
+
+
 def getawall(user_id):
+    # if user_id < 0:
+    #     return User_not_found()
     q = db.session.query(User).filter(User.id == user_id)
     user = q.first()
     if user is None:
-        return 404
+        return User_not_found()
 
     q = db.session.query(Story).filter(Story.author_id == user.id)
+    thewall: Wall = Wall(user)
     user_stories = []
     for s in q:
         s: Story
-
+        thewall.add_story(s)
         user_stories.append(
             {'story_id': s.id,
              'text': s.text,
@@ -42,4 +54,4 @@ def getawall(user_id):
     return jsonify(firstname=user.firstname,
                    lastname=user.lastname,
                    email=user.email,
-                   stories=user_stories)
+                   stories=user_stories) # thewall.stories

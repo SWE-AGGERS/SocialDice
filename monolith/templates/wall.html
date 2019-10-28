@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}
+    The WALL
+{% endblock %}
+
+{% block content %}
+<h1>{{user.firstname}}'s Wall</h1>
+
+{% if current_user.is_authenticated %}
+{#  Hi {{ current_user.firstname }}! <a href="/logout">Logout</a>#}
+    <li>Name {{ wall.firstname }}</li>
+    <li>Lastname {{ wall.lastname }}</li>
+    <li>msg to the author {{ wall.email }}</li>
+
+    <h2>{{ wall.firstname }}'s Stories</h2>
+    {% for story in wall.stories%}
+      <div>
+          <li></li>
+          <li>
+          {{story.text}} -- Likes:{{story.likes}} -- Disikes:{{story.dilikes}}
+        </li>
+      </div>
+    {% endfor %}
+
+
+{% else %}
+  Hi Anonymous, <a href="/login">Log in</a>
+{% endif %}
+
+{% endblock %}

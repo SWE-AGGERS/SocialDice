@@ -3,6 +3,7 @@ import unittest
 import json
 from flask import request, jsonify
 from monolith.app import create_app
+from monolith.classes.Wall import Wall
 from monolith.database import db, User, Story
 
 test_app = create_app()
@@ -51,8 +52,10 @@ class MyTestCase(unittest.TestCase):
             q = db.session.query(Story).filter(Story.author_id == user.id)
 
         stories = []
+        thewalltest = Wall(user)
         for s in q:
             s: Story
+            thewalltest.add_story(s)
             stories.append(
                 {'story_id': s.id,
                  'text': s.text,
@@ -66,7 +69,7 @@ class MyTestCase(unittest.TestCase):
             "firstname" : user.firstname,
             "lastname": user.lastname,
             "email": user.email,
-            "stories": stories
+            "stories": stories #thewalltest.stories
         })
 
 
