@@ -1,5 +1,5 @@
 from flask import Blueprint, redirect, render_template, request
-from monolith.database import db, Story, Like
+from monolith.database import db, Story, Like, User
 from monolith.auth import admin_required, current_user
 from flask_login import (current_user, login_user, logout_user,
                          login_required)
@@ -9,7 +9,8 @@ stories = Blueprint('stories', __name__)
 
 @stories.route('/stories')
 def _stories():
-    allstories = db.session.query(Story)
+    allstories = db.session.query(Story, User).join(User)
+    print(allstories)
     return render_template("stories.html", stories=allstories, like_it_url="http://127.0.0.1:5000/stories/reaction")
 
 
