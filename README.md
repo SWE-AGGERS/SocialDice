@@ -6,4 +6,5 @@
 * pip3 install -r requirements.txt
 * sh ./start_redis.sh
 * python3 -m celery worker -A monolith.background.celery -E --loglevel=info
-
+### Testing
+* tox TOX_ENV=py36
