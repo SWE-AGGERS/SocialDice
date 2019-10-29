@@ -2,7 +2,7 @@ import random as rnd
 import os
 
 
-class Dice:
+class Die:
 
     def __init__(self, filename):
         self.faces = []
@@ -17,7 +17,7 @@ class Dice:
            self.faces.append(line.replace("\n",""))
         f.close()
 
-    def throw_dice(self):
+    def throw_die(self):
         if self.faces:
             self.pip = rnd.choice(self.faces)
             return self.pip
@@ -36,7 +36,7 @@ class DiceSet:
 
     def throw_dice(self):
         for i in range(0,len(self.dice)):
-            self.pips.append(self.dice[i].throw_dice())
+            self.pips.append(self.dice[i].throw_die())
         print("The resulted faces are:"+str(self.pips))
         return self.pips
 

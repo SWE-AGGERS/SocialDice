@@ -17,8 +17,8 @@ def check_story(story,diceSet):
     if len(diceSet.pips) != len(diceSet.dice):
         raise SizeDiceSetFacesError("The number of resulting faces must be equal to the number of dice.\n")
     for elem in diceSet.dice:
-        if not isinstance(elem,ds.Dice):
-            raise WrongFormatSingleDiceError("Every dice of the dice set must be a Dice.\n")
+        if not isinstance(elem,ds.Die):
+            raise WrongFormatSingleDiceError("Every dice of the dice set must be a die.\n")
     for elem in diceSet.pips:
         if not isinstance(elem,str):
             raise WrongFormatSingleFaceError("Every resulting face of the dice set must be a string.\n")
@@ -49,8 +49,8 @@ def check_storyV2(story,diceSet):
     if len(diceSet.pips) != len(diceSet.dice):
         raise SizeDiceSetFacesError("The number of resulting faces must be equal to the number of dice.\n")
     for elem in diceSet.dice:
-        if not isinstance(elem,ds.Dice):
-            raise WrongFormatSingleDiceError("Every dice of the dice set must be a Dice.\n")
+        if not isinstance(elem,ds.Die):
+            raise WrongFormatSingleDiceError("Every dice of the dice set must be a die.\n")
     for elem in diceSet.pips:
         if not isinstance(elem,str):
             raise WrongFormatSingleFaceError("Every resulting face of the dice set must be a string.\n")
