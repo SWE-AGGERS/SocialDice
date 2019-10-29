@@ -113,3 +113,5 @@ variables.sh
 
 # redis
 redis-stable
+
+storytellers.db
