@@ -8,10 +8,10 @@
     <ul>
       {% for story in stories %}
       <li>
-      "{{story.text}}"    Likes: {{story.likes}} ({{story.date}})
-      {% if current_user.is_authenticated %}
-      <a href="{{like_it_url}}{{story.author.id}}/{{story.id}}">Like it!</a>
-      {% endif %}
+      "{{story.text}}"    Likes: {{story.likes}} Dislikes: {{story.dislikes}} ({{story.date}})
+      <a href="http://{{server_ip}}:5000/story/{{story.id}}/reaction/1">Like it!</a>
+      <a href="http://{{server_ip}}:5000/story/{{story.id}}/reaction/2">Dislike it!</a>
+
       </li>
       {% endfor %}
     </ul>

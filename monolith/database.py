@@ -55,32 +55,21 @@ class Story(db.Model):
         super(Story, self).__init__(*args, **kw)
         self.date = dt.datetime.now()
 
-class Like(db.Model):
-    __tablename__ = 'like'
-    
-    liker_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    liker = relationship('User', foreign_keys='Like.liker_id')
+
+class Reaction(db.Model):
+    __tablename__ = 'reaction'
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    reaction = relationship('User', foreign_keys='Reaction.user_id')
 
     story_id = db.Column(db.Integer, db.ForeignKey('story.id'), primary_key=True)
-    author = relationship('Story', foreign_keys='Like.story_id')
+    author = relationship('Story', foreign_keys='Reaction.story_id')
 
-    liked_id = db.Column(db.Integer, db.ForeignKey('user.id')) # TODO: duplicated ?
-    liker = relationship('User', foreign_keys='Like.liker_id')
-
-    marked = db.Column(db.Boolean, default = False) # True iff it has been counted in Story.likes 
-
-
-class Dislike(db.Model):
-    __tablename__ = 'dislike'
-
-    disliker_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    disliker = relationship('User', foreign_keys='Dislike.disliker_id')
-
-    story_id = db.Column(db.Integer, db.ForeignKey('story.id'), primary_key=True)
-    author = relationship('Story', foreign_keys='Dislike.story_id')
-
-    disliked_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # TODO: duplicated ?
-    disliker = relationship('User', foreign_keys='Dislike.disliker_id')
+    type = db.Column(db.Integer) # 1: like, 2: dislike
 
     marked = db.Column(db.Boolean, default=False)  # True iff it has been counted in Story.likes
 
+    def to_string(self):
+        return 'liker_id: ' + str(self.user_id) + \
+                '\nstory_id: ' + str(self.story_id) + \
+                '\ntype: ' + str(self.type)

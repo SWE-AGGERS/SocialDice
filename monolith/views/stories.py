@@ -1,30 +1,51 @@
 from flask import Blueprint, redirect, render_template, request
-from monolith.database import db, Story, Like
+from monolith.database import db, Story, Reaction
 from monolith.auth import admin_required, current_user
 from flask_login import (current_user, login_user, logout_user,
                          login_required)
 from monolith.forms import UserForm
+from monolith.background import celery, update_reactions
+from monolith.config import _SERVER_IP
+
 
 stories = Blueprint('stories', __name__)
 
 @stories.route('/stories')
 def _stories(message=''):
     allstories = db.session.query(Story)
-    return render_template("stories.html", message=message, stories=allstories, like_it_url="http://127.0.0.1:5000/stories/like/")
+    return render_template("stories.html", message=message, stories=allstories, server_ip=_SERVER_IP)
 
 
-@stories.route('/stories/like/<authorid>/<storyid>')
+@stories.route('/story/<storyid>/reaction/<reactiontype>', methods=['GET', 'PUSH'])
 @login_required
-def _like(authorid, storyid):
-    q = Like.query.filter_by(liker_id=current_user.id, story_id=storyid)
-    if q.first() != None:
-        new_like = Like()
-        new_like.liker_id = current_user.id
-        new_like.story_id = storyid
-        new_like.liked_id = authorid
-        db.session.add(new_like)
-        db.session.commit()
-        message = ''
-    else:
-        message = 'You\'ve already liked this story!'
-    return _stories(message)
+def _reaction(storyid, reactiontype):
+    # check if story exist
+    q = Story.query.filter_by(id=storyid).first()
+    if q is None:
+        message = 'Story doent exist!'
+        return _stories(message)
+    # TODO need to be changed to PUSH (debug motivation)
+    if 'GET' == request.method:
+        old_reaction = Reaction.query.filter_by(user_id=current_user.id, story_id=storyid).first()
+
+        if old_reaction is None:
+            new_reaction = Reaction()
+            new_reaction.user_id = current_user.id
+            new_reaction.story_id = storyid
+            new_reaction.type = reactiontype
+            db.session.add(new_reaction)
+            db.session.commit()
+            message = 'Reaction to story created!'
+
+        else:
+            if int(reactiontype) == int(old_reaction.type):
+                message = 'You already react in this way!'
+                db.session.delete(old_reaction)
+                db.session.commit()
+            else:
+                old_reaction.type = reactiontype
+                db.session.commit()
+                message = 'You change your reaction!'
+        # Update DB counters
+        update_reactions.delay(story_id=storyid)
+        return _stories(message)

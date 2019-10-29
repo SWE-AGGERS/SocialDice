@@ -108,6 +108,8 @@ venv.bak/
 .mypy_cache/
 
 # personal
-./monolith/storytellers.db
 variables.sh
 .idea
+
+# redis
+redis-stable
