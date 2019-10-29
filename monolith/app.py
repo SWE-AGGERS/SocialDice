@@ -46,7 +46,6 @@ def create_app(debug=False):
             example = Story()
             example.text = 'Trial story of example admin user :)'
             example.likes = 42
-            example.dislikes = 20
             example.author_id = 1
             example.roll = {'dice':['bike', 'tulip', 'happy', 'cat', 'ladder', 'rain']}
             print(example)
