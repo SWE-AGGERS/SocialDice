@@ -21,34 +21,34 @@ from monolith.views.follow import (
 class TestFollowFunction(unittest.TestCase):
  
     def test_get_followers_of(self):
-        app = create_app().test_client()
-        
-        # push in the followers_table tuples
-        item_1 = Followers()
-        item_1.follower_id = 1
-        item_1.followed_id = 2
-        db.session.add(item_1)
-        db.session.commit()
+        app = create_app(debug=True)
+        with app.test_client() as client:        
+            # push in the followers_table tuples
+            item_1 = Followers()
+            item_1.follower_id = 1
+            item_1.followed_id = 2
+            db.session.add(item_1)
+            db.session.commit()
 
-        item_2 = Follower()
-        item_2.follower_id = 3
-        item_2.followed_id = 2
-        db.sesssion.add(item_2)
-        db.session.commit()
+            item_2 = Follower()
+            item_2.follower_id = 3
+            item_2.followed_id = 2
+            db.sesssion.add(item_2)
+            db.session.commit()
 
-        # call get_followers
-        followers_1 = _get_followers_of(2)
-        followers_2 = _get_followers_of(1)
+            # call get_followers
+            followers_1 = _get_followers_of(2)
+            followers_2 = _get_followers_of(1)
 
-        # assert correct 1
-        self.assertEqual(followers_1, [1,3])
+            # assert correct 1
+            self.assertEqual(followers_1, [1,3])
 
-        # assert empty
-        self.assertEqual(followers_2, [])
-        # delete tuples
-        db.session.delete(item_1)
-        db.session.delete(item_2)
-        db.session.commit()
+            # assert empty
+            self.assertEqual(followers_2, [])
+            # delete tuples
+            db.session.delete(item_1)
+            db.session.delete(item_2)
+            db.session.commit()
 
 
     def test_get_followed_by(self):
