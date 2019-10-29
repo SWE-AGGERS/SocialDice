@@ -26,13 +26,13 @@ class Die:
         else:
             raise IndexError("throw_die(): empty die error.")
 
-        
+
 class DiceSet:
 
     def __init__(self, set_name):
         self.dice = []
         self.pips = []
-        
+
         dice_folder = ""
         for e in _DICE_SETS:
             if e['name'] == set_name:
@@ -44,7 +44,7 @@ class DiceSet:
         folder = glob.glob(os.path.join(dice_folder, '*.txt'))
         sorted(folder)
 
-        for filename in  natsort.natsorted(folder,reverse=False):
+        for filename in natsort.natsorted(folder,reverse=False):
             print(filename)
             die = Die(filename)
             self.dice.append(die)
@@ -69,6 +69,6 @@ class TestDie(unittest.TestCase):
         res = die.throw_die()
         self.assertEqual(res, 'bag')
 
- 
+
 if __name__ == '__main__':
     unittest.main()
