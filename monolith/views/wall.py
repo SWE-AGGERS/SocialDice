@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, jsonify
 
 from monolith.classes.Wall import Wall
-from monolith.database import db, Story, Like, User
+from monolith.database import db, Story, User
 from monolith.auth import current_user
 
 
