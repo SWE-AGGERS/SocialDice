@@ -12,17 +12,7 @@ class LoginTestCase(unittest.TestCase):
         response = self.getTester.get('/login', content_type='html/text')
         self.assertEqual(response.status_code, 200)
 
-    def testIncorrectUsername(self):
-        with self.getTester as client:
-            data = {
-                "email": "Admin",
-                "password": generate_password_hash("Admin")
-            }
-            response = client.post("/login",
-                                             data=json.dumps(dict(data)),
-                                             follow_redirects=True)
-            print(response.data)
-            self.assertIn(b'User not found  ', response.data)
+
 
     def setUp(self):
         user1 = User()
