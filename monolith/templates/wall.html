@@ -1,23 +1,20 @@
 {% extends "layout.html" %}
 {% block title %}
-    The WALL
+    Index Page
 {% endblock %}
 
 {% block content %}
-<h1>{{user.firstname}}'s Wall</h1>
+<h1>Storytellers</h1>
 
 {% if current_user.is_authenticated %}
-{#  Hi {{ current_user.firstname }}! <a href="/logout">Logout</a>#}
-    <li>Name {{ wall.firstname }}</li>
-    <li>Lastname {{ wall.lastname }}</li>
-    <li>msg to the author {{ wall.email }}</li>
+  Hi {{ current_user.firstname }}! <a href="/logout">Logout</a>
 
-    <h2>{{ wall.firstname }}'s Stories</h2>
-    {% for story in wall.stories%}
+
+    <h2>Your Stories</h2>
+    {% for story in stories%}
       <div>
-          <li></li>
-          <li>
-          {{story.text}} -- Likes:{{story.likes}} -- Disikes:{{story.dilikes}}
+        <li>
+          {{story.text}} -- Likes:{{story.likes}}
         </li>
       </div>
     {% endfor %}

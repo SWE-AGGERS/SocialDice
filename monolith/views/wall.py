@@ -23,12 +23,19 @@ def getmywall():
         return User_not_found()
 
 
-@wall.route('/wall/<user_id>')
+@wall.route('/thewall/<user_id>')
 def renderWall(user_id):
-    json_wall = getawall(user_id)
-    render_template("index.html", wall=json_wall.data)
+    q = db.session.query(User).filter(User.id == user_id)
+    user = q.first()
+    if user is None:
+        return User_not_found()
+
+    stories = db.session.query(Story).filter(Story.author_id == user.id)
+
+    render_template("wall.html", user=user, stories=stories)
 
 
+@wall.route('/wall/<user_id>')
 def getawall(user_id):
     # if user_id < 0:
     #     return User_not_found()
