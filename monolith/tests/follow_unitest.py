@@ -33,7 +33,7 @@ class TestFollowFunction(unittest.TestCase):
             item_2 = Follower()
             item_2.follower_id = 3
             item_2.followed_id = 2
-            db.sesssion.add(item_2)
+            db.session.add(item_2)
             db.session.commit()
 
             # call get_followers

@@ -7,7 +7,7 @@ from flask_login import current_user, login_required
 follow = Blueprint('follow', __name__)
 
 # Follow a writer
-@follow.route('/follow/<int:userid>', methods=['POST'])
+@follow.route('/follow/<userid>', methods=['POST'])
 @login_required
 def _follow_user(userid):
     # get the user who want following userid

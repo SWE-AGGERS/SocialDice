@@ -2,6 +2,7 @@ import unittest
 import json
 from flask import request, jsonify
 from monolith.app import create_app
+from monolith.database import db, User
 
  
 class TestFollow(unittest.TestCase):
@@ -9,35 +10,44 @@ class TestFollow(unittest.TestCase):
     def test_follow_user(self):
         tested_app = create_app(debug=True)
         with tested_app.test_client() as client:
-            # push in the users_table 3 users
-            user_a = User()
-            user_a.email = 'testa@test.com'
-            user_a.setpassword('test')
-            user_a_id = user_a.getId()
+            with client.session_transaction() as sess:
+                # push in the users_table 3 users
+                user_a = User()
+                user_a.email = 'testa@test.com'
+                user_a.set_password('test')
 
-            user_b = User()
-            user_b.email = 'testb@test.com'
-            user_b.setpassword('test')
-            user_b_id = user_a.getId()
+                user_b = User()
+                user_b.email = 'testb@test.com'
+                user_b.set_password('test')
 
-            user_c = User()
-            user_c.email = 'testc@test.com'
-            user_c.setpassword ('test')
-            user_c_id = user_a.getId()
+                user_c = User()
+                user_c.email = 'testc@test.com'
+                user_c.set_password ('test')
 
-            db.session.add(user_a)
-            db.session.add(user_b)
-            db.session.add(user_c)
-            db.session.commit()
+                db.session.add(user_a)
+                db.session.add(user_b)
+                db.session.add(user_c)
+                db.session.commit()
 
-            # create correct_answers
+                # Get users ID
+                user_a_id = User.query.filter_by(email=user_a.email).first().get_id()
+                user_b_id = User.query.filter_by(email=user_b.email).first().get_id()
+                user_c_id = User.query.filter_by(email=user_c.email).first().get_id()
+            
             # login as user_1
             login(client, 'testa@test.com', 'test')
 
             # call /follow/user_id_2
-            reply = client.post('/follow/'+user_b_id)
+
+            reply = client.post('/follow/3')
+            print(">>>>>>>>>>>>>>>>>\nREPLY:")
+            print(reply)
+            print("USERB ID: ")
+            print(user_b_id)
+            print(">>>>>>>>>>>>>>>>>>>>>>>>")
+
             # assert OK
-            assert {'followed': 1} == reply
+            self.assertEqual({"follower":1}, reply)
 
             # call /follow/user_id_2
             # assert EXC
@@ -75,3 +85,15 @@ class TestFollow(unittest.TestCase):
         # call unfollow/user_not_exist
         # assert EXC
         assert True
+
+
+# TO DELETE MAYBE?
+def login(client, username, password):
+    return client.post('/login', data=dict(
+        email=username,
+        password=password
+    ), follow_redirects=True)
+
+
+def logout(client):
+    return client.get('/logout', follow_redirects=True)
