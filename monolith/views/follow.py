@@ -143,8 +143,9 @@ import unittest
 class TestFollowFunction(unittest.TestCase):
  
     def test_get_followers_of(self):
-        app = create_app()
-        db = app.db
+        from monolith.database import db, Followers
+        from monolith.app import create_app as app
+        
         # push in the followers_table tuples
         item_1 = Followers()
         item_1.follower_id = 1
