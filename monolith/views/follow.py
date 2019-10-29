@@ -31,21 +31,24 @@ def _follow_user(userid):
 
 
 # Unfollow a writer
-@follow.route('/follow/<int:userid>', methods=['DELETE'])
+@follow.route('/follow/<userid>', methods=['DELETE'])
 @login_required
 def _unfollow_user(userid):
     #get the user who want to unfollow userid
     subject = current_user.id
 
     if userid == subject:
-        jsonify({"followed": -1})
+        return jsonify({"followed": -1})
 
     # if user not followed
     if not _is_follower(subject, userid):
-        jsonify({"followed": -1})
+        return jsonify({"followed": -1})
 
     # remove from follower_table the tuple (follower_id, followed_id)
-    _delete_follow(subject, userid)
+    if _delete_follow(subject, userid) == -1:
+        # db delete error
+        return jsonify({"followed": -1})
+
 
     # return OK + number of users followed
     return jsonify({"followed": _get_followed_number(subject)})
@@ -125,8 +128,8 @@ def _is_follower(user_a, user_b):
 
 def _create_follow(user_a, user_b):
     item = Followers()
-    item.follower_id = user_a
-    item.followed_id = user_b
+    item.follower_id = int(user_a)
+    item.followed_id = int(user_b)
     return item
 
 
@@ -142,5 +145,9 @@ def _add_follow(user_a, user_b):
 
 # TODO: use celerity
 def _delete_follow(user_a, user_b):
-    db.session.delete(_create_follow(user_a, user_b))
-    db.session.commit()
+    try:
+        db.session.delete(_create_follow(user_a, user_b))
+        db.session.commit()
+        return 1
+    except:
+        return -1

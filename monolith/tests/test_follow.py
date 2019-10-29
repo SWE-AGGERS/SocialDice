@@ -11,12 +11,10 @@ class TestFollow(unittest.TestCase):
 
     def test_follow_user(self):
         tested_app = create_app(debug=True)
-        tested_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test_storytellers.db'
         with tested_app.test_client() as client:
             with client.session_transaction() as sess:
-                db.init_app(client)
-                login_manager.init_app(client)
-                db.create_all(app=client)
+                db.drop_all()
+                db.create_all()
                 # push in the users_table 3 users
                 user_a = User()
                 user_a.email = 'testa@test.com'
@@ -82,6 +80,8 @@ class TestFollow(unittest.TestCase):
         with tested_app.test_client() as client:
             with client.session_transaction() as sess:
                     # push in the users_table 3 users
+                    db.drop_all()
+                    db.create_all()
                     user_a = User()
                     user_a.email = 'testa@test.com'
                     user_a.set_password('test')
@@ -111,6 +111,7 @@ class TestFollow(unittest.TestCase):
                     db.session.add(follow_ab)
                     db.session.add(follow_ac)
                     db.session.add(follow_bc)
+                    db.session.commit()
 
 
             # push follows in follow_table (1-2, 1-3, 2-3)
@@ -121,22 +122,22 @@ class TestFollow(unittest.TestCase):
             # call /unfollow/user_1
             # assert EXC
             reply = client.delete('/follow/'+str(user_a_id))
-            assert b'"follow:-1' in reply.data
+            assert b'"followed":-1' in reply.data
 
             # call /unfollow/user_2
             # assert OK
             reply = client.delete('/follow/'+str(user_b_id))
-            assert b'"follow:1' in reply.data
+            assert b'"followed":1' in reply.data
 
             # call unfollow/user_2
             # assert EXC
             reply = client.delete('/follow/'+str(user_b_id))
-            assert b'"follow:-1' in reply.data
+            assert b'"followed":-1' in reply.data
 
             # call unfollow/user_not_exist
             # assert EXC
             reply = client.delete('/follow/'+str(-999))
-            assert b'"follow:-1' in reply.data
+            assert b'"followed":-1' in reply.data
 
 
 
