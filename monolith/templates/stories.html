@@ -1,5 +1,8 @@
-<html>
-  <body>
+{% extends "layout.html" %}
+{% block title %}
+    Stories
+{% endblock %}
+{% block content %}
     <h1>Story List</h1>
     <h5>{{message}}</h5>
     <ul>
@@ -12,5 +15,45 @@
       </li>
       {% endfor %}
     </ul>
-  </body>
-</html>
+
+    <!-- Button to Open the Modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal"> New story </button>
+    
+    <!-- The Modal -->
+    <div class="modal" id="myModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Create your story!</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            Roll the dice and let your immagination run wild!
+            <form action="" method="POST">
+              {{ form.hidden_tag() }}
+              {% for field in form.display %}
+              
+                  <div class="form-group ">
+                        <br></br>
+                        {{ form[field]() }}
+                  </div>
+                  <br>
+              {% endfor %}
+              <br>
+              <input type=submit  value="Publish">
+            </form>
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+{% endblock %}

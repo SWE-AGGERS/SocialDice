@@ -1,12 +1,13 @@
 from flask_wtf import FlaskForm
 import wtforms as f
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Length
 
 
 class LoginForm(FlaskForm):
     email = f.StringField('email', validators=[DataRequired()])
     password = f.PasswordField('password', validators=[DataRequired()])
     display = ['email', 'password']
+
 
 
 class UserForm(FlaskForm):
@@ -18,5 +19,5 @@ class UserForm(FlaskForm):
     display = ['email', 'firstname', 'lastname', 'password', 'dateofbirth']
 
 class StoryForm(FlaskForm):
-    text = f.TextField('text', validators=[DataRequired()]) #TODO: Add check on length (1000 chrs)
+    text = f.TextAreaField('text', validators=[Length(max=1000, message=(u'Your story is too long!')),DataRequired()])
     display = ['text']
