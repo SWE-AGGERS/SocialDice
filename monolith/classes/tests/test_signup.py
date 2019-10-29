@@ -3,7 +3,6 @@ import sqlalchemy
 import unittest
 from monolith import app
 from monolith.database import User
-from
 
 class SingupTestCase(unittest.TestCase):
 

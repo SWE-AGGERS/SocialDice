@@ -52,6 +52,7 @@ def signup():
             return redirect("/")
         else:
             form = UserForm()
+
             return render_template('signup.html', form=form, error=True, message="The email was used before. Please change the email!" )
     if request.method == 'GET':
 
