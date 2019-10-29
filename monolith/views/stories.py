@@ -17,10 +17,10 @@ def _stories(message=''):
         new_story.author_id = current_user.id
         new_story.likes = 0
         new_story.dislikes = 0
-        new_story.roll = {'dice':['bike', 'tulip', 'happy', 'cat', 'ladder', 'rain']}
-        if form.validate_on_submit():
-            text = form.data['text']
-            new_story.text = text
+        text = request.form.get('text')
+        roll = request.form.get('roll')
+        new_story.text = text
+        new_story.roll = {'dice':str(roll)}
         db.session.add(new_story)
         db.session.commit()
         return redirect('/stories')
@@ -48,10 +48,11 @@ def _like(authorid, storyid):
     return _stories(message)
 
 
-@stories.route('/rolldice/<int:dicenumber>/<string:dicesetid>', methods=['GET'])
+@stories.route('/rolldice/', methods=['GET'])
 @login_required
-def _roll(dicenumber, dicesetid):
+def _roll():
     form = StoryForm()
+    dicenumber = request.args.get("dicenumber")
+    dicesetid = request.args.get("dicesetid")
     dice = DiceSet(dicesetid)
-    message = str(dice.throw_dice())
-    return render_template("create_story.html", form = form, message= message)
+    return render_template("create_story.html", form=form, roll=dice.throw_dice())
