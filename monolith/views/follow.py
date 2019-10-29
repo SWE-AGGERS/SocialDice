@@ -19,16 +19,9 @@ def _follow_user(userid):
         return jsonify({"followed": -1})
 
     # add to follower_table the tuple (follower_id, followed_id)
-    item = Follower()
-    item.follower_id = subject
-    item.followed_id = userid
-    try:
-        db.session.add(item)
-        db.session.commit()
-    except:
-        return jsonify({"followed": -1})
+    _add_follow(subject, userid)
 
-    # return OK + number of followed
+    # return OK + number of users followed
     return jsonify({"followed": _get_followed_number(subject)})
 
 
@@ -47,15 +40,9 @@ def _unfollow_user(userid):
         jsonify({"followed": -1})
 
     # remove from follower_table the tuple (follower_id, followed_id)
-    item = Follower()
-    item.follower_id = subject
-    item.followed_id = userid
-    try:
-        db.session.delete(item)
-        db.session.commit()
-    except:
-        return jsonify({"followed": -1})
-    # return OK + number of followers
+    _delete_follow(subject, userid)
+
+    # return OK + number of users followed
     return jsonify({"followed": _get_followed_number(subject)})
 
 # TODO: add to the API doc
@@ -128,6 +115,25 @@ def _is_follower(user_a, user_b):
         return False
     else:
         return True
+
+
+def _create_follow(user_a, user_b):
+    item = Follower()
+    item.follower_id = user_a
+    item.followed_id = user_b
+    return item
+
+
+# TODO: use celerity
+def _add_follow(user_a, user_b):
+    db.session.add(_create_follow(user_a, user_b))
+    db.session.commit()
+
+
+# TODO: use celerity
+def _delete_follow(user_a, user_b):
+    db.session.delete(_create_follow(user_a, user_b))
+    db.session.commit()
 # =============================================================================
 # TEST
 # =============================================================================
@@ -137,6 +143,8 @@ import unittest
 class TestFollowFunction(unittest.TestCase):
  
     def test_get_followers_of(self):
+        app = create_app()
+        db = app.db
         # push in the followers_table tuples
         item_1 = Followers()
         item_1.follower_id = 1
@@ -170,7 +178,7 @@ class TestFollowFunction(unittest.TestCase):
         item_1 = Followers()
         item_1.follower_id = 1
         item_1.followed_id = 2
-        db.sessione.add(item_1)
+        db.session.add(item_1)
         db.session.commit()
 
         item_2 = Followers()
@@ -199,7 +207,7 @@ class TestFollowFunction(unittest.TestCase):
         item_1 = Followers()
         item_1.follower_id = 1
         item_1.followed_id = 2
-        db.sessione.add(item_1)
+        db.session.add(item_1)
         db.session.commit()
 
         item_2 = Followers()
