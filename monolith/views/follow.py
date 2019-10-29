@@ -1,7 +1,5 @@
-from flask import Blueprint, redirect, render_template, request, jsonify
-from monolith.database import db, User, Followers
-from monolith.forms import UserForm
-from monolith.app import create_app as app
+from flask import Blueprint, jsonify
+from monolith.database import db, Followers, User
 from flask_login import current_user, login_required
 
 follow = Blueprint('follow', __name__)
@@ -13,13 +11,20 @@ def _follow_user(userid):
     # get the user who want following userid
     subject = current_user.id
 
-
+    print(subject, " follow -> ", userid)
     # if user already followed
-    if userid == subject:
+    if int(userid) == int(subject):
+        return jsonify({"followed": -1})
+
+    # if the followed user do not exist
+    if User.query.filter_by(id=userid).first() == None:
         return jsonify({"followed": -1})
 
     # add to follower_table the tuple (follower_id, followed_id)
-    _add_follow(subject, userid)
+    result = _add_follow(subject, userid)
+    if result == -1:
+        # db.session.add error
+        return jsonify({"followed": -1})
 
     # return OK + number of users followed
     return jsonify({"followed": _get_followed_number(subject)})
@@ -94,18 +99,19 @@ def _get_followers_of(user_id):
 
 # Get the list of users who follows the user_id
 def _get_followed_by(user_id):
+    print("USER ID: ", user_id)
     L = Followers.query.filter_by(followed_id=user_id).all()
     return L
 
 
 # Get the number of followers
 def _get_followers_number(user_id):
-    return size(_get_followers_of(user_id))
+    return len(_get_followed_by(user_id))
 
 
 # Get the number of followed
 def _get_followed_number(user_id):
-    return size(_get_followed_by(user_id))
+    return len(_get_followers_of(user_id))
 
 # check if user_a follow user_b
 def _is_follower(user_a, user_b):
@@ -118,7 +124,7 @@ def _is_follower(user_a, user_b):
 
 
 def _create_follow(user_a, user_b):
-    item = Follower()
+    item = Followers()
     item.follower_id = user_a
     item.followed_id = user_b
     return item
@@ -126,8 +132,12 @@ def _create_follow(user_a, user_b):
 
 # TODO: use celerity
 def _add_follow(user_a, user_b):
-    db.session.add(_create_follow(user_a, user_b))
-    db.session.commit()
+    try:
+        db.session.add(_create_follow(user_a, user_b))
+        db.session.commit()
+        return 1
+    except:
+        return -1
 
 
 # TODO: use celerity
