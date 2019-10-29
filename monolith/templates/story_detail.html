@@ -45,24 +45,20 @@
 
             <div class="story_detail-reactions text-left">
 
-                {% if story.likes > 0 %}
-                    <a href="/story/{{ story.id }}/reaction/1">
-                        <span class="align-middle">{{ story.likes }}</span>
-                        <i class="material-icons align-middle likes">
-                            thumb_up
-                        </i>
-                    </a>
 
-                {% endif %}
+                <a href="/story/{{ story.id }}/reaction/1">
+                    <span class="align-middle">{{ story.likes }}</span>
+                    <i class="material-icons align-middle likes">
+                        thumb_up
+                    </i>
+                </a>
 
-                {% if story.dislikes > 0 %}
-                    <a href="/story/{{ story.id }}/reaction/2">
-                        <span class="align-middle">{{ story.dislikes }}</span>
-                        <i class="material-icons align-middle dislikes">
-                            thumb_down
-                        </i>
-                    </a>
-                {% endif %}
+                <a href="/story/{{ story.id }}/reaction/2">
+                    <span class="align-middle">{{ story.dislikes }}</span>
+                    <i class="material-icons align-middle dislikes">
+                        thumb_down
+                    </i>
+                </a>
 
             </div>
 
