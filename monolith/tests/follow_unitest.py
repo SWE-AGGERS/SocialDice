@@ -7,7 +7,7 @@ import json
 from flask import request, jsonify
 from monolith.app import create_app
 from monolith.database import db, User, Followers
-from monolith.follow import (
+from monolith.views.follow import (
     _get_followers_of,
     _get_followed_by,
     _get_followers_number,
@@ -21,7 +21,7 @@ from monolith.follow import (
 class TestFollowFunction(unittest.TestCase):
  
     def test_get_followers_of(self):
-        app = create_app()
+        app = create_app().test_client()
         
         # push in the followers_table tuples
         item_1 = Followers()
@@ -52,6 +52,8 @@ class TestFollowFunction(unittest.TestCase):
 
 
     def test_get_followed_by(self):
+        app = create_app().test_client()
+
         # push in the followers_table tuples
         item_1 = Followers()
         item_1.follower_id = 1
@@ -81,6 +83,7 @@ class TestFollowFunction(unittest.TestCase):
         db.session.commit()
 
     def test_followers_number(self):
+        app = create_app().test_client()
         # push in the followers_table tuples
         item_1 = Followers()
         item_1.follower_id = 1
@@ -109,6 +112,7 @@ class TestFollowFunction(unittest.TestCase):
         db.session.commit()
 
     def test_followed_number(self):
+        app = create_app().test_client()
         # push in the followers_table tuples
         item_1 = Followers()
         item_1.follower_id = 1
@@ -146,6 +150,7 @@ class TestFollowFunction(unittest.TestCase):
 
 
     def test_is_follower(self):
+        app = create_app().test_client()
         # push in the followers_table (id_1, id_2)
         item_1 = Followers()
         item_1.follower_id = 1
