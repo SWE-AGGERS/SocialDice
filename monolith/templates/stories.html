@@ -33,18 +33,19 @@
           <!-- Modal body -->
           <div class="modal-body">
             Roll the dice and let your immagination run wild!
-            <form action="" method="POST">
+            <form action="http://127.0.0.1:5000/rolldice/" method=GET>
               {{ form.hidden_tag() }}
-              {% for field in form.display %}
-              
-                  <div class="form-group ">
-                        <br></br>
-                        {{ form[field]() }}
-                  </div>
-                  <br>
-              {% endfor %}
-              <br>
-              <input type=submit  value="Publish">
+                    <br>
+                    {% for field in form.display %}
+                        <div class="form-group ">
+                               {{ form[field].label }}
+                               {{ form[field]() }}
+                         </div>
+                        <br>
+                     {% endfor %}
+                    <br>
+    
+              <input type=submit  value="Roll the dice!">
             </form>
           </div>
 

@@ -4,13 +4,13 @@ from monolith.auth import admin_required, current_user
 from monolith.classes.DiceSet import DiceSet
 from flask_login import (current_user, login_user, logout_user,
                          login_required)
-from monolith.forms import UserForm, StoryForm
+from monolith.forms import UserForm, StoryForm, SelectDiceSetForm
 
 stories = Blueprint('stories', __name__)
 
 @stories.route('/stories', methods=['POST', 'GET'])
 def _stories(message=''):
-    form = StoryForm()
+    form = SelectDiceSetForm()
     if 'POST' == request.method:
         # Create a new story
         new_story = Story()
@@ -51,5 +51,7 @@ def _like(authorid, storyid):
 @stories.route('/rolldice/<int:dicenumber>/<string:dicesetid>', methods=['GET'])
 @login_required
 def _roll(dicenumber, dicesetid):
+    form = StoryForm()
     dice = DiceSet(dicesetid)
-    return dice.throw_dice()
+    message = str(dice.throw_dice())
+    return render_template("create_story.html", form = form, message= message)
