@@ -312,4 +312,5 @@ modules.xml
 # redis
 redis-stable
 
-monolith/storytellers\.db
+storytellers.db
+

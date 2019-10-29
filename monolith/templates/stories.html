@@ -9,8 +9,8 @@
       {% for story in stories %}
       <li>
       "{{story.text}}"    Likes: {{story.likes}} Dislikes: {{story.dislikes}} ({{story.date}})
-      <a href="http://{{server_ip}}:5000/story/{{story.id}}/reaction/1">Like it!</a>
-      <a href="http://{{server_ip}}:5000/story/{{story.id}}/reaction/2">Dislike it!</a>
+      <a href="/story/{{story.id}}/reaction/1">Like it!</a>
+      <a href="/story/{{story.id}}/reaction/2">Dislike it!</a>
 
       </li>
       {% endfor %}
@@ -56,4 +56,5 @@
         </div>
       </div>
     </div>
+
 {% endblock %}
