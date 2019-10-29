@@ -16,11 +16,14 @@ def login():
         email, password = form.data['email'], form.data['password']
         q = db.session.query(User).filter(User.email == email)
         user = q.first()
+
         if user is not None and user.authenticate(password):
             login_user(user)
             return redirect('/')
         else:
             error = "User not found"
+
+
 
     return render_template('login.html', form=form, error=error)
 
@@ -33,6 +36,7 @@ def logout():
 
 @auth.route("/signup", methods=['POST','GET'])
 def signup():
+
     form = UserForm()
     if request.method == 'POST':
         email = form.data['email']
@@ -55,5 +59,4 @@ def signup():
 
             return render_template('signup.html', form=form, error=True, message="The email was used before. Please change the email!" )
     if request.method == 'GET':
-
         return render_template('signup.html', form=form)

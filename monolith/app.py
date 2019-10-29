@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, jsonify
 from monolith.database import db, User, Story
 from monolith.views import blueprints
 from monolith.auth import login_manager
@@ -48,6 +48,7 @@ def create_app(debug=False):
             example.likes = 42
             example.dislikes = 20
             example.author_id = 1
+            example.roll = {'dice':['bike', 'tulip', 'happy', 'cat', 'ladder', 'rain']}
             print(example)
             db.session.add(example)
             db.session.commit()
