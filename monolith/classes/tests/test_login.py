@@ -1,18 +1,14 @@
-import os
-import sqlalchemy
 import unittest
+
 from monolith import app
 from monolith.database import User
-from werkzeug.security import generate_password_hash
-import json
+
 
 class LoginTestCase(unittest.TestCase):
 
     def testLoginPage(self):
         response = self.getTester.get('/login', content_type='html/text')
         self.assertEqual(response.status_code, 200)
-
-
 
     def setUp(self):
         user1 = User()

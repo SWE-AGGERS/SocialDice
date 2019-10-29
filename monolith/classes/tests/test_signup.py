@@ -1,8 +1,8 @@
-import os
-import sqlalchemy
 import unittest
+
 from monolith import app
 from monolith.database import User
+
 
 class SingupTestCase(unittest.TestCase):
 
@@ -11,7 +11,6 @@ class SingupTestCase(unittest.TestCase):
         tester = applitation.test_client()
         response = tester.get('/signup', content_type='html/text')
         self.assertEqual(response.status_code, 200)
-
 
     def setUp(self):
         user1 = User()

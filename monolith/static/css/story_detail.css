@@ -1,4 +1,4 @@
-.story_detail-reactions{
+.story_detail-reactions {
     padding-top: 10px;
     padding-bottom: 10px;
     border-top: 1px solid #d8d8d8;
@@ -18,7 +18,7 @@
     color: #8899a6;
 }
 
-.story_detail-reactions > a:hover{
+.story_detail-reactions > a:hover {
     color: #8899a6;
     text-decoration: none;
 }
@@ -28,27 +28,27 @@
 }
 
 .story_detail-text {
-font-size: larger;
+    font-size: larger;
 }
 
 .story_detail-author_info {
-font-size: smaller;
+    font-size: smaller;
 }
 
 .story_detail-datetime {
-color: #8899a6;
+    color: #8899a6;
 }
 
-.story_detail-faces{
-padding-top: 10px;
-padding-bottom: 10px;
-border-top: 1px solid #d8d8d8;
+.story_detail-faces {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid #d8d8d8;
 }
 
-.story_detail-faces .face{
-font-weight: bold;
+.story_detail-faces .face {
+    font-weight: bold;
 }
 
-.card{
+.card {
     margin-top: 1em;
 }

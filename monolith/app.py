@@ -1,9 +1,11 @@
-import os
-from flask import Flask, jsonify
+import datetime
+
+from flask import Flask
+
+from monolith.auth import login_manager
 from monolith.database import db, User, Story
 from monolith.views import blueprints
-from monolith.auth import login_manager
-import datetime
+
 
 def create_app(debug=False):
     app = Flask(__name__)
@@ -48,7 +50,7 @@ def create_app(debug=False):
             example.likes = 42
             example.dislikes = 20
             example.author_id = 1
-            example.roll = {'dice':['bike', 'tulip', 'happy', 'cat', 'ladder', 'rain']}
+            example.roll = {'dice': ['bike', 'tulip', 'happy', 'cat', 'ladder', 'rain']}
             print(example)
             db.session.add(example)
             db.session.commit()

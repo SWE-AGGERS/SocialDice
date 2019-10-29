@@ -1,13 +1,12 @@
 # encoding: utf8
-from werkzeug.security import generate_password_hash, check_password_hash
-import enum
-from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.sqlite import JSON
 import datetime as dt
-from flask_sqlalchemy import SQLAlchemy
 
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
+from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
+
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -44,11 +43,11 @@ class User(db.Model):
 class Story(db.Model):
     __tablename__ = 'story'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    text = db.Column(db.Text(1000)) # around 200 (English) words 
-    roll = db.Column(db.JSON) # textual representation (labels) of dice faces {dice:[...]}
+    text = db.Column(db.Text(1000))  # around 200 (English) words
+    roll = db.Column(db.JSON)  # textual representation (labels) of dice faces {dice:[...]}
     date = db.Column(db.DateTime)
-    likes = db.Column(db.Integer) # will store the number of likes, periodically updated in background
-    dislikes = db.Column(db.Integer) # will store the number of likes, periodically updated in background
+    likes = db.Column(db.Integer)  # will store the number of likes, periodically updated in background
+    dislikes = db.Column(db.Integer)  # will store the number of likes, periodically updated in background
     # define foreign key
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     author = relationship('User', foreign_keys='Story.author_id')
@@ -67,11 +66,11 @@ class Reaction(db.Model):
     story_id = db.Column(db.Integer, db.ForeignKey('story.id'), primary_key=True)
     author = relationship('Story', foreign_keys='Reaction.story_id')
 
-    type = db.Column(db.Integer) # 1: like, 2: dislike
+    type = db.Column(db.Integer)  # 1: like, 2: dislike
 
     marked = db.Column(db.Boolean, default=False)  # True iff it has been counted in Story.likes
 
     def to_string(self):
         return 'liker_id: ' + str(self.user_id) + \
-                '\nstory_id: ' + str(self.story_id) + \
-                '\ntype: ' + str(self.type)
+               '\nstory_id: ' + str(self.story_id) + \
+               '\ntype: ' + str(self.type)

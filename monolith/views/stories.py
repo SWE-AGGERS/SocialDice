@@ -1,16 +1,10 @@
-from flask import Blueprint, redirect, render_template, request
-from monolith.database import db, Story, Reaction
-from flask import Blueprint, redirect, render_template, request, jsonify, abort
-from monolith.database import db, Story
-from monolith.auth import admin_required, current_user
-from monolith.classes.DiceSet import DiceSet
-from flask_login import (current_user, login_user, logout_user,
-                         login_required)
-from monolith.forms import UserForm
-from monolith.background import celery, update_reactions
-from monolith.config import _SERVER_IP
-from monolith.forms import UserForm, StoryForm
+from flask_login import (current_user, login_required)
 
+from monolith.background import update_reactions
+from monolith.classes.DiceSet import DiceSet
+from monolith.database import Reaction
+from monolith.database import db, Story
+from monolith.forms import StoryForm
 
 stories = Blueprint('stories', __name__)
 
@@ -37,6 +31,7 @@ def _stories(message=''):
         allstories = db.session.query(Story)
         return render_template("stories.html", form=form, message=message, stories=allstories,
                                like_it_url="http://127.0.0.1:5000/stories/like/")
+
 
 @stories.route('/story/<storyid>/reaction/<reactiontype>', methods=['GET', 'PUSH'])
 @login_required

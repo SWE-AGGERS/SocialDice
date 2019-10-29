@@ -1,6 +1,7 @@
-from monolith.classes.DiceSet import Die, DiceSet
 import random as rnd
 import unittest
+
+from monolith.classes.DiceSet import Die, DiceSet
 
 
 class TestDie(unittest.TestCase):
@@ -39,8 +40,6 @@ class TestDice(unittest.TestCase):
         self.assertIn(result[4], die4)
         self.assertIn(result[5], die5)
 
-    
- 
- 
+
 if __name__ == '__main__':
     unittest.main()
