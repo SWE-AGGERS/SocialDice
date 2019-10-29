@@ -10,7 +10,6 @@ stories = Blueprint('stories', __name__)
 @stories.route('/stories')
 def _stories():
     allstories = db.session.query(Story, User).join(User)
-    print(allstories)
     return render_template("stories.html", stories=allstories, like_it_url="http://127.0.0.1:5000/stories/reaction")
 
 
