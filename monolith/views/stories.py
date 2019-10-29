@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, request
 from monolith.database import db, Story, Reaction
 from flask import Blueprint, redirect, render_template, request, jsonify, abort
-from monolith.database import db, Story, Like
+from monolith.database import db, Story
 from monolith.auth import admin_required, current_user
 from monolith.classes.DiceSet import DiceSet
 from flask_login import (current_user, login_user, logout_user,
