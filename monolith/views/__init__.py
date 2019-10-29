@@ -6,4 +6,4 @@ from .wall import wall
 from .follow import follow
 
 
-blueprints = [home, auth, users, stories, wall]
+blueprints = [home, auth, users, stories, wall, follow]
