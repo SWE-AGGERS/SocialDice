@@ -2,16 +2,10 @@ from flask import Blueprint, request, redirect, render_template, abort
 from flask_login import (current_user, login_required)
 
 from monolith.background import update_reactions
-from monolith.classes.DiceSet import DiceSet
-<<<<<<< HEAD
 from flask_login import (current_user, login_user, logout_user,
                          login_required)
 from monolith.forms import UserForm, StoryForm, SelectDiceSetForm
-=======
-from monolith.database import Reaction
-from monolith.database import db, Story
-from monolith.forms import StoryForm
->>>>>>> 2d14dde2ff6c394cc5a60995a449a7b553bd832d
+from monolith.database import db, Story, Reaction
 
 stories = Blueprint('stories', __name__)
 
@@ -25,19 +19,12 @@ def _stories(message=''):
         new_story.author_id = current_user.id
         new_story.likes = 0
         new_story.dislikes = 0
-<<<<<<< HEAD
         text = request.form.get('text')
         roll = request.form.get('roll')
         dicenumber = len(roll)
         new_story.text = text
         new_story.roll = {'dice':str(roll)}
         new_story.dicenumber = dicenumber
-=======
-        new_story.roll = {'dice': ['bike', 'tulip', 'happy', 'cat', 'ladder', 'rain']}
-        if form.validate_on_submit():
-            text = form.data['text']
-            new_story.text = text
->>>>>>> 2d14dde2ff6c394cc5a60995a449a7b553bd832d
         db.session.add(new_story)
         db.session.commit()
         return redirect('/stories')
