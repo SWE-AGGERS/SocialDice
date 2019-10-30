@@ -4,36 +4,6 @@ nltk.download('wordnet')
 
 
 
-def check_story(story,diceSet):
-    # Tests on parameters
-    if not isinstance(story, str):
-        raise WrongFormatStoryError("The story must be a string.\n")
-    res = len(story.split())
-    if not isinstance(diceSet,ds.DiceSet):
-        raise WrongFormatDiceError("The dice set must be a DiceSet object.\n")
-    if res < len(diceSet.pips):
-        raise TooSmallStoryError(
-            "The number of words of the story must greater or equal of the number of resulted faces.\n")
-    if len(diceSet.pips) != len(diceSet.dice):
-        raise SizeDiceSetFacesError("The number of resulting faces must be equal to the number of dice.\n")
-    for elem in diceSet.dice:
-        if not isinstance(elem,ds.Die):
-            raise WrongFormatSingleDiceError("Every dice of the dice set must be a die.\n")
-    for elem in diceSet.pips:
-        if not isinstance(elem,str):
-            raise WrongFormatSingleFaceError("Every resulting face of the dice set must be a string.\n")
-
-
-
-    found = True
-    i = 0
-    while found and i<len(diceSet.pips):
-        if diceSet.pips[i] not in story:
-            found = False
-        else:
-            i = i+1
-    return found
-
 
 
 def check_storyV2(story,diceSet):
