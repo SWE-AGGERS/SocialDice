@@ -13,96 +13,106 @@ from monolith import constants
 class TestStory(unittest.TestCase):
  
     def test_valid_story(self):
-        diceSet = []
-        path = os.path.join(constants.BASE_PATH, 'monolith/resources/die0.txt')
-        diceSet.append(d.Die(path))
-        path = os.path.join(constants.BASE_PATH, 'monolith/resources/die1.txt')
-        diceSet.append(d.Die(path))
-        ds = d.DiceSet(diceSet)
-        ds.throw_dice()
-        self.assertEqual(cs.check_storyV2("bike moonandstars bag bird crying angry tulip mouth caravan clock whale drink",ds),True)
+        diceSet = d.DiceSet('basic')
+        die0 = 'bike moonandstars bag bird crying angry'
+        die1 = 'tulip mouth caravan clock whale drink'
+        die2 = 'happy coffee plate bus letter paws'
+        die3 = 'cat pencil baloon bananas phone icecream'
+        die4 = 'ladder car fire bang hat hamburger'
+        die5 = 'rain heart glasses poo ball sun'
+        storySet = die0 + " " + die1 + " " + die2 + " " + die3 + " " + die4 + " " + die5
+        diceSet.throw_dice()
+        self.assertEqual(cs.check_storyV2(storySet,diceSet),True)
 
 
     def test_invalid_story(self):
-        diceSet = []
-        path = os.path.join(constants.BASE_PATH, 'monolith/resources/die0.txt')
-        diceSet.append(d.Die(path))
-        path = os.path.join(constants.BASE_PATH, 'monolith/resources/die1.txt')
-        diceSet.append(d.Die(path))
-        ds = d.DiceSet(diceSet)
-        ds.throw_dice()
-        self.assertEqual(cs.check_storyV2("a a a a a a a a a a a a",ds),False)
+        diceSet = d.DiceSet('basic')
+        storySet = ""
+        for elem in range(0,30):
+            string = "a"
+            storySet = storySet + string + " "
+        diceSet.throw_dice()
+        self.assertEqual(cs.check_storyV2(storySet,diceSet),False)
 
 
 
     def test_invalid_story_wrong_type_story(self):
-        diceSet = []
-        path = os.path.join(constants.BASE_PATH, 'monolith/resources/die0.txt')
-        diceSet.append(d.Die(path))
-        path = os.path.join(constants.BASE_PATH, 'monolith/resources/die1.txt')
-        diceSet.append(d.Die(path))
-        ds = d.DiceSet(diceSet)
-        ds.throw_dice()
-        self.assertRaises(WrongFormatStoryError, cs.check_storyV2,1,ds)
+        diceSet = d.DiceSet('basic')
+        die0 = 'bike moonandstars bag bird crying angry'
+        die1 = 'tulip mouth caravan clock whale drink'
+        die2 = 'happy coffee plate bus letter paws'
+        die3 = 'cat pencil baloon bananas phone icecream'
+        die4 = 'ladder car fire bang hat hamburger'
+        die5 = 'rain heart glasses poo ball sun'
+        storySet = die0 + " " + die1 + " " + die2 + " " + die3 + " " + die4 + " " + die5
+        diceSet.throw_dice()
+        self.assertRaises(WrongFormatStoryError, cs.check_storyV2,1,diceSet)
 
 
     def test_invalid_story_short_story(self):
-        diceSet = []
-        path = os.path.join(constants.BASE_PATH, 'monolith/resources/die0.txt')
-        diceSet.append(d.Die(path))
-        path = os.path.join(constants.BASE_PATH, 'monolith/resources/die1.txt')
-        diceSet.append(d.Die(path))
-        ds = d.DiceSet(diceSet)
-        ds.throw_dice()
-        self.assertRaises(TooSmallStoryError, cs.check_storyV2,"",ds)
+        diceSet = d.DiceSet('basic')
+        die0 = 'bike moonandstars bag bird crying angry'
+        die1 = 'tulip mouth caravan clock whale drink'
+        die2 = 'happy coffee plate bus letter paws'
+        die3 = 'cat pencil baloon bananas phone icecream'
+        die4 = 'ladder car fire bang hat hamburger'
+        die5 = 'rain heart glasses poo ball sun'
+        storySet = ""
+        diceSet.throw_dice()
+        self.assertRaises(TooSmallStoryError, cs.check_storyV2,storySet,diceSet)
 
     def test_invalid_story_wrong_type_diceset(self):
-        diceSet = []
-        path = os.path.join(constants.BASE_PATH, 'monolith/resources/die0.txt')
-        diceSet.append(d.Die(path))
-        path = os.path.join(constants.BASE_PATH, 'monolith/resources/die1.txt')
-        diceSet.append(d.Die(path))
-        ds = d.DiceSet(diceSet)
-        ds.throw_dice()
-        self.assertRaises(WrongFormatDiceError, cs.check_storyV2,"a b c","a")
+        storySet = "a b c"
+        diceSet = "a"
+        self.assertRaises(WrongFormatDiceError, cs.check_storyV2,storySet,diceSet)
 
 
 
 
     def test_invalid_story_equal_number_dice_faces(self):
-        diceSet = []
-        path = os.path.join(constants.BASE_PATH, 'monolith/resources/die0.txt')
-        diceSet.append(d.Die(path))
-        path = os.path.join(constants.BASE_PATH, 'monolith/resources/die1.txt')
-        diceSet.append(d.Die(path))
-        ds = d.DiceSet(diceSet)
-        ds.throw_dice()
-        path = os.path.join(constants.BASE_PATH, 'monolith/resources/die2.txt')
-        ds.dice.append(d.Die(path))
-        self.assertRaises(SizeDiceSetFacesError, cs.check_storyV2,"a a a a a a a a a a a a",ds)
+        diceSet = d.DiceSet('basic')
+        die0 = 'bike moonandstars bag bird crying angry'
+        die1 = 'tulip mouth caravan clock whale drink'
+        die2 = 'happy coffee plate bus letter paws'
+        die3 = 'cat pencil baloon bananas phone icecream'
+        die4 = 'ladder car fire bang hat hamburger'
+        die5 = 'rain heart glasses poo ball sun'
+        storySet = die0 + " " + die1 + " " + die2 + " " + die3 + " " + die4 + " " + die5
+        diceSet.throw_dice()
+        path = os.path.join(constants.BASE_PATH, 'monolith/resources/basic_set/die2.txt')
+        diceSet.dice.append(d.Die(path))
+        storySet = storySet + die2
+        self.assertRaises(SizeDiceSetFacesError, cs.check_storyV2,storySet,diceSet)
 
     def test_invalid_story_wrong_type_dice(self):
-        diceSet = []
-        path = os.path.join(constants.BASE_PATH, 'monolith/resources/die0.txt')
-        diceSet.append(d.Die(path))
-        path = os.path.join(constants.BASE_PATH, 'monolith/resources/die1.txt')
-        diceSet.append(d.Die(path))
-        ds = d.DiceSet(diceSet)
-        ds.throw_dice()
-        ds.dice.append("a")
-        ds.pips.append("a")
-        self.assertRaises(WrongFormatSingleDiceError, cs.check_storyV2,"a a a a a a a a a a a a",ds)
+        diceSet = d.DiceSet('basic')
+        die0 = 'bike moonandstars bag bird crying angry'
+        die1 = 'tulip mouth caravan clock whale drink'
+        die2 = 'happy coffee plate bus letter paws'
+        die3 = 'cat pencil baloon bananas phone icecream'
+        die4 = 'ladder car fire bang hat hamburger'
+        die5 = 'rain heart glasses poo ball sun'
+        storySet = die0 + " " + die1 + " " + die2 + " " + die3 + " " + die4 + " " + die5
+        diceSet.throw_dice()
+        diceSet.dice.append("a")
+        diceSet.pips.append("a")
+        self.assertRaises(WrongFormatSingleDiceError, cs.check_storyV2,storySet,diceSet)
 
     def test_invalid_story_wrong_type_faces(self):
-        diceSet = []
-        path = os.path.join(constants.BASE_PATH, 'monolith/resources/die0.txt')
-        diceSet.append(d.Die(path))
-        ds = d.DiceSet(diceSet)
-        ds.throw_dice()
-        path = os.path.join(constants.BASE_PATH, 'monolith/resources/die1.txt')
-        diceSet.append(d.Die(path))
-        ds.pips.append(1)
-        self.assertRaises(WrongFormatSingleFaceError, cs.check_storyV2,"a a a a a a a a a a a a",ds)
+        diceSet = d.DiceSet('basic')
+        die0 = 'bike moonandstars bag bird crying angry'
+        die1 = 'tulip mouth caravan clock whale drink'
+        die2 = 'happy coffee plate bus letter paws'
+        die3 = 'cat pencil baloon bananas phone icecream'
+        die4 = 'ladder car fire bang hat hamburger'
+        die5 = 'rain heart glasses poo ball sun'
+        storySet = die0 + " " + die1 + " " + die2 + " " + die3 + " " + die4 + " " + die5
+        diceSet.throw_dice()
+        path = os.path.join(constants.BASE_PATH, 'monolith/resources/basic_set/die1.txt')
+        diceSet.dice.append(d.Die(path))
+        diceSet.pips.append(1)
+        storySet = storySet + die1
+        self.assertRaises(WrongFormatSingleFaceError, cs.check_storyV2,storySet,diceSet)
 
 
 

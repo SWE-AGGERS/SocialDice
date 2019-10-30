@@ -8,3 +8,4 @@ pip-tools
 sqlalchemy
 nltk
 pytest-cov
+natsort==6.0.0
