@@ -1,21 +1,28 @@
 {% extends "layout.html" %}
 {% block title %}
-    Index Page
+    Wall
 {% endblock %}
 
 {% block content %}
-<h1>Storytellers</h1>
+<h1>The Wall</h1>
 
 {% if current_user.is_authenticated %}
-  Hi {{ current_user.firstname }}! <a href="/logout">Logout</a>
+
+    This is {{ user.firstname }}'s Wall!!!
+    <br>
+    Talk with the author: {{ user.email }}
+    <br>
 
 
-    <h2>Your Stories</h2>
+    <h2>{{ user.firstname }}'s Stories</h2>
     {% for story in stories%}
       <div>
         <li>
-          {{story.text}} -- Likes:{{story.likes}}
+          {{story.text}} <br>
+            <button type="button" class="btn btn-primary"> Likes:{{story.likes}} </button>
+            -- <button type="button" class="btn btn-danger"> Dislikes:{{story.dislikes}} </button>
         </li>
+      <br>
       </div>
     {% endfor %}
 

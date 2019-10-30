@@ -62,7 +62,7 @@ class MyTestCase(unittest.TestCase):
                  'likes': s.likes,
                  'dislikes': s.dislikes})
 
-        reply = app.get('/wall/' + str(user.id))
+        reply = app.get('/thewall/' + str(user.id))
         body = json.loads(str(reply.data, 'utf8'))
 
         self.assertEqual(body, {
