@@ -1,8 +1,7 @@
 from flask import Blueprint, render_template
 
-from monolith.database import db, Story, Like
 from monolith.auth import current_user
-
+from monolith.database import db, Story
 
 home = Blueprint('home', __name__)
 

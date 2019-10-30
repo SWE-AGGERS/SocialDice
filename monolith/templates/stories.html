@@ -4,15 +4,57 @@
 {% endblock %}
 {% block content %}
     <h1>Story List</h1>
-    <h5>{{message}}</h5>
+    <h5>{{ message }}</h5>
     <ul>
-      {% for story in stories %}
-      <li>
-      "{{story.text}}"    Likes: {{story.likes}} ({{story.date}})
-      {% if current_user.is_authenticated %}
-      <a href="{{like_it_url}}{{story.author.id}}/{{story.id}}">Like it!</a>
-      {% endif %}
-      </li>
-      {% endfor %}
+        {% for story in stories %}
+            <li>
+                "{{ story.text }}" Likes: {{ story.likes }} Dislikes: {{ story.dislikes }} ({{ story.date }})
+                <a href="/story/{{ story.id }}/reaction/1">Like it!</a>
+                <a href="/story/{{ story.id }}/reaction/2">Dislike it!</a>
+
+            </li>
+        {% endfor %}
     </ul>
+
+    <!-- Button to Open the Modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal"> New story</button>
+
+    <!-- The Modal -->
+    <div class="modal" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Create your story!</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    Roll the dice and let your immagination run wild!
+                    <form action="" method="POST">
+                        {{ form.hidden_tag() }}
+                        {% for field in form.display %}
+
+                            <div class="form-group ">
+                                <br></br>
+                                {{ form[field]() }}
+                            </div>
+                            <br>
+                        {% endfor %}
+                        <br>
+                        <input type=submit value="Publish">
+                    </form>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

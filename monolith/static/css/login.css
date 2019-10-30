@@ -1,0 +1,58 @@
+input {
+    float: left;
+    height: 30px;
+    border: 1px solid #000000;
+    width: 100%;
+    margin: 4px;
+    border-radius: 5px;
+}
+
+label {
+    float: left;
+    height: 30px;
+    width: 100%;
+    color: #000000;
+    text-align: left;
+    margin-top: 5px;
+    text-transform: capitalize;
+}
+
+input[type=submit] {
+    float: left;
+    height: 30px;
+    border: 1px solid #000000;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background: #177199;
+    border-radius: 10px;
+    color: #ffffff;
+}
+
+
+input[type=submit]:hover {
+    float: left;
+    height: 30px;
+    border: 1px solid #000000;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background: green;
+    border-radius: 10px;
+    color: #ffffff;
+}
+
+form {
+    width: 100%;
+    float: left;
+    margin: 0;
+    padding: 0;
+}
+
+h3 {
+    padding: 3px;
+    color: #ffffff;
+    border-radius: 20px;
+    text-align: center;
+    margin: 5px;
+}
