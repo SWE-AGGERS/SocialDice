@@ -5,8 +5,9 @@ from flask import request, jsonify
 from monolith.app import create_app
 from monolith.classes.Wall import Wall
 from monolith.database import db, User, Story
+from monolith.tests.test_stories_reactions import login
 
-test_app = create_app()
+test_app = create_app(debug=True)
 test_app.app_context().push()
 
 
@@ -71,6 +72,25 @@ class MyTestCase(unittest.TestCase):
             "email": user.email,
             "stories": stories #thewalltest.stories
         })
+
+    def test_mywall(self):
+
+        app = test_app.test_client()
+
+        reply = login(app, 'user@waltest.com', 'daddysflownacrosstheocean')
+
+        reply = app.get('/wall')
+
+        self.assertIn('user@waltest.com', str(reply.data))
+
+    def test_wall(self):
+        app = test_app.test_client()
+        q = db.session.query(User).filter(User.email == 'user@waltest.com')
+        user: User = q.first()
+
+        reply = app.get('/thewall/' + str(user.id))
+
+        self.assertIn(user.email, reply.data)
 
 
 if __name__ == '__main__':

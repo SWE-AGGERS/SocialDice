@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, jsonify
+from flask_login import login_required
 
 from monolith.classes.Wall import Wall
 from monolith.database import db, Story, User
@@ -8,7 +9,7 @@ from monolith.auth import current_user
 wall = Blueprint('wall', __name__)
 
 def User_not_found():
-    return jsonify({'code': 404, 'msg': 'User not found'})
+    return render_template("user_not_found.html")
 
 
 def _strava_auth_url(config):
@@ -16,6 +17,7 @@ def _strava_auth_url(config):
 
 
 @wall.route('/wall')
+@login_required
 def getmywall():
     if current_user is not None and hasattr(current_user, 'id'):
         # return getawall(current_user.id)
@@ -25,6 +27,7 @@ def getmywall():
 
 
 @wall.route('/wall/<user_id>')
+@login_required
 def renderWall(user_id):
     q = db.session.query(User).filter(User.id == user_id)
     user = q.first()
@@ -38,6 +41,7 @@ def renderWall(user_id):
 
 
 @wall.route('/thewall/<user_id>')
+@login_required
 def getawall(user_id):
     # if user_id < 0:
     #     return User_not_found()
