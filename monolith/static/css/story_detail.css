@@ -1,0 +1,54 @@
+.story_detail-reactions {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid #d8d8d8;
+    border-bottom: 1px solid #d8d8d8;
+}
+
+.story_detail-reactions > span {
+    font-weight: bold;
+}
+
+.story_detail-reactions .likes {
+    margin-right: 20px;
+    color: #8899a6;
+}
+
+.story_detail-reactions .dislikes {
+    color: #8899a6;
+}
+
+.story_detail-reactions > a:hover {
+    color: #8899a6;
+    text-decoration: none;
+}
+
+.story_detail-reactions > a > span {
+    color: black;
+}
+
+.story_detail-text {
+    font-size: larger;
+}
+
+.story_detail-author_info {
+    font-size: smaller;
+}
+
+.story_detail-datetime {
+    color: #8899a6;
+}
+
+.story_detail-faces {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid #d8d8d8;
+}
+
+.story_detail-faces .face {
+    font-weight: bold;
+}
+
+.card {
+    margin-top: 1em;
+}

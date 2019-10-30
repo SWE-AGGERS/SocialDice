@@ -1,10 +1,12 @@
-import random as rnd
-import natsort
-import os
 import glob
+import os
+import random as rnd
+
+import natsort
 
 # list of all available dice sets
-_DICE_SETS = [{'id':1, 'name':'basic', 'folder':'./monolith/resources/basic_set'}]
+_DICE_SETS = [{'id': 1, 'name': 'basic', 'folder': './monolith/resources/basic_set'}]
+
 
 class Die:
 
@@ -15,24 +17,24 @@ class Die:
         lines = f.readlines()
 
         for line in lines:
-           self.faces.append(line.replace("\n",""))
+            self.faces.append(line.replace("\n", ""))
         self.throw_die()
         f.close()
 
     def throw_die(self):
-        if self.faces: # pythonic for list is not empty
+        if self.faces:  # pythonic for list is not empty
             self.pip = rnd.choice(self.faces)
             return self.pip
         else:
             raise IndexError("throw_die(): empty die error.")
 
-        
+
 class DiceSet:
 
     def __init__(self, set_name):
         self.dice = []
         self.pips = []
-        
+
         dice_folder = ""
         for e in _DICE_SETS:
             if e['name'] == set_name:
@@ -44,7 +46,7 @@ class DiceSet:
         folder = glob.glob(os.path.join(dice_folder, '*.txt'))
         sorted(folder)
 
-        for filename in  natsort.natsorted(folder,reverse=False):
+        for filename in natsort.natsorted(folder, reverse=False):
             print(filename)
             die = Die(filename)
             self.dice.append(die)
@@ -54,10 +56,12 @@ class DiceSet:
             self.pips.append(self.dice[i].throw_die())
         return self.pips
 
+
 import unittest
- 
+
+
 class TestDie(unittest.TestCase):
- 
+
     def test_die_init(self):
         die = Die("tests/die0.txt")
         check = ['bike', 'moonandstars', 'bag', 'bird', 'crying', 'angry']
@@ -69,6 +73,6 @@ class TestDie(unittest.TestCase):
         res = die.throw_die()
         self.assertEqual(res, 'bag')
 
- 
+
 if __name__ == '__main__':
     unittest.main()
