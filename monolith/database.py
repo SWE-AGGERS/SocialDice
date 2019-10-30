@@ -45,6 +45,7 @@ class Story(db.Model):
     __tablename__ = 'story'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     text = db.Column(db.Text(1000)) # around 200 (English) words 
+    dicenumber = db.Column(db.Integer)
     roll = db.Column(db.JSON) # textual representation (labels) of dice faces {dice:[...]}
     date = db.Column(db.DateTime)
     likes = db.Column(db.Integer) # will store the number of likes, periodically updated in background

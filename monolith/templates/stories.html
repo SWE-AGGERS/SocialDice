@@ -33,7 +33,8 @@
           <!-- Modal body -->
           <div class="modal-body">
             Roll the dice and let your immagination run wild!
-            <form action="http://127.0.0.1:5000/rolldice/" method=GET>
+
+            <form id="rollForm" action="http://127.0.0.1:5000/rolldice" method="GET">
               {{ form.hidden_tag() }}
                     <br>
                     {% for field in form.display %}
@@ -45,7 +46,7 @@
                      {% endfor %}
                     <br>
     
-              <input type=submit  value="Roll the dice!">
+              <button type="button" id="rollButton">Roll the dice!</button>
             </form>
           </div>
 

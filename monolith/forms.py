@@ -23,6 +23,6 @@ class StoryForm(FlaskForm):
     display = ['text']
 
 class SelectDiceSetForm(FlaskForm):
-    dicenumber = f.IntegerField(label="Insert dice number: ", validators=[DataRequired()])
-    dicesetid = f.SelectField(label="Select dice set: ", choices=[('basic', 'Basic set')])
+    dicenumber = f.IntegerField(id="dicenumber", label="Insert dice number: ", validators=[DataRequired()])
+    dicesetid = f.SelectField(id="dicesetid", label="Select dice set: ", choices=[('basic', 'Basic set')])
     display = ['dicenumber', 'dicesetid']
