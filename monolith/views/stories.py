@@ -6,6 +6,7 @@ from flask_login import (current_user, login_user, logout_user,
                          login_required)
 from monolith.forms import UserForm, StoryForm, SelectDiceSetForm
 from monolith.database import db, Story, Reaction
+from monolith.classes.DiceSet import DiceSet
 
 stories = Blueprint('stories', __name__)
 
