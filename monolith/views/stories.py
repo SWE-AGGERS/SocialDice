@@ -2,6 +2,9 @@ from flask import Blueprint, request, redirect, render_template, abort
 from flask_login import (current_user, login_required)
 
 from monolith.background import update_reactions
+from flask import Blueprint, redirect, render_template, request
+from monolith.database import db, Story, Like, User
+from monolith.auth import admin_required, current_user
 from flask_login import (current_user, login_user, logout_user,
                          login_required)
 from monolith.forms import UserForm, StoryForm, SelectDiceSetForm
@@ -28,12 +31,9 @@ def _stories(message=''):
         db.session.add(new_story)
         db.session.commit()
         return redirect('/stories')
-
-    if 'GET' == request.method:
-        # Go to the feed
-        allstories = db.session.query(Story)
-        return render_template("stories.html", form=form, message=message, stories=allstories,
-                               like_it_url="http://127.0.0.1:5000/stories/like/")
+    elif 'GET' == request.method:
+        allstories = db.session.query(Story, User).join(User)
+        return render_template("stories.html", stories=allstories, like_it_url="http://127.0.0.1:5000/stories/reaction")
 
 
 @stories.route('/story/<storyid>/reaction/<reactiontype>', methods=['GET', 'PUSH'])
