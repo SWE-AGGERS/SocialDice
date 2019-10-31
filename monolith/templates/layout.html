@@ -32,4 +32,13 @@
     {% include "includes/footer.html" %}
 </div>
 </body>
+<script>
+    $(document).ready(function(){
+        $("#rollButton").on('click', function(){
+            console.log("ciao");
+            $("#rollForm").attr('action',$("#rollForm").attr('action')+"/"+$('#dicenumber').val()+"/"+$('#dicesetid').val());
+            $("#rollForm").submit();
+        });
+    });
+</script>
 </html>

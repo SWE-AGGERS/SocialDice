@@ -21,21 +21,40 @@
 
     <!-- The Modal -->
     <div class="modal" id="myModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
 
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Create your story!</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
+      <div class="modal-dialog">
+        <div class="modal-content">
 
-                <!-- Modal body -->
-                <div class="modal-body">
-                    Roll the dice and let your immagination run wild!
-                    <form action="" method="POST">
-                        {{ form.hidden_tag() }}
-                        {% for field in form.display %}
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Create your story!</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            Roll the dice and let your immagination run wild!
+
+            <form id="rollForm" action="http://127.0.0.1:5000/rolldice" method="GET">
+              {{ form.hidden_tag() }}
+                    <br>
+                    {% for field in form.display %}
+                        <div class="form-group ">
+                               {{ form[field].label }}
+                               {{ form[field]() }}
+                         </div>
+                        <br>
+                     {% endfor %}
+                    <br>
+    
+              <button type="button" id="rollButton">Roll the dice!</button>
+            </form>
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+          </div>
 
                             <div class="form-group ">
                                 <br></br>
