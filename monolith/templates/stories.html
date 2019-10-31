@@ -50,8 +50,9 @@
       </li>
       {% endfor %}
     </ul>
+
     <!-- Button to Open the Modal -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal"> New story</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">New story</button>
 
     <!-- The Modal -->
     <div class="modal" id="myModal">
@@ -80,7 +81,6 @@
               <br>
               {% endfor %}
               <br>
-
               <button type="button" id="rollButton">Roll the dice!</button>
             </form>
           </div>
@@ -95,7 +95,6 @@
             {{ form[field]() }}
           </div>
           <br>
-          {% endfor %}
           <br>
           <input type=submit value="Publish">
           </form>
@@ -110,7 +109,6 @@
     </div>
   </div>
   {% endblock %}
-
   </div>
 </body>
 
