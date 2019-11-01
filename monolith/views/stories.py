@@ -5,7 +5,8 @@ from monolith.background import update_reactions
 from monolith.classes.DiceSet import DiceSet
 from monolith.database import Reaction
 from monolith.database import db, Story
-from monolith.forms import StoryForm
+from monolith.forms import StoryForm, StoryFilter
+from datetime import date
 
 stories = Blueprint('stories', __name__)
 
@@ -20,6 +21,8 @@ def _stories(message=''):
         new_story.likes = 0
         new_story.dislikes = 0
         new_story.roll = {'dice': ['bike', 'tulip', 'happy', 'cat', 'ladder', 'rain']}
+        current_date = date.today()
+        new_story.date = current_date.strftime("%y-%m-%d")
         if form.validate_on_submit():
             text = form.data['text']
             new_story.text = text
@@ -28,10 +31,26 @@ def _stories(message=''):
         return redirect('/stories')
 
     if 'GET' == request.method:
-        # Go to the feed
         allstories = db.session.query(Story)
-        return render_template("stories.html", form=form, message=message, stories=allstories,
-                               like_it_url="http://127.0.0.1:5000/stories/like/")
+        return render_template("stories.html", form=form, message=message, stories=allstories)
+
+
+@stories.route('/stories/filter', methods=['GET', 'POST'])
+@login_required
+def filter_stories():
+    if request.method == 'GET':
+        form = StoryFilter()
+        return render_template('filter_stories.html', form=form)
+    if request.method == 'POST':
+        form = StoryFilter()
+        if form.validate_on_submit():
+            init_date = form.init_date.data
+            end_date = form.end_date.data
+            f_stories = Story.query.filter(Story.date >= init_date).filter(Story.date <= end_date)
+            if f_stories is not None:
+                return render_template('filter_stories.html', form=form, stories=f_stories)
+        else:
+            return render_template('filter_stories.html', form=form, error=True, error_message='Cant travel back in time! Doublecheck dates')
 
 
 @stories.route('/story/<storyid>/reaction/<reactiontype>', methods=['GET', 'PUSH'])

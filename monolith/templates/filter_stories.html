@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block title %}
+    Filter Stories
+{% endblock %}
+
+{% block content %}
+        <div class="row">
+            <div class="col-12">
+                {% if error %}
+                    <div class="alert alert-danger" role="alert">{{ error_message }}</div>
+                {% endif %}
+            </div>
+        </div>
+{% if current_user.is_authenticated %}
+       <div class="container mt-4" >
+       <form  action="" method="post" role="form">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+              <label for="init_date">Name:</label>
+              <input type="date" class="form-control" id="init_date" name="init_date" placeholder="Initial Date">
+                <br>
+              <label for="end_date">Surame:</label>
+              <input type="date" class="form-control" id="end_date" name="end_date" placeholder="End Date">
+            <br>
+        </div>
+            <br>
+            <div style="text-align: center;">
+              <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+          </form>
+        </div>
+
+    <h2>Filtered Stories</h2>
+    {% for story in stories%}
+      <div>
+        <li>
+          {{story.text}} -- Likes:{{story.likes}}
+        </li>
+      </div>
+    {% endfor %}
+
+
+{% else %}
+  Hi Anonymous, <a href="/login">Log in</a>
+{% endif %}
+
+{% endblock %}

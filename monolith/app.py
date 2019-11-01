@@ -50,7 +50,7 @@ def create_app(debug=False):
             example.likes = 42
             example.author_id = 1
             example.roll = {'dice': ['bike', 'tulip', 'happy', 'cat', 'ladder', 'rain']}
-            print(example)
+            example.date = datetime.datetime(2019, 11, 5)
             db.session.add(example)
             db.session.commit()
 
