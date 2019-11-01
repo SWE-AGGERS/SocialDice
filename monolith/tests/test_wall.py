@@ -37,7 +37,6 @@ class MyTestCase(unittest.TestCase):
             example.likes = 42
             example.dislikes = 0
             example.author_id = user.id
-            print(example)
             db.session.add(example)
 
             example = Story()
@@ -45,7 +44,6 @@ class MyTestCase(unittest.TestCase):
             example.likes = 42
             example.dislikes = 0
             example.author_id = user.id
-            print(example)
             db.session.add(example)
 
             db.session.commit()

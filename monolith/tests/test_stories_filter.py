@@ -2,7 +2,8 @@ import datetime
 import unittest
 
 from monolith.app import create_app
-from monolith.database import Story
+from monolith.database import Story, User, db
+from monolith.tests.restart_db import restart_db_tables
 
 _app = None
 
@@ -11,8 +12,10 @@ class TestReactions(unittest.TestCase):
         global _app
         if _app is None:
             tested_app = create_app(debug=True)
+            _app = tested_app
         else:
             tested_app = _app
+        restart_db_tables(db, tested_app)
 
         with tested_app.test_client() as client:
 
@@ -37,18 +40,19 @@ class TestReactions(unittest.TestCase):
             ), follow_redirects=True)
             self.assertIn(b'Cant travel back in time', reply.data)
 
-def test1(self):
-    global _app
-    if _app is None:
-        tested_app = create_app(debug=True)
-    else:
-        tested_app = _app
-    # create 100 Stories
-    with tested_app.test_client() as client:
-        # login
-        reply = login(client, 'example@example.com', 'admin')
-        assert b'Hi Admin!' in reply.data
-
+    def test2(self):
+        global _app
+        if _app is None:
+            tested_app = create_app(debug=True)
+            _app = tested_app
+        else:
+            tested_app = _app
+        # create 100 Stories
+        restart_db_tables(db, tested_app)
+        with tested_app.test_client() as client:
+            # login
+            reply = login(client, 'example@example.com', 'admin')
+            assert b'Hi Admin!' in reply.data
 
 
 def login(client, username, password):
