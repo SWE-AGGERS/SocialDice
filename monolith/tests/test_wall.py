@@ -90,7 +90,7 @@ class MyTestCase(unittest.TestCase):
 
         reply = app.get('/thewall/' + str(user.id))
 
-        self.assertIn(user.email, reply.data)
+        self.assertIn(user.email, str(reply.data))
 
 
 if __name__ == '__main__':
