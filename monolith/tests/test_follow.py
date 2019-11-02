@@ -71,7 +71,8 @@ class TestFollow(unittest.TestCase):
             # assert EXC
             reply = client.post('/follow/'+str(-999))  
             assert b'{"followed":-1}' in reply.data            
-                          
+
+"""                    
 
     def test_unfollow_user(self):
         # TODO
@@ -140,7 +141,7 @@ class TestFollow(unittest.TestCase):
             reply = client.delete('/follow/'+str(-999))
             assert b'"followed":-1' in reply.data
 
-
+"""
 
 # TO DELETE MAYBE?
 def login(client, username, password):
