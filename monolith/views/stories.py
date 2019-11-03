@@ -86,9 +86,6 @@ def get_story_detail(storyid):
 @stories.route('/rolldice/<dicenumber>/<dicesetid>', methods=['GET'])
 def _roll(dicenumber, dicesetid):
     form = StoryForm()
-    #dicenumber = request.args.get("dicenumber")
-    #dicesetid = request.args.get("dicesetid")
-
     dice = DiceSet(dicesetid)
 
-    return render_template("create_story.html", form=form, roll=dice.throw_dice())
+    return render_template("create_story.html", form=form, set=dicesetid, roll=dice.throw_dice())

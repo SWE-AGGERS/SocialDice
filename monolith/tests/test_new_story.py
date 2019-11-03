@@ -12,6 +12,7 @@ class TestNewStory(unittest.TestCase):
 
             # roll the dice
             reply = client.get('/rolldice/5/basic')
+            print(reply.data)
             assert b'You\'ve got' in reply.data
 
 
