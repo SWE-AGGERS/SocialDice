@@ -10,7 +10,7 @@
 
 
   <form action="http://127.0.0.1:5000/stories" method="POST">
-    {{ form.hidden_tag() }}
+    {{ form.csrf_token }}
     <div style="display:none">
         <input type="hidden" name="roll" value="{{ roll }}">{{ roll }}
     </div>

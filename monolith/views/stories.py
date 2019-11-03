@@ -1,3 +1,4 @@
+import re
 from flask import Blueprint, request, redirect, render_template, abort, json
 from flask_login import (current_user, login_required)
 
@@ -22,12 +23,12 @@ def _stories(message=''):
         new_story.author_id = current_user.id
         new_story.likes = 0
         new_story.dislikes = 0
+
         if form.validate_on_submit():
             text = request.form.get('text')
             roll = request.form.get('roll')
-        else:
-            text = request.form.get('text')
-            roll = json.loads(request.form.get('roll'))
+            if re.search('"', roll):
+                roll = json.loads(request.form.get('roll'))
 
         dicenumber = len(roll)
         new_story.text = text
@@ -93,5 +94,6 @@ def _roll(dicenumber, dicesetid):
     form = StoryForm()
     dice = DiceSet(dicesetid)
     roll = dice.throw_dice()
+
     print("Roll lenght: %d" %(len(roll)))
     return render_template("create_story.html", form=form, set=dicesetid, roll=roll)
