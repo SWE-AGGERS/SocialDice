@@ -1,11 +1,15 @@
-from flask import Blueprint, request, redirect, render_template, abort
+from flask import Blueprint, request, redirect, render_template, abort, json
 from flask_login import (current_user, login_required)
 
 from monolith.background import update_reactions
+from flask import Blueprint, redirect, render_template, request
+from monolith.auth import admin_required, current_user
 from flask_login import (current_user, login_user, logout_user,
                          login_required)
 from monolith.forms import UserForm, StoryForm, SelectDiceSetForm
-from monolith.database import db, Story, Reaction
+from monolith.database import db, Story, Reaction, User
+from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingSetError
+import re
 
 stories = Blueprint('stories', __name__)
 
@@ -19,21 +23,24 @@ def _stories(message=''):
         new_story.author_id = current_user.id
         new_story.likes = 0
         new_story.dislikes = 0
-        text = request.form.get('text')
-        roll = request.form.get('roll')
+
+        if form.validate_on_submit():
+            text = request.form.get('text')
+            roll = request.form.get('roll')
+            # for the tests
+            if re.search('"', roll):
+                roll = json.loads(request.form.get('roll'))
+
         dicenumber = len(roll)
         new_story.text = text
-        new_story.roll = {'dice':str(roll)}
+        new_story.roll = {'dice': roll}
         new_story.dicenumber = dicenumber
         db.session.add(new_story)
         db.session.commit()
         return redirect('/stories')
-
-    if 'GET' == request.method:
-        # Go to the feed
-        allstories = db.session.query(Story)
-        return render_template("stories.html", form=form, message=message, stories=allstories,
-                               like_it_url="http://127.0.0.1:5000/stories/like/")
+    elif 'GET' == request.method:
+        allstories = db.session.query(Story, User).join(User)
+        return render_template("stories.html", message = message, form=form, stories=allstories, like_it_url="http://127.0.0.1:5000/stories/reaction")
 
 
 @stories.route('/story/<storyid>/reaction/<reactiontype>', methods=['GET', 'PUSH'])
@@ -46,7 +53,8 @@ def _reaction(storyid, reactiontype):
         return _stories(message)
     # TODO need to be changed to PUSH (debug motivation)
     if 'GET' == request.method:
-        old_reaction = Reaction.query.filter_by(user_id=current_user.id, story_id=storyid).first()
+        old_reaction = Reaction.query.filter_by(
+            user_id=current_user.id, story_id=storyid).first()
 
         if old_reaction is None:
             new_reaction = Reaction()
@@ -85,10 +93,14 @@ def get_story_detail(storyid):
 @stories.route('/rolldice/<dicenumber>/<dicesetid>', methods=['GET'])
 def _roll(dicenumber, dicesetid):
     form = StoryForm()
-    #dicenumber = request.args.get("dicenumber")
-    #dicesetid = request.args.get("dicesetid")
-    
-    dice = DiceSet(dicesetid)
-    
-    return render_template("create_story.html", form=form, roll=dice.throw_dice())
+    try:
+        dice = DiceSet(dicesetid)
+    except NonExistingSetError:
+        abort(404)
 
+    try:
+        roll = dice.throw_dice(int(dicenumber))
+    except WrongDiceNumberError:
+        return _stories("Wrong dice number!")
+
+    return render_template("create_story.html", form=form, set=dicesetid, roll=roll)
