@@ -6,7 +6,7 @@ from monolith.classes.DiceSet import Die, DiceSet
 
 class TestDie(unittest.TestCase):
     def test_die_init(self):
-        die = Die("./monolith/classes/tests/die0.txt")
+        die = Die("./monolith/resources/basic_set/die0.txt")
         rnd.seed(574891)
         result = die.faces
         print(result)

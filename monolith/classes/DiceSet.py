@@ -47,7 +47,6 @@ class DiceSet:
         sorted(folder)
 
         for filename in natsort.natsorted(folder, reverse=False):
-            print(filename)
             die = Die(filename)
             self.dice.append(die)
 
