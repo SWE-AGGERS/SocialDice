@@ -93,13 +93,14 @@ def get_story_detail(storyid):
 @stories.route('/rolldice/<dicenumber>/<dicesetid>', methods=['GET'])
 def _roll(dicenumber, dicesetid):
     form = StoryForm()
-    dice = DiceSet(dicesetid)
+    try:
+        dice = DiceSet(dicesetid)
+    except NonExistingSetError:
+        abort(404)
 
     try:
         roll = dice.throw_dice(int(dicenumber))
     except WrongDiceNumberError:
         return _stories("Wrong dice number!")
-    except NonExistingSetError:
-        abort(404)
 
     return render_template("create_story.html", form=form, set=dicesetid, roll=roll)

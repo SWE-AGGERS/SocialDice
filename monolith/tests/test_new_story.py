@@ -10,10 +10,17 @@ class TestNewStory(unittest.TestCase):
         tested_app = create_app()
         with tested_app.test_client() as client:
 
-            # roll the dice
+            # correct roll
             reply = client.get('/rolldice/5/basic')
-            #print(reply.data)
             assert b'You\'ve got' in reply.data
+
+            # wrong dice number
+            reply = client.get('/rolldice/12/basic')
+            assert b'Wrong dice number!' in reply.data
+
+            # non-existing dice set
+            reply = client.get('/rolldice/6/pippo')
+            self.assertEqual(reply.status_code, 404)
 
     def test_post(self):
         tested_app = create_app(debug=True)

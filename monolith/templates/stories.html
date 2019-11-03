@@ -24,9 +24,9 @@
   <div class="container">
 
     {% include "includes/nav.html" %}
-    {{ message }}
 
     {% block content %}
+    <p> {{ message }} </p>
     <ul class="feed">
       {% for story, user in stories %}
       <li class="story-container">
