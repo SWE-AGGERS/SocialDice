@@ -1,4 +1,3 @@
-import re
 from flask import Blueprint, request, redirect, render_template, abort, json
 from flask_login import (current_user, login_required)
 
@@ -9,7 +8,8 @@ from flask_login import (current_user, login_user, logout_user,
                          login_required)
 from monolith.forms import UserForm, StoryForm, SelectDiceSetForm
 from monolith.database import db, Story, Reaction, User
-from monolith.classes.DiceSet import DiceSet
+from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingSetError
+import re
 
 stories = Blueprint('stories', __name__)
 
@@ -27,6 +27,7 @@ def _stories(message=''):
         if form.validate_on_submit():
             text = request.form.get('text')
             roll = request.form.get('roll')
+            # for the tests
             if re.search('"', roll):
                 roll = json.loads(request.form.get('roll'))
 
@@ -39,7 +40,7 @@ def _stories(message=''):
         return redirect('/stories')
     elif 'GET' == request.method:
         allstories = db.session.query(Story, User).join(User)
-        return render_template("stories.html", form=form, stories=allstories, like_it_url="http://127.0.0.1:5000/stories/reaction")
+        return render_template("stories.html", message = message, form=form, stories=allstories, like_it_url="http://127.0.0.1:5000/stories/reaction")
 
 
 @stories.route('/story/<storyid>/reaction/<reactiontype>', methods=['GET', 'PUSH'])
@@ -93,7 +94,12 @@ def get_story_detail(storyid):
 def _roll(dicenumber, dicesetid):
     form = StoryForm()
     dice = DiceSet(dicesetid)
-    roll = dice.throw_dice()
 
-    print("Roll lenght: %d" %(len(roll)))
+    try:
+        roll = dice.throw_dice(int(dicenumber))
+    except WrongDiceNumberError:
+        return _stories("Wrong dice number!")
+    except NonExistingSetError:
+        abort(404)
+
     return render_template("create_story.html", form=form, set=dicesetid, roll=roll)
