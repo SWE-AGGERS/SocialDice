@@ -46,7 +46,7 @@
             <div class="story_detail-reactions text-left">
 
 
-                <a href="/story/{{ story.id }}/reaction/1">
+                <a href="/stories/reaction/{{ story.id }}/1">
                     {% if story.likes %}
                     <span class="align-middle">{{ story.likes }}</span>
                     {% endif %}
@@ -55,7 +55,7 @@
                     </i>
                 </a>
 
-                <a href="/story/{{ story.id }}/reaction/2">
+                <a href="/stories/reaction/{{ story.id }}/2">
                     {% if story.dislikes %}
                     <span class="align-middle">{{ story.dislikes }}</span>
                     {% endif %}
