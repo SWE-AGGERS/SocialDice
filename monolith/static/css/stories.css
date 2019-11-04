@@ -15,6 +15,10 @@
     border-radius: 32px;
 }
 
+.no-hover{
+    pointer-events: none;
+}
+
 .like {
     display: inline;
     text-decoration: none;

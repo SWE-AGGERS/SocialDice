@@ -1,15 +1,14 @@
-from flask import Blueprint, request, redirect, render_template, abort, json
+import re
+
+from flask import Blueprint, redirect, render_template, request
+from flask import abort, json
 from flask_login import (current_user, login_required)
+from sqlalchemy import func
 
 from monolith.background import update_reactions
-from flask import Blueprint, redirect, render_template, request
-from monolith.auth import admin_required, current_user
-from flask_login import (current_user, login_user, logout_user,
-                         login_required)
-from monolith.forms import UserForm, StoryForm, SelectDiceSetForm
-from monolith.database import db, Story, Reaction, User
 from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingSetError
-import re
+from monolith.database import db, Story, Reaction, User
+from monolith.forms import StoryForm, SelectDiceSetForm
 
 stories = Blueprint('stories', __name__)
 
@@ -40,7 +39,8 @@ def _stories(message=''):
         return redirect('/stories')
     elif 'GET' == request.method:
         allstories = db.session.query(Story, User).join(User)
-        return render_template("stories.html", message = message, form=form, stories=allstories, like_it_url="http://127.0.0.1:5000/stories/reaction")
+        return render_template("stories.html", message=message, form=form, stories=allstories,
+                               like_it_url="http://127.0.0.1:5000/stories/reaction")
 
 
 @stories.route('/story/<storyid>/reaction/<reactiontype>', methods=['GET', 'PUSH'])
@@ -80,9 +80,9 @@ def _reaction(storyid, reactiontype):
 
 
 # todo add dices details on render
-@stories.route('/stories/<storyid>', methods=['GET'])
-def get_story_detail(storyid):
-    q = db.session.query(Story).filter_by(id=storyid)
+@stories.route('/stories/<story_id>', methods=['GET'])
+def get_story_detail(story_id):
+    q = db.session.query(Story).filter_by(id=story_id)
     story = q.first()
     if story is not None:
         return render_template("story_detail.html", story=story)
@@ -104,3 +104,11 @@ def _roll(dicenumber, dicesetid):
         return _stories("Wrong dice number!")
 
     return render_template("create_story.html", form=form, set=dicesetid, roll=roll)
+
+
+@stories.route('/stories/random', methods=['GET'])
+def random_story():
+    q = db.session.query(Story).order_by(func.random()).limit(
+        1)  # todo add filter_by(Story.author_id != current_user.id)
+    random_story_from_db = q.first()
+    return render_template("story_detail.html", story=random_story_from_db)
