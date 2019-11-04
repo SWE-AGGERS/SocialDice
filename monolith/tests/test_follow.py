@@ -50,35 +50,41 @@ class TestFollow(unittest.TestCase):
             login(client, user_a.email, 'test')
 
             # call /follow/user_id_2
+            # assert True, redirtect to user_2 wall 
             reply = client.post('/follow/'+str(user_b_id))
-
-            # assert OK
             self.assertTrue(_is_follow(user_a_id, user_b_id))
+            self.assertIn("testb@test.com", str(reply.data))
 
             # call /follow/user_id_2
-            # assert EXC
+            # assert True, redirtect to user_2 wall
             reply = client.post('/follow/'+str(user_b_id))
-            self.assertIn(b'{"followed":-1}', reply.data)
+            self.assertTrue(_is_follow(user_a_id, user_b_id))
+            self.assertIn("testb@test.com", str(reply.data))
 
             # call /follow/user_id_3
-            # assert OK
+            # assert True, redirtect to user_3 wall
             reply = client.post('/follow/'+str(user_c_id))
-            self.assertIn(b'{"followed":2}', reply.data)
+            sself.assertTrue(_is_follow(user_a_id, user_c_id))
+            self.assertIn("testc@test.com", str(reply.data))
 
             # call /follow/user_id_2
-            # assert EXC
+            # assert True, redirect to user_2 wall
             reply = client.post('/follow/'+str(user_b_id))
-            self.assertIn(b'{"followed":-1}', reply.data)
+            self.assertTrue(_is_follow(user_a_id, user_b_id))
+            self.assertIn("testb@test.com", str(reply.data))
 
             # call /follow/user_id_1 (himslef)
-            # assert EXC
+            # assert False, redirect to user_1 wall
             reply = client.post('/follow/'+str(user_a_id))  
-            self.assertIn(b'{"followed":-1}', reply.data)
+            self.assertFalse(_is_follow(user_a_id, user_a_id))
+            self.assertIn("testa@test.com", str(reply.data))
 
             # call /follow/user_not_exist
-            # assert EXC
-            reply = client.post('/follow/'+str(-999))  
-            self.assertIn(b'{"followed":-1}', reply.data)
+            # assert False, redirect to stories
+            user_not_exist_id = 99999999999
+            reply = client.post('/follow/'+user_not_exist)  
+            self.assertFalse(_is_follow(user_a_id, user_not_exist))
+            self.assertIn("<title>Stories</title>", str(reply.data))
             logout(client)        
                           
 

@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 follow = Blueprint('follow', __name__)
 
 # Follow a writer
-@follow.route('/follow/<userid>', methods=['POST'])
+@follow.route('/follow/<int:userid>', methods=['POST'])
 @login_required
 def _follow_user(userid):
     # get the user who want following userid
@@ -13,7 +13,7 @@ def _follow_user(userid):
 
     # if user already followed
     if int(userid) == int(subject):
-        return redirect('/stories')
+        return redirect('/wall/'+str(userid))
 
     # if the followed user do not exist
     if User.query.filter_by(id=userid).first() == None:
@@ -26,7 +26,7 @@ def _follow_user(userid):
         return redirect('/stories')
 
     # return OK + number of users followed
-    return redirect('/stories')
+    return redirect('/wall/'+str(userid))
 
 
 # Unfollow a writer
