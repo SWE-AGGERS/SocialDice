@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block title %}
+    Story detail
+{% endblock %}
+
+{% block content %}
+
+    <div class="card text-center">
+        <a href="/stories">
+            <div class="card-header text-left">
+                <i class="material-icons align-middle">
+                    keyboard_backspace
+                </i>
+                <span class="align-middle">
+                  Feed
+              </span>
+            </div>
+        </a>
+        <div class="card-body">
+            <h5 class="card-title text-left">
+                <i class="material-icons align-middle">
+                    person
+                </i>
+                <span class="align-middle story_detail-author_info">
+                    {{ story.author.firstname }} {{ story.author.lastname }}
+                </span>
+            </h5>
+            <div class="card-text text-left">
+
+                <p class="story_detail-text">{{ story.text }}</p>
+                <br>
+                <br>
+                <span class="story_detail-datetime">
+                    {{ story.date.strftime('%H:%M') }} &#xB7 {{ story.date.strftime('%h %d %Y') }}
+                </span>
+            </div>
+
+            <div class="story_detail-faces">
+                <span>Story based on the dices: </span>
+                {% for face in story.roll['dice'] %}
+                    <span class="face"> {{ face.title() }} </span>
+                {% endfor %}
+            </div>
+
+
+            <div class="story_detail-reactions text-left">
+
+
+                <a href="/stories/reaction/{{ story.id }}/1">
+                    {% if story.likes %}
+                    <span class="align-middle">{{ story.likes }}</span>
+                    {% endif %}
+                    <i class="material-icons align-middle likes">
+                        thumb_up
+                    </i>
+                </a>
+
+                <a href="/stories/reaction/{{ story.id }}/2">
+                    {% if story.dislikes %}
+                    <span class="align-middle">{{ story.dislikes }}</span>
+                    {% endif %}
+                    <i class="material-icons align-middle dislikes">
+                        thumb_down
+                    </i>
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

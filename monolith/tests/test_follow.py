@@ -93,6 +93,8 @@ class TestFollow(unittest.TestCase):
             logout(client)        
                           
 
+"""                    
+
     def test_unfollow_user(self):
 
         global _app
@@ -173,7 +175,7 @@ class TestFollow(unittest.TestCase):
             self.assertIn("/stories", str(reply.data))
             logout(client)
 
-
+"""
 
 # TO DELETE MAYBE?
 def login(client, username, password):

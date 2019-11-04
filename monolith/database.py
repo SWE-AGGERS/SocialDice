@@ -1,12 +1,12 @@
 # encoding: utf8
-from werkzeug.security import generate_password_hash, check_password_hash
-import enum
-from sqlalchemy.orm import relationship
 import datetime as dt
-from flask_sqlalchemy import SQLAlchemy
 
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
+from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
+
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -43,10 +43,17 @@ class User(db.Model):
 class Story(db.Model):
     __tablename__ = 'story'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    text = db.Column(db.Text(1000)) # around 200 (English) words 
+
+    text = db.Column(db.Text(1000))  # around 200 (English) words
+    dicenumber = db.Column(db.Integer)
+    # textual representation (labels) of dice faces {dice:[...]}
+    roll = db.Column(db.JSON)
+
     date = db.Column(db.DateTime)
-    likes = db.Column(db.Integer) # will store the number of likes, periodically updated in background
-    dislikes = db.Column(db.Integer) # will store the number of likes, periodically updated in background
+    # will store the number of likes, periodically updated in background
+    likes = db.Column(db.Integer)
+    # will store the number of likes, periodically updated in background
+    dislikes = db.Column(db.Integer)
     # define foreign key
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     author = relationship('User', foreign_keys='Story.author_id')
@@ -55,49 +62,41 @@ class Story(db.Model):
         super(Story, self).__init__(*args, **kw)
         self.date = dt.datetime.now()
 
-class Like(db.Model):
-    __tablename__ = 'like'
-    
-    liker_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    liker = relationship('User', foreign_keys='Like.liker_id')
 
-    story_id = db.Column(db.Integer, db.ForeignKey('story.id'), primary_key=True)
-    author = relationship('Story', foreign_keys='Like.story_id')
+class Reaction(db.Model):
+    __tablename__ = 'reaction'
 
-    liked_id = db.Column(db.Integer, db.ForeignKey('user.id')) # TODO: duplicated ?
-    liker = relationship('User', foreign_keys='Like.liker_id')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    reaction = relationship('User', foreign_keys='Reaction.user_id')
 
-    marked = db.Column(db.Boolean, default = False) # True iff it has been counted in Story.likes 
+    story_id = db.Column(db.Integer, db.ForeignKey(
+        'story.id'), primary_key=True)
+    author = relationship('Story', foreign_keys='Reaction.story_id')
 
+    type = db.Column(db.Integer)  # 1: like, 2: dislike
 
-class Dislike(db.Model):
-    __tablename__ = 'dislike'
-
-    disliker_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    disliker = relationship('User', foreign_keys='Dislike.disliker_id')
-
-    story_id = db.Column(db.Integer, db.ForeignKey('story.id'), primary_key=True)
-    author = relationship('Story', foreign_keys='Dislike.story_id')
-
-    disliked_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # TODO: duplicated ?
-    disliker = relationship('User', foreign_keys='Dislike.disliker_id')
-
-    marked = db.Column(db.Boolean, default=False)  # True iff it has been counted in Story.likes
+    # True iff it has been counted in Story.likes
+    marked = db.Column(db.Boolean, default=False)
 
 # ================================================================================================
 # Followers Table
 # ================================================================================================
+
 
 class Followers(db.Model):
     """Followers Table: 
     (A, B) -> User A follow user B 
     (A is the follower, B is the followed)"""
     __tablename__ = 'followers'
-    followed_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    followed_id = db.Column(
+        db.Integer, db.ForeignKey('user.id'), primary_key=True)
     followed = relationship('User', foreign_keys='Followers.followed_id')
 
-    follower_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    follower_id = db.Column(
+        db.Integer, db.ForeignKey('user.id'), primary_key=True)
     follower = relationship('User', foreign_keys='Followers.follower_id')
 
-
-
+    def to_string(self):
+        return 'liker_id: ' + str(self.user_id) + \
+               '\nstory_id: ' + str(self.story_id) + \
+               '\ntype: ' + str(self.type)

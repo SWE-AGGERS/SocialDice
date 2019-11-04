@@ -1,8 +1,8 @@
-from .home import home
 from .auth import auth
-from .users import users
-from .stories import stories
 from .follow import follow
+from .home import home
+from .stories import stories
+from .users import users
+from .wall import wall
 
-
-blueprints = [home, auth, users, stories, follow]
+blueprints = [home, auth, users, stories, wall, follow]
