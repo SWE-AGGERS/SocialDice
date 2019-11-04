@@ -4,7 +4,7 @@ import random as rnd
 import natsort
 
 # list of all available dice sets
-_DICE_SETS = [{'id': 1, 'name': 'basic', 'folder': './monolith/resources/basic_set'}]
+_DICE_SETS = [{'id': 1, 'name': 'basic', 'folder': './monolith/resources/basic_set'}, {'id': 2, 'name':'halloween', 'folder': './monolith/resources/halloween_set'}]
 
 
 class Die:
