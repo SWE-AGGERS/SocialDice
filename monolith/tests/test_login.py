@@ -31,6 +31,3 @@ def login(client, username, password):
         password=password
     ), follow_redirects=True)
 
-
-if __name__ == '__main__':
-    unittest.main()
