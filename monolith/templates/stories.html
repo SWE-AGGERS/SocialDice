@@ -30,24 +30,27 @@
     <ul class="feed">
       {% for story, user in stories %}
       <li class="story-container">
-        <div class="author">{{user.firstname}} {{user.lastname}}</div>
-        <div class="story">
-          {{story.text}}
+        <div class="author inline">
+          <div class="name">{{user.firstname}} {{user.lastname}}</div>
+          <div class="follow">Follow</div>
         </div>
+        <a class="story" href="{{details_url}}/{{story.id}}">
+          {{story.text}}
+        </a>
         <div class="inline">
           <div class="like">
             {{story.likes}}
             <a href="{{like_it_url}}/{{story.id}}/1">
               <i class="far fa-thumbs-up"></i>
             </a>
+          </div>
+          <div class="dislike">
+            {{story.dislikes}}
+            <a href="{{like_it_url}}/{{story.id}}/2">
+              <i class="far fa-thumbs-down"></i>
             </a>
-            <div class="dislike">
-              {{story.dislikes}}
-              <a href="{{like_it_url}}/{{story.id}}/2">
-                <i class="far fa-thumbs-down"></i>
-              </a>
-              </a>
-            </div>
+          </div>
+        </div>
       </li>
       {% endfor %}
     </ul>
@@ -91,24 +94,23 @@
             <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
           </div>
 
-            </div>
         </div>
-
       </div>
+
     </div>
+  </div>
   </div>
   {% endblock %}
   </div>
 </body>
 
 <script>
-  $(document).ready(function(){
-      $("#rollButton").on('click', function(){
-          console.log("ciao");
-          $("#rollForm").attr('action',$("#rollForm").attr('action')+"/"+$('#dicenumber').val()+"/"+$('#dicesetid').val());
-          $("#rollForm").submit();
-      });
-  });
+  $(document).ready(() => {
+    $("#rollButton").on('click', function () {
+      $("#rollForm").attr('action', $("#rollForm").attr('action') + "/" + $('#dicenumber').val() + "/" + $('#dicesetid').val());
+      $("#rollForm").submit();
+    });
+  })
 </script>
 
 </html>
