@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, redirect, request
-from flask_login import (login_user, logout_user)
+from flask_login import (current_user, login_user, logout_user,
+                         login_required)
 
 from monolith.database import db, User
 from monolith.forms import LoginForm
@@ -11,7 +12,8 @@ auth = Blueprint('auth', __name__)
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    error = ""
+    message = ""
+    error = False
     if form.validate_on_submit():
         email, password = form.data['email'], form.data['password']
         q = db.session.query(User).filter(User.email == email)
@@ -21,9 +23,10 @@ def login():
             login_user(user)
             return redirect('/')
         else:
-            error = "User not found"
+            message = "User not found"
+            error = True
 
-    return render_template('login.html', form=form, error=error)
+    return render_template('login.html', form=form, error=error, message=message)
 
 
 @auth.route("/logout")
@@ -54,7 +57,6 @@ def signup():
         else:
             form = UserForm()
 
-            return render_template('signup.html', form=form, error=True,
-                                   message="The email was used before. Please change the email!")
+            return render_template('signup.html', form=form, error=True, message="The email was used before. Please change the email!" )
     if request.method == 'GET':
         return render_template('signup.html', form=form)
