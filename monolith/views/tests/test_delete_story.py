@@ -7,23 +7,28 @@ from flask_login import current_user
 from flask import session
 from monolith import constants
 import os
+from monolith.tests.restart_db import restart_db_tables
+
+
+
+_app = None
+
  
 class TestDeleteStory(unittest.TestCase):
  
     def test_delete_story_positive(self):
 
 
-        """
-        path = os.path.join(constants.BASE_PATH, 'monolith/storytellers.db')
-        os.remove(path)
-        """
 
 
+        global _app
+        if _app is None:
+            tested_app = create_app(debug=True)
+            _app = tested_app
+        else:
+            tested_app = _app
+        restart_db_tables(db, tested_app)
 
-
-
-
-        tested_app = create_app(debug=True)
         with tested_app.test_client() as client:
 
 
@@ -33,23 +38,7 @@ class TestDeleteStory(unittest.TestCase):
 
 
 
-            #Operations to clean the database
 
-            reactions = Reaction.query.filter(Reaction.story_id > 0).all()
-            if reactions is not None:
-                for reac in reactions:
-                    db.session.delete(reac)
-                db.session.commit()
-            stories = Story.query.filter(Story.id > 1).all()
-            if stories is not None:
-                for story in stories:
-                    db.session.delete(story)
-                db.session.commit()
-            users = User.query.filter(User.id > 1).all()
-            if users is not None:
-                for user in users:
-                    db.session.delete(user)
-                db.session.commit()
 
 
 
@@ -69,8 +58,6 @@ class TestDeleteStory(unittest.TestCase):
             print(current_user.id)
 
 
-            print("WOOOOOOOOOOOOOOOOO")
-            print(current_user.get_id())
 
 
             users = User.query.all()
@@ -135,13 +122,14 @@ class TestDeleteStory(unittest.TestCase):
 
     def test_delete_story_negative(self):
 
-        """
-        path = os.path.join(constants.BASE_PATH, 'monolith/storytellers.db')
-        os.remove(path)
-        """
+        global _app
+        if _app is None:
+            tested_app = create_app(debug=True)
+            _app = tested_app
+        else:
+            tested_app = _app
+        restart_db_tables(db, tested_app)
 
-
-        tested_app = create_app(debug=True)
         with tested_app.test_client() as client:
 
 
@@ -229,15 +217,14 @@ class TestDeleteStory(unittest.TestCase):
 
     def test_delete_story_multiple_users_reactions(self):
 
-        """
-        path = os.path.join(constants.BASE_PATH, 'monolith/storytellers.db')
-        os.remove(path)
-        """
+        global _app
+        if _app is None:
+            tested_app = create_app(debug=True)
+            _app = tested_app
+        else:
+            tested_app = _app
+        restart_db_tables(db, tested_app)
 
-
-
-
-        tested_app = create_app(debug=True)
         with tested_app.test_client() as client:
 
 
@@ -396,16 +383,14 @@ class TestDeleteStory(unittest.TestCase):
 
     def test_delete_wrong_author_story(self):
 
-        """
-        path = os.path.join(constants.BASE_PATH, 'monolith/storytellers.db')
-        os.remove(path)
-        """
+        global _app
+        if _app is None:
+            tested_app = create_app(debug=True)
+            _app = tested_app
+        else:
+            tested_app = _app
+        restart_db_tables(db, tested_app)
 
-
-
-
-
-        tested_app = create_app(debug=True)
         with tested_app.test_client() as client:
 
 
