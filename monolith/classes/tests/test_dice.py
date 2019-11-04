@@ -1,73 +1,45 @@
-import glob
-import os
 import random as rnd
-import natsort
+import unittest
 
-# list of all available dice sets
-_DICE_SETS = [{'id': 1, 'name': 'basic', 'folder': './monolith/resources/basic_set'}]
-
-
-class Die:
-
-    def __init__(self, filename):
-        self.faces = []
-        self.pip = None
-        f = open(filename, "r")
-        lines = f.readlines()
-
-        for line in lines:
-            self.faces.append(line.replace("\n", ""))
-        self.throw_die()
-        f.close()
-
-    def throw_die(self):
-        if self.faces:  # pythonic for list is not empty
-            self.pip = rnd.choice(self.faces)
-            return self.pip
-        else:
-            raise IndexError("throw_die(): empty die error.")
+from monolith.classes.DiceSet import Die, DiceSet
 
 
-class DiceSet:
-
-    def __init__(self, set_name):
-        self.dice = []
-        self.pips = []
-
-        dice_folder = ""
-        for e in _DICE_SETS:
-            if e['name'] == set_name:
-                dice_folder = e['folder']
-
-        if dice_folder == "":
-            raise NonExistingSetError("Dice set not found")
-
-        folder = glob.glob(os.path.join(dice_folder, '*.txt'))
-        sorted(folder)
-
-        for filename in natsort.natsorted(folder, reverse=False):
-            die = Die(filename)
-            self.dice.append(die)
-
-    def throw_dice(self, dicenumber):
-        if(dicenumber<=len(self.dice)):
-            for i in range(dicenumber):
-                self.pips.append(self.dice[i].throw_die())
-        else:
-            raise WrongDiceNumberError("Not enough dice!")
-        return self.pips
+class TestDie(unittest.TestCase):
+    def test_die_init(self):
+        die = Die("./monolith/resources/basic_set/die0.txt")
+        rnd.seed(574891)
+        result = die.faces
+        print(result)
+        self.assertEqual(result, ['bike', 'moonandstars', 'bag', 'bird', 'crying', 'angry'])
 
 
-class NonExistingSetError(Exception):
-    def __init__(self, value):
-        self.value = value
+class TestDice(unittest.TestCase):
 
-    def __str__(self):
-        return repr(self.value)
+    def test_dice_init(self):
+        dice = DiceSet('basic')
+        self.assertEqual(len(dice.dice), 6)
 
-class WrongDiceNumberError(Exception):
-    def __init__(self, value):
-        self.value = value
+        check1 = ['tulip', 'mouth', 'caravan', 'clock', 'whale', 'drink']
+        self.assertEqual(dice.dice[1].faces, check1)
 
-    def __str__(self):
-        return repr(self.value)
+    def test_dice_pipes(self):
+        dice = DiceSet('basic')
+        die0 = ['bike', 'moonandstars', 'bag', 'bird', 'crying', 'angry']
+        die1 = ['tulip', 'mouth', 'caravan', 'clock', 'whale', 'drink']
+        die2 = ['happy', 'coffee', 'plate', 'bus', 'letter', 'paws']
+        die3 = ['cat', 'pencil', 'baloon', 'bananas', 'phone', 'icecream']
+        #die4 = ['ladder', 'car', 'fire', 'bang', 'hat', 'hamburger']
+        #die5 = ['rain', 'heart', 'glasses', 'poo', 'ball', 'sun']
+        result = dice.throw_dice(4)
+        #print(result)
+        self.assertEqual(len(result), 4)
+        self.assertIn(result[0], die0)
+        self.assertIn(result[1], die1)
+        self.assertIn(result[2], die2)
+        self.assertIn(result[3], die3)
+        #self.assertIn(result[4], die4)
+        #self.assertIn(result[5], die5)
+
+
+if __name__ == '__main__':
+    unittest.main()

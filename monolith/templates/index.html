@@ -1,26 +1,25 @@
-
 {% if current_user.is_authenticated %}
-{% extends "layout.html" %}
-{% block title %}
-    Index Page
-{% endblock %}
+    {% extends "layout.html" %}
+    {% block title %}
+        Index Page
+    {% endblock %}
 
-{% block content %}
-<h1>Storytellers</h1>
-  Hi {{ current_user.firstname }}! <a href="/logout">Logout</a>
+    {% block content %}
+        <h1>Storytellers</h1>
+        Hi {{ current_user.firstname }}! <a href="/logout">Logout</a>
 
-  
-    <h2>Your Stories</h2>
-    {% for story in stories%}
-      <div>
-        <li>
-          {{story.text}} -- Likes:{{story.likes}}
-        </li>
-      </div>
-    {% endfor %}
 
-{% endblock %}
+        <h2>Your Stories</h2>
+        {% for story in stories %}
+            <div>
+                <li>
+                    {{ story.text }} -- Likes:{{ story.likes }}
+                </li>
+            </div>
+        {% endfor %}
+
+    {% endblock %}
 {% else %}
-  Hi Anonymous, <a href="/login">Log in</a> or <a href="/signup"> signup</a>
+    Hi Anonymous, <a href="/login">Log in</a> or <a href="/signup"> signup</a>
 {% endif %}
 

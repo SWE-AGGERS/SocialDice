@@ -31,7 +31,7 @@
                 <br>
                 <br>
                 <span class="story_detail-datetime">
-                    {{ story.date.strftime('%H:%m') }} &#xB7 {{ story.date.strftime('%h %d %Y') }}
+                    {{ story.date.strftime('%H:%M') }} &#xB7 {{ story.date.strftime('%h %d %Y') }}
                 </span>
             </div>
 
@@ -45,24 +45,24 @@
 
             <div class="story_detail-reactions text-left">
 
-                {% if story.likes > 0 %}
-                    <a href="/story/{{ story.id }}/reaction/1">
-                        <span class="align-middle">{{ story.likes }}</span>
-                        <i class="material-icons align-middle likes">
-                            thumb_up
-                        </i>
-                    </a>
 
-                {% endif %}
+                <a href="/story/{{ story.id }}/reaction/1">
+                    {% if story.likes %}
+                    <span class="align-middle">{{ story.likes }}</span>
+                    {% endif %}
+                    <i class="material-icons align-middle likes">
+                        thumb_up
+                    </i>
+                </a>
 
-                {% if story.dislikes > 0 %}
-                    <a href="/story/{{ story.id }}/reaction/2">
-                        <span class="align-middle">{{ story.dislikes }}</span>
-                        <i class="material-icons align-middle dislikes">
-                            thumb_down
-                        </i>
-                    </a>
-                {% endif %}
+                <a href="/story/{{ story.id }}/reaction/2">
+                    {% if story.dislikes %}
+                    <span class="align-middle">{{ story.dislikes }}</span>
+                    {% endif %}
+                    <i class="material-icons align-middle dislikes">
+                        thumb_down
+                    </i>
+                </a>
 
             </div>
 

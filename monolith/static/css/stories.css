@@ -1,0 +1,26 @@
+.feed {
+    padding: 0;
+}
+
+.author {
+    font-weight: bold;
+}
+
+.story-container {
+    list-style: none;
+    border: 1px solid lightgrey;
+    padding: 16px;
+    margin-left: 0px;
+    max-width: 700px;
+    border-radius: 32px;
+}
+
+.like {
+    display: inline;
+    text-decoration: none;
+}
+
+.dislike {
+    display: inline;
+    text-decoration: none;
+}
