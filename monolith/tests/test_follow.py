@@ -4,7 +4,7 @@ from flask import request, jsonify
 from monolith.app import create_app
 from monolith.database import db, User, Followers
 from monolith.auth import login_manager
-from monolith.views.follow import _create_follow
+from monolith.views.follow import _create_follow, _is_follower
 from monolith.tests.restart_db import restart_db_tables
 
 
@@ -53,7 +53,7 @@ class TestFollow(unittest.TestCase):
             reply = client.post('/follow/'+str(user_b_id))
 
             # assert OK
-            self.assertIn(b'{"followed":1}', reply.data)
+            self.assertTrue(_is_follow(user_a_id, user_b_id))
 
             # call /follow/user_id_2
             # assert EXC

@@ -13,20 +13,20 @@ def _follow_user(userid):
 
     # if user already followed
     if int(userid) == int(subject):
-        return jsonify({"followed": -1})
+        return redirect('/stories')
 
     # if the followed user do not exist
     if User.query.filter_by(id=userid).first() == None:
-        return jsonify({"followed": -1})
+        return redirect('/stories')
 
     # add to follower_table the tuple (follower_id, followed_id)
     result = _add_follow(subject, userid)
     if result == -1:
         # db.session.add error
-        return jsonify({"followed": -1})
+        return redirect('/stories')
 
     # return OK + number of users followed
-    return jsonify({"followed": _get_followed_number(subject)})
+    return redirect('/stories')
 
 
 # Unfollow a writer
