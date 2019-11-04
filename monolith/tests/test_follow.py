@@ -80,8 +80,8 @@ class TestFollow(unittest.TestCase):
         with tested_app.test_client() as client:
             with client.session_transaction() as sess:
                     # push in the users_table 3 users
-                    db.drop_all()
-                    db.create_all()
+                    #db.drop_all()
+                    #db.create_all()
                     user_a = User()
                     user_a.email = 'testa@test.com'
                     user_a.set_password('test')
@@ -113,8 +113,6 @@ class TestFollow(unittest.TestCase):
                     db.session.add(follow_bc)
                     db.session.commit()
 
-
-            # push follows in follow_table (1-2, 1-3, 2-3)
             # login as user_1
             login(client, user_a.email, 'test')
 
