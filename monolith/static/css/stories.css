@@ -15,6 +15,11 @@
     border-radius: 32px;
 }
 
+.follow.hidden{
+    display: none;
+    visibility: none;
+}
+
 .story {
     text-decoration: none;
     color: black;

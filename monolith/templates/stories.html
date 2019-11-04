@@ -28,11 +28,15 @@
     {% block content %}
     <p> {{ message }} </p>
     <ul class="feed">
-      {% for story, user in stories %}
+      {% for story, user, cannot_follow, method in stories %}
       <li class="story-container">
         <div class="author inline">
           <div class="name">{{user.firstname}} {{user.lastname}}</div>
-          <div class="follow">Follow</div>
+          <div class="follow {{cannot_follow}}">
+            <form method="{{method}}" action="/follow/{{user.id}}" data-user="{{user.id}}">
+              <input type="submit" value="Follow"/>
+            </form>
+          </div>
         </div>
         <a class="story" href="{{details_url}}/{{story.id}}">
           {{story.text}}
