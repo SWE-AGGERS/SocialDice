@@ -143,25 +143,34 @@ class TestFollow(unittest.TestCase):
 
 
             # call /unfollow/user_1
-            # assert EXC
+            # assert False
+            data = '/wall/'+str(user_a_id)
             reply = client.delete('/follow/'+str(user_a_id))
-            self.assertIn(b'"followed":-1', reply.data)
+            self.assertFalse(_is_follower(user_a_id, user_a_id))
+            self.assertIn(data, str(reply.data))
 
             # call /unfollow/user_2
             # assert OK
+            data = '/wall/'+str(user_b_id)
+            self.assertTrue(_is_follower(user_a_id, user_b_id))
             reply = client.delete('/follow/'+str(user_b_id))
-            self.assertIn(b'"followed":1', reply.data)
+            self.assertFalse(_is_follower(user_a_id, user_b_id))
+            self.assertIn(data, str(reply.data))
 
             # call unfollow/user_2
             # assert EXC
+            data = '/wall/'+str(user_b_id)
             reply = client.delete('/follow/'+str(user_b_id))
-            self.assertIn(b'"followed":-1', reply.data)
+            self.assertFalse(_is_follower(user_a_id, user_b_id))
+            self.assertIn(data, str(reply.data))
 
             # call unfollow/user_not_exist
             # assert EXC
-            reply = client.delete('/follow/'+str(999))
-            self.assertIn(b'"followed":-1', reply.data)
-
+            user_not_exist_id = 999999999999
+            data = '/wall/'+str(user_not_exist_id)
+            reply = client.delete('/follow/'+str(user_not_exist_id))
+            self.assertFalse(_is_follower(user_a_id, user_not_exist_id))
+            self.assertIn("/stories", str(reply.data))
             logout(client)
 
 

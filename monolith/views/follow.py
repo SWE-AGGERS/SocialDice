@@ -27,7 +27,7 @@ def _follow_user(userid):
     result = _add_follow(subject, userid)
     if result == -1:
         # db.session.add error
-        return redirect('/stories')
+        return redirect('/wall/'+str(userid))
 
     # return OK + number of users followed
     return redirect('/wall/'+str(userid))
@@ -41,20 +41,24 @@ def _unfollow_user(userid):
     subject = current_user.id
 
     if userid == subject:
-        return jsonify({"followed": -1})
+        return redirect('/wall/'+str(subject))
+
+    # if the followed user do not exist
+    if User.query.filter_by(id=userid).first() == None:
+        return redirect('/stories')
 
     # if user not followed
     if not _is_follower(subject, userid):
-        return jsonify({"followed": -1})
+        return redirect('/wall/'+str(userid))
 
     # remove from follower_table the tuple (follower_id, followed_id)
     if _delete_follow(subject, userid) == -1:
         # db delete error
-        return jsonify({"followed": -1})
+        return redirect('/wall/'+str(userid))
 
 
-    # return OK + number of users followed
-    return jsonify({"followed": _get_followed_number(subject)})
+    # return OK
+    return redirect('/wall/'+str(userid))
 
 # TODO: add to the API doc
 # return the followers list
