@@ -14,8 +14,9 @@ def create_app(debug=False):
     # DEBUGGING AND TESTING
     app.config['SQLALCHEMY_ECHO'] = False
     app.config['TESTING'] = debug
-    app.config['WTF_CSRF_ENABLED'] = not debug
     app.config['LOGIN_DISABLED'] = True
+    app.config['WTF_CSRF_ENABLED'] = False
+
 
     for bp in blueprints:
         app.register_blueprint(bp)

@@ -36,7 +36,7 @@ def _stories(message=''):
         # Go to the feed
         allstories = db.session.query(Story)
         return render_template("stories.html", form=form, message=message, stories=allstories,
-                               like_it_url="http://127.0.0.1:5000/stories/like/")
+                               like_it_url="http://127.0.0.1:5000/stories/like/",active_button="stories")
 
 @stories.route('/story/<storyid>/reaction/<reactiontype>', methods=['GET', 'PUSH'])
 @login_required
@@ -52,7 +52,7 @@ def _reaction(storyid, reactiontype):
 
         if old_reaction is None:
             new_reaction = Reaction()
-            new_reaction.user_id = current_user.id
+            new_reaction.user_id =   current_user.id
             new_reaction.story_id = storyid
             new_reaction.type = reactiontype
             db.session.add(new_reaction)

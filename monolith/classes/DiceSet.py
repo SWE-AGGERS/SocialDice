@@ -1,5 +1,4 @@
 import random as rnd
-import natsort
 import os
 import glob
 

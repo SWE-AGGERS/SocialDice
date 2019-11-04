@@ -11,7 +11,8 @@ auth = Blueprint('auth', __name__)
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    error = ""
+    message = ""
+    error = False
     if form.validate_on_submit():
         email, password = form.data['email'], form.data['password']
         q = db.session.query(User).filter(User.email == email)
@@ -21,11 +22,12 @@ def login():
             login_user(user)
             return redirect('/')
         else:
-            error = "User not found"
+            message = "User not found"
+            error = True
 
 
 
-    return render_template('login.html', form=form, error=error)
+    return render_template('login.html', form=form, error=error, message=message)
 
 
 @auth.route("/logout")
