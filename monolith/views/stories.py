@@ -40,7 +40,12 @@ def _stories(message=''):
         return redirect('/stories')
     elif 'GET' == request.method:
         allstories = db.session.query(Story, User).join(User)
-        return render_template("stories.html", message = message, form=form, stories=allstories, like_it_url="http://127.0.0.1:5000/stories/reaction")
+        return render_template("stories.html",
+                               message=message,
+                               form=form,
+                               stories=allstories,
+                               active_button="stories",
+                               like_it_url="http://127.0.0.1:5000/stories/reaction")
 
 
 @stories.route('/stories/reaction/<storyid>/<reactiontype>', methods=['GET', 'PUSH'])

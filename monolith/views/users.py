@@ -24,7 +24,7 @@ def reduce_list(users_):
 def _users():
     users = db.session.query(User, Story).join(Story).order_by(desc(Story.id))
     users = reduce_list(users.all())
-    return render_template("users.html", users=users)
+    return render_template("users.html", users=users, active_button="users")
 
 
 @users.route('/create_user', methods=['GET', 'POST'])
