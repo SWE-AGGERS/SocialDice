@@ -10,9 +10,11 @@ def check_storyV2(story,diceSet):
     # Tests on parameters
     if not isinstance(story, str):
         raise WrongFormatStoryError("The story must be a string.\n")
-    res = len(story.split())
     if not isinstance(diceSet,ds.DiceSet):
         raise WrongFormatDiceError("The dice set must be a DiceSet object.\n")
+    if len(story)>1000:
+        raise TooLongStoryError("The story is too long. The length is > 1000 characters\n")
+    res = len(story.split())
     if res < len(diceSet.pips):
         raise TooSmallStoryError(
             "The number of words of the story must greater or equal of the number of resulted faces.\n")
@@ -66,6 +68,15 @@ class TooSmallStoryError(Exception):
 
     def __str__(self):
         return repr(self.value)
+
+
+class TooLongStoryError(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
 
 class WrongFormatDiceError(Exception):
     def __init__(self, value):

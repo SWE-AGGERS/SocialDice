@@ -1,6 +1,7 @@
 from monolith.views import check_stories as cs
 from monolith.views.check_stories import SizeDiceSetFacesError
 from monolith.views.check_stories import TooSmallStoryError
+from monolith.views.check_stories import TooLongStoryError
 from monolith.views.check_stories import WrongFormatDiceError
 from monolith.views.check_stories import WrongFormatSingleDiceError
 from monolith.views.check_stories import WrongFormatStoryError
@@ -60,6 +61,18 @@ class TestStory(unittest.TestCase):
         storySet = ""
         diceSet.throw_dice()
         self.assertRaises(TooSmallStoryError, cs.check_storyV2,storySet,diceSet)
+
+
+    def test_invalid_story_long_story(self):
+        diceSet = d.DiceSet('basic')
+        storySet = ""
+        for elem in range(0,1001):
+            string = "a"
+            storySet = storySet + string + " "
+        diceSet.throw_dice()
+        self.assertRaises(TooLongStoryError, cs.check_storyV2,storySet,diceSet)
+
+
 
     def test_invalid_story_wrong_type_diceset(self):
         storySet = "a b c"

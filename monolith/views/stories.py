@@ -6,6 +6,9 @@ from monolith.classes.DiceSet import DiceSet
 from monolith.database import Reaction
 from monolith.database import db, Story
 from monolith.forms import StoryForm
+import sys
+
+
 
 stories = Blueprint('stories', __name__)
 
@@ -32,6 +35,7 @@ def _stories(message=''):
         allstories = db.session.query(Story)
         return render_template("stories.html", form=form, message=message, stories=allstories,
                                like_it_url="http://127.0.0.1:5000/stories/like/")
+
 
 
 @stories.route('/story/<storyid>/reaction/<reactiontype>', methods=['GET', 'PUSH'])
@@ -70,14 +74,54 @@ def _reaction(storyid, reactiontype):
 
 
 # todo add dices details on render
-@stories.route('/stories/<storyid>', methods=['GET'])
+@stories.route('/stories/<storyid>', methods=['GET','DELETE'])
 def get_story_detail(storyid):
+    # Detail of story id
+    if 'GET' == request.method:
+        q = db.session.query(Story).filter_by(id=storyid)
+        story = q.first()
+        if story is not None:
+            return render_template("story_detail.html", story=story)
+        else:
+            abort(404)
+
+@stories.route('/<storyid>/remove', methods=['GET','POST','PUT'])
+@login_required
+def get_remove_story(storyid):
+    # Remove story
     q = db.session.query(Story).filter_by(id=storyid)
     story = q.first()
     if story is not None:
-        return render_template("story_detail.html", story=story)
+        if story.author_id == current_user.id:
+            print("story query: "+str(story))
+            print("story_id "+str(storyid))
+            print("author id "+ str(story.author_id))
+            print("current user id " + str(current_user.id))
+            reactions = Reaction.query.filter_by(story_id=storyid).all()
+            print("Number of reactions of the story: "+str(len(reactions)))
+            print("Reactions:")
+            print(reactions)
+            if reactions is not None:
+                for reac in reactions:
+                        db.session.delete(reac)
+                        db.session.commit()
+            reactions = Reaction.query.filter_by(story_id=storyid).all()
+            print("Number of reactions after the cancellation of the story: "+str(len(reactions)))
+            print(reactions)
+            db.session.delete(story)
+            db.session.commit()
+            return redirect('/')
+        else:
+            # The user can only delete the stories she/he wrote.
+            abort(404)
+
+
     else:
+        # Story doensn't exist
         abort(404)
+
+
+
 
 
 @stories.route('/rolldice/<int:dicenumber>/<string:dicesetid>', methods=['GET'])
