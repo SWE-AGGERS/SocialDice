@@ -52,39 +52,44 @@ class TestFollow(unittest.TestCase):
             # call /follow/user_id_2
             # assert True, redirtect to user_2 wall 
             reply = client.post('/follow/'+str(user_b_id))
-            self.assertTrue(_is_follow(user_a_id, user_b_id))
-            self.assertIn("testb@test.com", str(reply.data))
+            data = "/wall/"+str(user_b_id)
+            self.assertTrue(_is_follower(user_a_id, user_b_id))
+            self.assertIn(data, str(reply.data))
 
             # call /follow/user_id_2
             # assert True, redirtect to user_2 wall
+            data = "/wall/"+str(user_b_id)
             reply = client.post('/follow/'+str(user_b_id))
-            self.assertTrue(_is_follow(user_a_id, user_b_id))
-            self.assertIn("testb@test.com", str(reply.data))
+            self.assertTrue(_is_follower(user_a_id, user_b_id))
+            self.assertIn(data, str(reply.data))
 
             # call /follow/user_id_3
             # assert True, redirtect to user_3 wall
+            data = "/wall/"+str(user_c_id)
             reply = client.post('/follow/'+str(user_c_id))
-            sself.assertTrue(_is_follow(user_a_id, user_c_id))
-            self.assertIn("testc@test.com", str(reply.data))
+            self.assertTrue(_is_follower(user_a_id, user_c_id))
+            self.assertIn(data, str(reply.data))
 
             # call /follow/user_id_2
             # assert True, redirect to user_2 wall
+            data = "/wall/"+str(user_b_id)
             reply = client.post('/follow/'+str(user_b_id))
-            self.assertTrue(_is_follow(user_a_id, user_b_id))
-            self.assertIn("testb@test.com", str(reply.data))
+            self.assertTrue(_is_follower(user_a_id, user_b_id))
+            self.assertIn(data, str(reply.data))
 
             # call /follow/user_id_1 (himslef)
             # assert False, redirect to user_1 wall
+            data = "/wall/"+str(user_a_id)
             reply = client.post('/follow/'+str(user_a_id))  
-            self.assertFalse(_is_follow(user_a_id, user_a_id))
-            self.assertIn("testa@test.com", str(reply.data))
+            self.assertFalse(_is_follower(user_a_id, user_a_id))
+            self.assertIn(data, str(reply.data))
 
             # call /follow/user_not_exist
             # assert False, redirect to stories
             user_not_exist_id = 99999999999
-            reply = client.post('/follow/'+user_not_exist)  
-            self.assertFalse(_is_follow(user_a_id, user_not_exist))
-            self.assertIn("<title>Stories</title>", str(reply.data))
+            reply = client.post('/follow/'+str(user_not_exist_id))
+            self.assertFalse(_is_follower(user_a_id, user_not_exist_id))
+            self.assertIn("/stories", str(reply.data))
             logout(client)        
                           
 

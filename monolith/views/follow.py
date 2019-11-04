@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, redirect
 from monolith.database import db, Followers, User
 from flask_login import current_user, login_required
 
@@ -11,8 +11,12 @@ def _follow_user(userid):
     # get the user who want following userid
     subject = current_user.id
 
-    # if user already followed
+    # if try to follow himeself
     if int(userid) == int(subject):
+        return redirect('/wall/'+str(userid))
+
+    # if already followed
+    if _is_follower(subject, userid):
         return redirect('/wall/'+str(userid))
 
     # if the followed user do not exist
@@ -138,6 +142,7 @@ def _add_follow(user_a, user_b):
         db.session.commit()
         return 1
     except:
+        db.session.rollback()
         return -1
 
 
@@ -150,4 +155,5 @@ def _delete_follow(user_a, user_b):
         db.session.commit()
         return 1
     except:
+        db.session.rollback()
         return -1
