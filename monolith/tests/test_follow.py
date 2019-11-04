@@ -94,6 +94,7 @@ class TestFollow(unittest.TestCase):
 
         with tested_app.test_client() as client:
             with client.session_transaction() as session:
+                # push in the users_table 3 users
                 user_a = User()
                 user_a.email = 'testa@test.com'
                 user_a.set_password('test')
@@ -116,6 +117,7 @@ class TestFollow(unittest.TestCase):
                 user_b_id = User.query.filter_by(email=user_b.email).first().get_id()
                 user_c_id = User.query.filter_by(email=user_c.email).first().get_id()
 
+            with client.session_transaction() as session:
                 follow_ab = _create_follow(user_a_id, user_b_id)
                 follow_ac = _create_follow(user_a_id, user_c_id)
                 follow_bc = _create_follow(user_b_id, user_c_id)
@@ -124,7 +126,7 @@ class TestFollow(unittest.TestCase):
                 db.session.add(follow_ac)
                 db.session.add(follow_bc)
                 db.session.commit()
-            
+
             # login as user_1
             login(client, user_a.email, 'test')
 
@@ -132,7 +134,7 @@ class TestFollow(unittest.TestCase):
             # call /unfollow/user_1
             # assert EXC
             reply = client.delete('/follow/'+str(user_a_id))
-            self.assertIn('"followed":-1', reply.data)
+            self.assertIn(b'"followed":-1', reply.data)
 
             # call /unfollow/user_2
             # assert OK
@@ -146,7 +148,7 @@ class TestFollow(unittest.TestCase):
 
             # call unfollow/user_not_exist
             # assert EXC
-            reply = client.delete('/follow/'+str(-999))
+            reply = client.delete('/follow/'+str(999))
             self.assertIn(b'"followed":-1', reply.data)
 
             logout(client)

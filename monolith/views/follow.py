@@ -11,7 +11,6 @@ def _follow_user(userid):
     # get the user who want following userid
     subject = current_user.id
 
-    print(subject, " follow -> ", userid)
     # if user already followed
     if int(userid) == int(subject):
         return jsonify({"followed": -1})
@@ -31,7 +30,7 @@ def _follow_user(userid):
 
 
 # Unfollow a writer
-@follow.route('/follow/<userid>', methods=['DELETE'])
+@follow.route('/follow/<int:userid>', methods=['DELETE'])
 @login_required
 def _unfollow_user(userid):
     #get the user who want to unfollow userid
@@ -102,7 +101,6 @@ def _get_followers_of(user_id):
 
 # Get the list of users who follows the user_id
 def _get_followed_by(user_id):
-    print("USER ID: ", user_id)
     L = Followers.query.filter_by(followed_id=user_id).all()
     return L
 
@@ -146,7 +144,9 @@ def _add_follow(user_a, user_b):
 # TODO: use celerity
 def _delete_follow(user_a, user_b):
     try:
-        db.session.delete(_create_follow(user_a, user_b))
+        item = Followers.query.filter_by(follower_id=user_a, followed_id=user_b).first()
+        print(item)
+        db.session.delete(item)
         db.session.commit()
         return 1
     except:
