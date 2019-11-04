@@ -39,7 +39,3 @@ def signup(client, data):
     return client.post('/signup',
                        data=data,
                        follow_redirects=True)
-
-
-if __name__ == '__main__':
-    unittest.main()
