@@ -66,7 +66,7 @@ def _unfollow_user(userid):
 @login_required
 def _followers_list():
     subject = current_user.id
-    return jsonify({"followers": get_followers(subject)})
+    return jsonify({"followers": _get_followers_of(subject)})
 
 # TODO: add to the API doc
 # Return the followed list
@@ -74,7 +74,7 @@ def _followers_list():
 @login_required
 def _followed_list():
     subject = current_user.id
-    return jsonify({"followed": get_followed(subject)})
+    return jsonify({"followed": _get_followed_by(subject)})
 
 
 
