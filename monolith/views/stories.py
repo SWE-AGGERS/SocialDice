@@ -44,10 +44,10 @@ def _stories(message=''):
         allstories = db.session.query(Story, User).join(User).all()
         allstories = list(
             map(lambda x: (
-                x[0], 
-                x[1], 
+                x[0],
+                x[1],
                 "hidden" if x[1].id == current_user.id else "",
-                "delete" if _is_follower(current_user.id, x[1].id) else "post",
+                "unfollow" if _is_follower(current_user.id, x[1].id) else "follow",
             ), allstories)
         )
         return render_template(
