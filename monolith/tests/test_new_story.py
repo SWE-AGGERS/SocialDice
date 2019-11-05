@@ -10,6 +10,12 @@ class TestNewStory(unittest.TestCase):
         tested_app = create_app()
         with tested_app.test_client() as client:
 
+            # login
+            reply = login(client, 'example@example.com', 'admin')
+            assert b'Hi Admin!' in reply.data
+            reply = client.get('/stories')
+            assert b'Trial story of example admin user' in reply.data
+
             # correct roll
             reply = client.get('/rolldice/5/basic')
             assert b'You\'ve got' in reply.data
