@@ -46,11 +46,14 @@
 
     <br><br><br>
     <h2>All of {{ stats.numStories }} {{ user.firstname }}'s Stories</h2>
-    ... have you time to read all tories?!
+    ... have you time to read all this stories?!
+    <br><br>
     {% for story in stories%}
-      <div>
+      <div class="story-container">
         <li>
-          {{story.text}} <br>
+            <div class="story_detail-text">
+            {{story.text}}
+            </div>
             <button type="button" class="btn btn-primary"> Likes:{{story.likes}} </button>
             --
             <button type="button" class="btn btn-danger"> Dislikes:{{story.dislikes}} </button>
