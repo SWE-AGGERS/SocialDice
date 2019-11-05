@@ -36,7 +36,8 @@ class MyTestCase(unittest.TestCase):
             example = Story()
             example.text = 'We dont need no education We dont need no...All in all you re just another brick in the wall'
             example.likes = 42
-            example.dislikes = 0
+            example.dislikes = 1
+            example.dicenumber = 6
             example.author_id = user.id
             print(example)
             db.session.add(example)
@@ -45,6 +46,7 @@ class MyTestCase(unittest.TestCase):
             example.text = 'Leaving just a memory...Snapshot in the family album...Daddy what else did you leave for me?'
             example.likes = 42
             example.dislikes = 0
+            example.dicenumber = 4
             example.author_id = user.id
             print(example)
             db.session.add(example)

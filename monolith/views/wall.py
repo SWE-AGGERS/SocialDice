@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, jsonify
 from flask_login import login_required
 
+from monolith.classes.Stats import Stats
 from monolith.classes.Wall import Wall
 from monolith.database import db, Story, User
 from monolith.auth import current_user
@@ -36,8 +37,10 @@ def renderWall(user_id):
 
     stories = db.session.query(Story).filter(Story.author_id == user.id)
 
-    rend = render_template("wall.html", user=user, stories=stories)
-    return render_template("wall.html", user=user, stories=stories)
+    stats = Stats(user_id)
+
+    rend = render_template("wall.html", user=user, stories=stories, stats=stats)
+    return rend
 
 
 @wall.route('/thewall/<user_id>')
