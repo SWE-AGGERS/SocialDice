@@ -59,6 +59,13 @@ def _unfollow_user(userid):
     # return OK
     return redirect('/wall/'+str(userid))
 
+# Unfollow a writer (as post)
+# used to work with forms
+@follow.route('/unfollow/<int:userid>', methods=['POST'])
+@login_required
+def _unfollow_user_post(userid):
+    return _unfollow_user(userid)
+
 # TODO: add to the API doc
 # return the followers list
 @follow.route('/followers/list', methods=['GET'])
