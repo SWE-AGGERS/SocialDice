@@ -32,9 +32,11 @@
       <li class="story-container">
         <div class="author inline">
           <div class="name">{{user.firstname}} {{user.lastname}}</div>
-          <div class="follow {{cannot_follow}}">
-            <form method="POST" action="/{{method}}/{{user.id}}" data-user="{{user.id}}">
-              <input type="submit" value="Follow" />
+          <div class="follow {{cannot_follow}} inline">
+            <form method="POST" action="/{{method}}/{{user.id}}">
+              <button type="submit">
+                <i class="fa {{method}}"></i>
+              </button>
             </form>
           </div>
         </div>
