@@ -1,4 +1,4 @@
-from flask import Blueprint, request, redirect, render_template, abort
+from flask import Blueprint, request, redirect, render_template, abort, json
 from flask_login import (current_user, login_required)
 
 from monolith.background import update_reactions
@@ -8,7 +8,10 @@ from flask_login import (current_user, login_user, logout_user,
                          login_required)
 from monolith.forms import UserForm, StoryForm, SelectDiceSetForm
 from monolith.database import db, Story, Reaction, User
-from monolith.classes.DiceSet import DiceSet
+from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingSetError
+
+from monolith.views.follow import _is_follower
+import re
 
 stories = Blueprint('stories', __name__)
 
@@ -22,21 +25,43 @@ def _stories(message=''):
         new_story.author_id = current_user.id
         new_story.likes = 0
         new_story.dislikes = 0
-        text = request.form.get('text')
-        roll = request.form.get('roll')
+
+        if form.validate_on_submit():
+            text = request.form.get('text')
+            roll = request.form.get('roll')
+            # for the tests
+            if re.search('"', roll):
+                roll = json.loads(request.form.get('roll'))
+
         dicenumber = len(roll)
         new_story.text = text
-        new_story.roll = {'dice': str(roll)}
+        new_story.roll = {'dice': roll}
         new_story.dicenumber = dicenumber
         db.session.add(new_story)
         db.session.commit()
         return redirect('/stories')
     elif 'GET' == request.method:
-        allstories = db.session.query(Story, User).join(User)
-        return render_template("stories.html", form=form, stories=allstories, like_it_url="http://127.0.0.1:5000/stories/reaction")
+        allstories = db.session.query(Story, User).join(User).all()
+        allstories = list(
+            map(lambda x: (
+                x[0], 
+                x[1], 
+                "hidden" if x[1].id == current_user.id else "",
+                "delete" if _is_follower(current_user.id, x[1].id) else "post",
+            ), allstories)
+        )
+        return render_template(
+            "stories.html",
+            message=message,
+            form=form,
+            stories=allstories,
+            active_button="stories",
+            like_it_url="/stories/reaction",
+            details_url="/stories"
+        )
 
 
-@stories.route('/story/<storyid>/reaction/<reactiontype>', methods=['GET', 'PUSH'])
+@stories.route('/stories/reaction/<storyid>/<reactiontype>', methods=['GET', 'PUSH'])
 @login_required
 def _reaction(storyid, reactiontype):
     # check if story exist
@@ -86,9 +111,14 @@ def get_story_detail(storyid):
 @stories.route('/rolldice/<dicenumber>/<dicesetid>', methods=['GET'])
 def _roll(dicenumber, dicesetid):
     form = StoryForm()
-    #dicenumber = request.args.get("dicenumber")
-    #dicesetid = request.args.get("dicesetid")
+    try:
+        dice = DiceSet(dicesetid)
+    except NonExistingSetError:
+        abort(404)
 
-    dice = DiceSet(dicesetid)
+    try:
+        roll = dice.throw_dice(int(dicenumber))
+    except WrongDiceNumberError:
+        return _stories("Wrong dice number!")
 
-    return render_template("create_story.html", form=form, roll=dice.throw_dice())
+    return render_template("create_story.html", form=form, set=dicesetid, roll=roll)

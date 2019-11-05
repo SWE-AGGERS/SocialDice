@@ -2,7 +2,7 @@
     padding: 0;
 }
 
-.author {
+.author .name {
     font-weight: bold;
 }
 
@@ -15,12 +15,30 @@
     border-radius: 32px;
 }
 
-.like {
+.follow.hidden{
+    display: none;
+    visibility: none;
+}
+
+.story {
+    text-decoration: none;
+    color: black;
+}
+
+.story::hover {
+    text-decoration: none;
+    color: #333;
+}
+
+
+.inline > * {
     display: inline;
+}
+
+.like {
     text-decoration: none;
 }
 
 .dislike {
-    display: inline;
     text-decoration: none;
 }

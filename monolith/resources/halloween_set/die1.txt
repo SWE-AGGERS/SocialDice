@@ -1,0 +1,6 @@
+zombie
+bat
+broomstick
+goblin
+dagger
+spiderweb

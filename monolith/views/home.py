@@ -16,4 +16,4 @@ def index():
         stories = db.session.query(Story).filter(Story.author_id == current_user.id)
     else:
         stories = None
-    return render_template("index.html", stories=stories)
+    return render_template("index.html", stories=stories,active_button="index")
