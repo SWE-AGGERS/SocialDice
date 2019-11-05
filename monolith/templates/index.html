@@ -13,11 +13,7 @@
         {% for story in stories %}
             <div>
                 <li>
-                    <!--
-                    Another solution:
-                    {{ story.text }} -- Likes:{{ story.likes }} -- <a href="/{{ story.id }}/remove" onclick="return confirm('Do you really want to delete the story?')"> Delete story </a>
-                    -->
-                    {{ story.text }} -- Likes:{{ story.likes }}  -- <a href="#myModal" class="trigger-btn" data-toggle="modal">Delete story</a>
+                    {{ story.text }} -- Likes:{{ story.likes }} -- <a href="#myModal" class="trigger-btn" data-toggle="modal">Delete story</a>
                     <div id="myModal" class="modal fade">
                         <div class="modal-dialog modal-confirm">
                             <div class="modal-content">
@@ -30,11 +26,14 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-                                    <a href="/{{ story.id }}/remove" id="delete" class="btn btn-primary">Delete</a>
+                                    <a href="stories/{{ story.id }}/remove/index" id="delete" class="btn btn-primary">Delete</a>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- <form action="stories/{{ story.id }}/remove" method=”DELETE”>
+  <input type=”submit” /> -->
+
                 </li>
             </div>
         {% endfor %}

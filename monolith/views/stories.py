@@ -6,6 +6,7 @@ from monolith.classes.DiceSet import DiceSet
 from monolith.database import Reaction
 from monolith.database import db, Story
 from monolith.forms import StoryForm
+from monolith.views.home import index
 import sys
 
 
@@ -33,7 +34,7 @@ def _stories(message=''):
     if 'GET' == request.method:
         # Go to the feed
         allstories = db.session.query(Story)
-        return render_template("stories.html", form=form, message=message, stories=allstories,
+        return render_template("stories.html", form=form, message=message, stories=allstories, id = current_user.id,
                                like_it_url="http://127.0.0.1:5000/stories/like/")
 
 
@@ -74,7 +75,7 @@ def _reaction(storyid, reactiontype):
 
 
 # todo add dices details on render
-@stories.route('/stories/<storyid>', methods=['GET','DELETE'])
+@stories.route('/stories/<storyid>', methods=['GET'])
 def get_story_detail(storyid):
     # Detail of story id
     if 'GET' == request.method:
@@ -85,9 +86,9 @@ def get_story_detail(storyid):
         else:
             abort(404)
 
-@stories.route('/<storyid>/remove', methods=['GET','POST','PUT'])
+@stories.route('/stories/<storyid>/remove/<page>', methods=['GET'])
 @login_required
-def get_remove_story(storyid):
+def get_remove_story(storyid,page):
     # Remove story
     q = db.session.query(Story).filter_by(id=storyid)
     story = q.first()
@@ -110,11 +111,18 @@ def get_remove_story(storyid):
             print(reactions)
             db.session.delete(story)
             db.session.commit()
-            return redirect('/')
+            #return redirect('/')
+            if page == "stories":
+                message = "The story has been canceled."
+                return _stories(message)
+            else:
+                return index()
         else:
             # The user can only delete the stories she/he wrote.
-            abort(404)
-
+            #abort(404)
+            #return redirect('/stories')
+            message = "The story was written by another user and cannot be deleted."
+            return _stories(message)
 
     else:
         # Story doensn't exist

@@ -11,7 +11,26 @@
                 "{{ story.text }}" Likes: {{ story.likes }} Dislikes: {{ story.dislikes }} ({{ story.date }})
                 <a href="/story/{{ story.id }}/reaction/1">Like it!</a>
                 <a href="/story/{{ story.id }}/reaction/2">Dislike it!</a>
-
+                {% if id == story.author_id %}
+                    <a href="#myModal" class="trigger-btn" data-toggle="modal">Delete story</a>
+                        <div id="myModal" class="modal fade">
+                            <div class="modal-dialog modal-confirm">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Delete story</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Do you really want to delete this story? This process cannot be undone.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                                        <a href="stories/{{ story.id }}/remove/stories" id="delete" class="btn btn-primary">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>
