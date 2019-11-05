@@ -119,6 +119,8 @@ def _roll(dicenumber, dicesetid):
     try:
         roll = dice.throw_dice(int(dicenumber))
     except WrongDiceNumberError:
-        return _stories("Wrong dice number!")
+        return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">"+
+        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>"+
+        "<strong>Error!</strong> Wrong dice number!</div>")
 
     return render_template("create_story.html", form=form, set=dicesetid, roll=roll)
