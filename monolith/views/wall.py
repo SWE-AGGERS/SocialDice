@@ -22,14 +22,14 @@ def _strava_auth_url(config):
 def getmywall():
     if current_user is not None and hasattr(current_user, 'id'):
         # return getawall(current_user.id)
-        return renderWall(current_user.id)
+        return render_wall(current_user.id)
     else:
         return User_not_found()
 
 
 @wall.route('/wall/<user_id>')
 @login_required
-def renderWall(user_id):
+def render_wall(user_id):
     q = db.session.query(User).filter(User.id == user_id)
     user = q.first()
     if user is None:
