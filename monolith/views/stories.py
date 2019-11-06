@@ -9,6 +9,8 @@ from flask_login import (current_user, login_user, logout_user,
 from monolith.forms import UserForm, StoryForm, SelectDiceSetForm
 from monolith.database import db, Story, Reaction, User
 from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingSetError
+
+from monolith.views.follow import _is_follower
 import re
 
 stories = Blueprint('stories', __name__)
@@ -39,7 +41,15 @@ def _stories(message=''):
         db.session.commit()
         return redirect('/stories')
     elif 'GET' == request.method:
-        allstories = db.session.query(Story, User).join(User)
+        allstories = db.session.query(Story, User).join(User).all()
+        allstories = list(
+            map(lambda x: (
+                x[0], 
+                x[1], 
+                "hidden" if x[1].id == current_user.id else "",
+                "delete" if _is_follower(current_user.id, x[1].id) else "post",
+            ), allstories)
+        )
         return render_template(
             "stories.html",
             message=message,
