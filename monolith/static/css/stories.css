@@ -42,11 +42,11 @@
     color: #333;
 }
 
-i.follow::after {
+follow::after {
     content: "\f067";
 }
 
-i.unfollow::after {
+unfollow::after {
     content: "\f068";
 }
 
@@ -57,8 +57,12 @@ i.unfollow::after {
 
 .like {
     text-decoration: none;
+    border: none;
+    background: white;
 }
 
 .dislike {
     text-decoration: none;
+    border: none;
+    background: white;
 }
