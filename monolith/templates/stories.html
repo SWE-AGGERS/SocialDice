@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename = 'css/stories.css') }}">
+  <link rel="stylesheet" href="../static/css/stories.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -26,44 +26,36 @@
     {% include "includes/nav.html" %}
 
     {% block content %}
+      <div class="container">
+        {{ message|safe }}
+      </div>
+      {% if info_bar == true %}
+      {% if error == true %}
+        <div class="container">
+            <div class="row h-25"></div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-danger" role="alert">{{ res_msg }}</div>
+                </div>
+            </div>
+        </div>
+      {% else %}
+        <div class="container">
+            <div class="row h-25"></div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-success" role="alert">{{ res_msg }}</div>
+                </div>
+            </div>
+        </div>
+      {% endif %}
+      {% endif %}
+
+     {% include "story_list.html" %}
 
     <div class="container">
       {{ message|safe }}
     </div>
-
-    <ul class="feed">
-      {% for story, user, cannot_follow, method in stories %}
-      <li class="story-container">
-        <div class="author inline">
-          <div class="name">{{user.firstname}} {{user.lastname}}</div>
-          <div class="follow {{cannot_follow}} inline">
-            <form method="POST" action="/{{method}}/{{user.id}}">
-              <button type="submit">
-                <i class="fa {{method}}"></i>
-              </button>
-            </form>
-          </div>
-        </div>
-        <a class="story" href="{{details_url}}/{{story.id}}">
-          {{story.text}}
-        </a>
-        <div class="inline">
-          <div class="like">
-            {{story.likes}}
-            <a href="{{like_it_url}}/{{story.id}}/1">
-              <i class="far fa-thumbs-up"></i>
-            </a>
-          </div>
-          <div class="dislike">
-            {{story.dislikes}}
-            <a href="{{like_it_url}}/{{story.id}}/2">
-              <i class="far fa-thumbs-down"></i>
-            </a>
-          </div>
-        </div>
-      </li>
-      {% endfor %}
-    </ul>
 
     <!-- Button to Open the Modal -->
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">New story</button>
