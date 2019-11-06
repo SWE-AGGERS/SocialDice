@@ -5,7 +5,7 @@ from monolith.classes.Stats import Stats
 from monolith.classes.Wall import Wall
 from monolith.database import db, Story, User
 from monolith.auth import current_user
-
+from monolith.forms import SelectDiceSetForm
 
 wall = Blueprint('wall', __name__)
 
@@ -49,6 +49,18 @@ def render_wall(user_id):
     stories = db.session.query(Story).filter(Story.author_id == user.id)
 
     stats = Stats(user_id)
+
+    form = SelectDiceSetForm()
+
+    render = render_template(
+        "wall.html",
+        message="message",
+        form=form,
+        stories=stories,
+        active_button="stories",
+        like_it_url="/stories/reaction",
+        details_url="/stories"
+    )
 
     rend = render_template("wall.html", user=user, stories=stories, stats=stats)
     return rend
