@@ -19,6 +19,7 @@
   <title>Stories</title>
 </head>
 
+
 <body>
 
 {% include "includes/nav.html" %}
@@ -73,42 +74,16 @@
     </div>
 
 
-    <ul class="feed">
-          {% for story, user, cannot_follow, method in stories %}
-          <li class="story-container">
-            <div class="author inline">
-              <div class="name">{{user.firstname}} {{user.lastname}}</div>
-              <div class="follow {{cannot_follow}}">
-                <form method="{{method}}" action="/follow/{{user.id}}" data-user="{{user.id}}">
-                  <input type="submit" value="Follow"/>
-                </form>
-              </div>
-            </div>
-            <a class="story" href="{{details_url}}/{{story.id}}">
-              {{story.text}}
-            </a>
-            <div class="inline">
-              <div class="like">
-                {{story.likes}}
-                <a href="{{like_it_url}}/{{story.id}}/1">
-                  <i class="far fa-thumbs-up"></i>
-                </a>
-              </div>
-              <div class="dislike">
-                {{story.dislikes}}
-                <a href="{{like_it_url}}/{{story.id}}/2">
-                  <i class="far fa-thumbs-down"></i>
-                </a>
-              </div>
-            </div>
-          </li>
-          {% endfor %}
-        </ul>
-
+{% include "story_list.html" %}
 
 {% else %}
   Hi Anonymous, <a href="/login">Log in</a>
 {% endif %}
+
+
+
+
+
 
 {% endblock %}
 

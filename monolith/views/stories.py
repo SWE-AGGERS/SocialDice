@@ -1,4 +1,4 @@
-from flask import Blueprint, request, redirect, render_template, abort, json
+from flask import Blueprint, request, redirect, render_template, abort, json, jsonify
 from flask_login import (current_user, login_required)
 
 from monolith.background import update_reactions
@@ -43,6 +43,7 @@ def _stories(message='', error=False, res_msg='', info_bar=False):
                 x[1],
                 "hidden" if x[1].id == current_user.id else "",
                 "unfollow" if _is_follower(current_user.id, x[1].id) else "follow",
+                reacted(x[1].id, x[0].id)
             ), allstories)
         )
         return render_template(
@@ -64,7 +65,8 @@ def _stories(message='', error=False, res_msg='', info_bar=False):
 def _reaction(storyid, reactiontype):
     try:
         message = add_reaction(reacterid=current_user.id, storyid=storyid, reactiontype=reactiontype)
-        return _stories(error=False, res_msg=message, info_bar=True)
+        # return _stories(error=False, res_msg=message, info_bar=True)
+        return jsonify({'reply': message, 'reaction': reactiontype, 'story_id': storyid})
     except StoryNonExistsError as err_msg:
         return _stories(error=True, res_msg=err_msg, info_bar=True)
 
@@ -121,6 +123,7 @@ def filter_stories():
                         x[1],
                         "hidden" if x[1].id == current_user.id else "",
                         "unfollow" if _is_follower(current_user.id, x[1].id) else "follow",
+                        reacted(x[1].id, x[0].id)
                     ), f_stories))
                 return render_template('filter_stories.html',
                                        form=form,
@@ -132,7 +135,11 @@ def filter_stories():
                                        info_bar=False
                                        )
         else:
-            return render_template('filter_stories.html', form=form, error=True, error_message='Cant travel back in time! Doublecheck dates')
+            return render_template('filter_stories.html',
+                                   form=form,
+                                   info_bar=True,
+                                   error=True,
+                                   res_msg='Cant travel back in time! Doublecheck dates')
 
 
 
@@ -176,3 +183,11 @@ class StoryNonExistsError(Exception):
 
     def __str__(self):
         return repr(self.value)
+
+
+def reacted(user_id, story_id):
+    q = db.session.query(Reaction).filter_by(story_id=story_id, user_id=user_id).all()
+    print(q)
+    if len(q) > 0:
+        return q[0].type
+    return 0
