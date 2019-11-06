@@ -68,18 +68,25 @@ class TestEmail(unittest.TestCase):
             with client.session_transaction() as session:
                 # push in the users_table 3 users
                 user_a = User()
+                user_a.firstname = 'user_a'
                 user_a.email = 'testa@test.com'
                 user_a.set_password('test')
 
                 user_b = User()
+                user_b.firstname = 'user_b'
+                user_b.lastname = 'surname_b'
                 user_b.email = 'testb@test.com'
                 user_b.set_password('test')
 
                 user_c = User()
+                user_c.firstname = 'user_c'
+                user_c.lastname = 'surname_c'
                 user_c.email = 'testc@test.com'
                 user_c.set_password('test')
 
                 user_d = User()
+                user_d.firstname = 'user_d'
+                user_d.lastname = 'surname_d'
                 user_d.email = 'testd@test.com'
                 user_d.set_password('test')
 
@@ -126,8 +133,14 @@ class TestEmail(unittest.TestCase):
 
                 db.session.commit()
 
-                
+                res = maker_message(user_a)
+                print(res)
+                correct = "Hello user_a,\n\nhere you can find what's new on the wall of Sweaggers' SocialDice!\n\n - user_b surname_b posts 4 new stories.\n - user_c surname_c posts 3 new stories.\n\nSee you on SocialDice,\nSweaggers Team"
+                self.assertEqual(res, correct)
 
+                res = maker_message(user_d)
+                correct = "Hello user_d,\n\nYou have no news for today, take a look and add new writers on Sweaggers' SocialDice!"
+                self.assertEqual(res, correct)
 
     def test_get_all_stories_by_writer(self):
         global _app

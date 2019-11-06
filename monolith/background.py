@@ -78,16 +78,11 @@ def send_emails():
             continue
 
 
-def get_users():
-    """Return all the users in the db"""
-    return User.query.all()
-
-
 def maker_message(user):
     """Make personalized message for each user"""
-    text = "Hello "+user.name
-    followed_lists = get_followed_list(user.id)
-    if followed_lists == []:
+    text = "Hello "+user.firstname
+    followed_list = get_followed_list(user.id)
+    if followed_list == []:
         return text+",\n\nYou have no news for today, take a look and add new writers on Sweaggers' SocialDice!"
     else:
         text +=",\n\nhere you can find what's new on the wall of Sweaggers' SocialDice!\n"
@@ -96,12 +91,12 @@ def maker_message(user):
         # get all stories of a follower posted in the last 24h
         # count them)
         stories_number = len(get_all_stories_by_writer(followed))
-        
+        f = get_user(followed)
         # put a line in the text with "<followed_user_name> posts <stories_number> new stories!"
         if stories_number > 0:
-            text += "\n - "+user.firstname+" "+user.lastname+" posts "+str(stories_number)+"new stories."
+            text += "\n - "+f.firstname+" "+f.lastname+" posts "+str(stories_number)+" new stories."
 
-    text += "\nSee you on SocialDice,\nSweaggers Team"
+    text += "\n\nSee you on SocialDice,\nSweaggers Team"
 
     return text
 
@@ -121,3 +116,12 @@ def get_all_stories_by_writer(userid):
 
 def get_followed_list(userid):
     return [f.followed.get_id() for f in _get_followers_of(userid)]
+
+
+def get_user(userid):
+    return User.query.filter_by(id=userid).first()
+
+
+def get_users():
+    """Return all the users in the db"""
+    return User.query.all()
