@@ -58,7 +58,7 @@ class TestStory(unittest.TestCase):
         die4 = 'ladder car fire bang hat hamburger'
         die5 = 'rain heart glasses poo ball sun'
         storySet = ""
-        diceSet.throw_dice(6)
+        diceSet.throw_dice("6")
         self.assertRaises(TooSmallStoryError, cs.check_storyV2,storySet,diceSet)
 
     def test_invalid_story_wrong_type_diceset(self):
