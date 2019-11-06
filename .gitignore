@@ -110,6 +110,7 @@ venv.bak/
 # personal
 variables.sh
 .idea
+costants.py
 
 
 # Created by https://www.gitignore.io/api/pycharm,pycharm+all,pycharm+iml
