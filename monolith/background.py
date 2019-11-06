@@ -1,17 +1,18 @@
 from celery import Celery
 
 from monolith.database import db, Story, Reaction
+from sqlalchemy import and_
 
 # EMAIL IMPORTS
 from celery.schedules import crontab
 from monolith.constants import _EMAIL, _PASSWORD
 from monolith.database import User
-#from monolith.views.follow import _get_followers_of
+from monolith.views.follow import _get_followers_of
 # emails library
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from datetime import datetime
+from datetime import datetime, timedelta
 
 BACKEND = BROKER = 'redis://localhost:6379'
 celery = Celery(__name__, backend=BACKEND, broker=BROKER)
@@ -55,7 +56,10 @@ def send_emails():
     # STARTING MAIL SERVER
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
-    server.login(_EMAIL, _PASSWORD)
+    try:
+        server.login(_EMAIL, _PASSWORD)
+    except:
+        print("Server login error!")
 
     # Get all users
     user_tab = get_users()
@@ -68,7 +72,10 @@ def send_emails():
         msg['Subject'] = 'SocialDice - News!'
         message = make_message(user)
         msg.attach(MIMEText(message))
-        server.sendmail(msg)
+        try:
+            server.sendmail(msg)
+        except:
+            continue
 
 
 def get_users():
@@ -99,16 +106,18 @@ def maker_message(user):
     return text
 
 def get_all_stories_by_writer(userid):
+    since = datetime.now() - timedelta(hours=24)
     try:
-        res = Story.filter(
+        res = Story.query.filter(
             and_(
                 Story.author_id == userid, 
-                (Story.date - datetime.datetime.now()).days <= 1)
-            )
+                Story.date >= since
+                )
+            ).all()
         return res
     except:
         return []
 
 
 def get_followed_list(userid):
-    return [f.followed for f in _get_followers_of(userid)]
+    return [f.followed.get_id() for f in _get_followers_of(userid)]

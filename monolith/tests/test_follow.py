@@ -91,9 +91,7 @@ class TestFollow(unittest.TestCase):
             self.assertFalse(_is_follower(user_a_id, user_not_exist_id))
             self.assertIn("/stories", str(reply.data))
             logout(client)        
-                          
-
-"""                    
+                                              
 
     def test_unfollow_user(self):
 
@@ -175,7 +173,6 @@ class TestFollow(unittest.TestCase):
             self.assertIn("/stories", str(reply.data))
             logout(client)
 
-"""
 
 # TO DELETE MAYBE?
 def login(client, username, password):
