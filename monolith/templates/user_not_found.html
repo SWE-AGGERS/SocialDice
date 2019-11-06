@@ -1,0 +1,15 @@
+{% if current_user.is_authenticated %}
+    {% extends "layout.html" %}
+    {% block title %}
+        NOT Found
+    {% endblock %}
+
+    {% block content %}
+        <h1>User NOT Found</h1>
+
+
+    {% endblock %}
+{% else %}
+    Hi Anonymous, <a href="/login">Log in</a> or <a href="/signup"> signup</a>
+{% endif %}
+

@@ -13,6 +13,7 @@
     margin-left: 0px;
     max-width: 700px;
     border-radius: 32px;
+    margin: 8px;
 }
 
 .follow.hidden{
@@ -20,14 +21,33 @@
     visibility: none;
 }
 
+.follow button {
+    border: 1px solid lightgray;
+    background: white;
+    border-radius: 16px;
+    float: right;
+}
+
+.follow button:hover {
+    background-color: lightgray;
+}
+
 .story {
     text-decoration: none;
     color: black;
 }
 
-.story::hover {
+.story:hover {
     text-decoration: none;
     color: #333;
+}
+
+i.follow::after {
+    content: "\f067";
+}
+
+i.unfollow::after {
+    content: "\f068";
 }
 
 
