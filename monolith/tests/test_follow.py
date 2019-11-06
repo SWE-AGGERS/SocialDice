@@ -144,6 +144,10 @@ class TestFollow(unittest.TestCase):
                 reply = client.get("/followed/list")
                 self.assertIn(user_b.firstname, str(reply.data))
 
+                # get followed number
+                reply = client.get("/followed")
+                assert b'"followed_num":1' in reply.data
+
                 # logout user1
                 logout(client)
 
@@ -153,9 +157,11 @@ class TestFollow(unittest.TestCase):
                 # get followers list
                 reply = client.get("/followers/list")
                 self.assertIn(user_a.firstname, str(reply.data))
-                          
 
-"""                    
+                # get followers number
+                reply = client.get("/followers")
+                assert b'"followers_num":1' in reply.data
+                    
 
     def test_unfollow_user(self):
 
@@ -237,7 +243,6 @@ class TestFollow(unittest.TestCase):
             self.assertIn("/stories", str(reply.data))
             logout(client)
 
-"""
 
 # TO DELETE MAYBE?
 def login(client, username, password):

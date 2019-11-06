@@ -102,7 +102,9 @@ def _followed_list():
 @login_required
 def _followers_numer():
     # return json with OK, and the number
-    return jsonify({"followers": _get_followers_number(current_user.id)})
+    subject = current_user.id
+    temp = db.session.query(Followers, User).filter(Followers.follower_id==User.id).filter_by(followed_id=subject).all()
+    return jsonify({"followers_num": len(temp)})
 
 
 # TODO: add to API doc
@@ -110,8 +112,9 @@ def _followers_numer():
 @follow.route('/followed', methods=['GET'])
 @login_required
 def _followed_numer():
-    # return json with OK, and the number
-    return jsonify({"followed": _get_followed_number(current_user.id)})
+    subject = current_user.id
+    temp = db.session.query(Followers, User).filter(Followers.followed_id==User.id).filter_by(follower_id=subject).all()
+    return jsonify({"followed_num": len(temp)})
 
 
 
@@ -120,7 +123,7 @@ def _followed_numer():
 # UTILITY FUNC
 # =============================================================================
 
-# Get the list of followers of the user_id
+"""# Get the list of followers of the user_id
 def _get_followers_of(user_id):
     L = Followers.query.filter_by(follower_id=user_id).all()
     return L
@@ -138,7 +141,7 @@ def _get_followers_number(user_id):
 
 # Get the number of followed
 def _get_followed_number(user_id):
-    return len(_get_followers_of(user_id))
+    return len(_get_followers_of(user_id))"""
 
 # check if user_a follow user_b
 def _is_follower(user_a, user_b):
