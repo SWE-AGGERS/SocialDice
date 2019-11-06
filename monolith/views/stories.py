@@ -51,6 +51,9 @@ def _stories(message='', error=False, res_msg='', info_bar=False):
                 reacted(x[1].id, x[0].id)
             ), allstories)
         )
+        for x in allstories:
+            print(x[0].likes)
+        
         return render_template(
             "stories.html",
             message=message,

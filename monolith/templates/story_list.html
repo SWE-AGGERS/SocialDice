@@ -15,15 +15,15 @@
       {{story.text}}
     </a>
     <div class="inline">
-      <button class="like {{  'active' if react==1 }}" id="button_{{ story.id }}_1"
-        onclick="return react(this, {{ story.id }}, 1)">
+      <button class="like {{ 'active' if react==1 }}" id="button_{{ story.id }}_1"
+        onclick="return react(this, '{{ story.id }}', 1)">
         <span>{{story.likes}}</span>
-        <i class="far fa-thumbs-up"></i>
+        <i class="far"></i>
       </button>
-      <button class="dislike {{  'active' if react==2 }}" id="button_{{ story.id }}_2"
-        onclick="return react(this, {{ story.id }}, 2)">
+      <button class="dislike {{ 'active' if react==2 }}" id="button_{{ story.id }}_2"
+        onclick="return react(this, '{{ story.id }}', 2)">
         <span>{{story.dislikes}}</span>
-        <i class="far fa-thumbs-down"></i>
+        <i class="far"></i>
       </button>
     </div>
   </li>
