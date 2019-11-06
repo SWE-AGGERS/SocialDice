@@ -20,6 +20,10 @@ class TestNewStory(unittest.TestCase):
             reply = client.get('/rolldice/5/basic')
             assert b'You\'ve got' in reply.data
 
+            # wrong argument type
+            reply = client.get('/rolldice/pippo/basic')
+            assert b'Argument Dice number needs to be an integer!' in reply.data
+
             # wrong dice number
             reply = client.get('/rolldice/12/basic')
             assert b'Wrong dice number!' in reply.data

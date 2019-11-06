@@ -21,7 +21,7 @@ class TestStory(unittest.TestCase):
         die4 = 'ladder car fire bang hat hamburger'
         die5 = 'rain heart glasses poo ball sun'
         storySet = die0 + " " + die1 + " " + die2 + " " + die3 + " " + die4 + " " + die5
-        diceSet.throw_dice(6)
+        diceSet.throw_dice("6")
         self.assertEqual(cs.check_storyV2(storySet,diceSet),True)
 
 
@@ -31,7 +31,7 @@ class TestStory(unittest.TestCase):
         for elem in range(0,30):
             string = "a"
             storySet = storySet + string + " "
-        diceSet.throw_dice(6)
+        diceSet.throw_dice("6")
         self.assertEqual(cs.check_storyV2(storySet,diceSet),False)
 
 
@@ -45,7 +45,7 @@ class TestStory(unittest.TestCase):
         die4 = 'ladder car fire bang hat hamburger'
         die5 = 'rain heart glasses poo ball sun'
         storySet = die0 + " " + die1 + " " + die2 + " " + die3 + " " + die4 + " " + die5
-        diceSet.throw_dice(6)
+        diceSet.throw_dice("6")
         self.assertRaises(WrongFormatStoryError, cs.check_storyV2,1,diceSet)
 
 
@@ -78,7 +78,7 @@ class TestStory(unittest.TestCase):
         die4 = 'ladder car fire bang hat hamburger'
         die5 = 'rain heart glasses poo ball sun'
         storySet = die0 + " " + die1 + " " + die2 + " " + die3 + " " + die4 + " " + die5
-        diceSet.throw_dice(5)
+        diceSet.throw_dice("5")
         path = os.path.join(constants.BASE_PATH, 'monolith/resources/basic_set/die2.txt')
         diceSet.dice.append(d.Die(path))
         storySet = storySet + die2
@@ -93,7 +93,7 @@ class TestStory(unittest.TestCase):
         die4 = 'ladder car fire bang hat hamburger'
         die5 = 'rain heart glasses poo ball sun'
         storySet = die0 + " " + die1 + " " + die2 + " " + die3 + " " + die4 + " " + die5
-        diceSet.throw_dice(6)
+        diceSet.throw_dice("6")
         diceSet.dice.append("a")
         diceSet.pips.append("a")
         self.assertRaises(WrongFormatSingleDiceError, cs.check_storyV2,storySet,diceSet)
@@ -107,7 +107,7 @@ class TestStory(unittest.TestCase):
         die4 = 'ladder car fire bang hat hamburger'
         die5 = 'rain heart glasses poo ball sun'
         storySet = die0 + " " + die1 + " " + die2 + " " + die3 + " " + die4 + " " + die5
-        diceSet.throw_dice(6)
+        diceSet.throw_dice("6")
         path = os.path.join(constants.BASE_PATH, 'monolith/resources/basic_set/die1.txt')
         diceSet.dice.append(d.Die(path))
         diceSet.pips.append(1)

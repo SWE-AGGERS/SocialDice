@@ -8,7 +8,7 @@ from flask_login import (current_user, login_user, logout_user,
                          login_required)
 from monolith.forms import UserForm, StoryForm, SelectDiceSetForm
 from monolith.database import db, Story, Reaction, User
-from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingSetError
+from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingSetError, WrongArgumentTypeError
 
 from monolith.views.follow import _is_follower
 import re
@@ -117,10 +117,13 @@ def _roll(dicenumber, dicesetid):
         abort(404)
 
     try:
-        roll = dice.throw_dice(int(dicenumber))
+        roll = dice.throw_dice(dicenumber)
     except WrongDiceNumberError:
         return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">"+
         "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>"+
         "<strong>Error!</strong> Wrong dice number!</div>")
-
+    except WrongArgumentTypeError:
+        return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">"+
+        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>"+
+        "<strong>Error!</strong> Argument Dice number needs to be an integer!</div>")
     return render_template("create_story.html", form=form, set=dicesetid, roll=roll)
