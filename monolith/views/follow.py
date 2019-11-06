@@ -123,12 +123,12 @@ def _followed_numer():
 # UTILITY FUNC
 # =============================================================================
 
-"""# Get the list of followers of the user_id
+# Get the list of followers of the user_id
 def _get_followers_of(user_id):
     L = Followers.query.filter_by(follower_id=user_id).all()
     return L
 
-# Get the list of users who follows the user_id
+"""# Get the list of users who follows the user_id
 def _get_followed_by(user_id):
     L = Followers.query.filter_by(followed_id=user_id).all()
     return L
