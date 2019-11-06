@@ -1,17 +1,11 @@
-from flask import Blueprint, request, redirect, render_template, abort, json
+from flask import Blueprint, request, redirect, render_template, abort
 from flask_login import (current_user, login_required)
 
 from monolith.background import update_reactions
-from flask import Blueprint, redirect, render_template, request
-from monolith.auth import admin_required, current_user
-from flask_login import (current_user, login_user, logout_user,
-                         login_required)
-from monolith.forms import UserForm, StoryForm, SelectDiceSetForm
-from monolith.database import db, Story, Reaction, User
-from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingSetError
-
-from monolith.views.follow import _is_follower
-import re
+from monolith.classes.DiceSet import DiceSet
+from monolith.database import Reaction
+from monolith.database import db, Story
+from monolith.forms import StoryForm
 
 stories = Blueprint('stories', __name__)
 
