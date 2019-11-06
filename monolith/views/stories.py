@@ -109,6 +109,6 @@ def _roll(dicenumber, dicesetid):
 @stories.route('/stories/random', methods=['GET'])
 def random_story():
     q = db.session.query(Story).order_by(func.random()).limit(
-        1)  # todo add filter_by(Story.author_id != current_user.id)
+        1)
     random_story_from_db = q.first()
     return render_template("story_detail.html", story=random_story_from_db)
