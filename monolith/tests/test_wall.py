@@ -14,6 +14,11 @@ test_app.app_context().push()
 class MyTestCase(unittest.TestCase):
     def test_json_wall(self):
         app = test_app.test_client()
+
+        with app.session_transaction() as sess:
+            db.drop_all()
+            db.create_all()
+
         q = db.session.query(User).filter(User.email == 'user@waltest.com')
         user = q.first()
         if user is None:
