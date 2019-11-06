@@ -44,10 +44,10 @@ def _stories(message='', error=False, res_msg='', info_bar=False):
         allstories = db.session.query(Story, User).join(User).all()
         allstories = list(
             map(lambda x: (
-                x[0], 
-                x[1], 
+                x[0],
+                x[1],
                 "hidden" if x[1].id == current_user.id else "",
-                "delete" if _is_follower(current_user.id, x[1].id) else "post",
+                "unfollow" if _is_follower(current_user.id, x[1].id) else "follow",
             ), allstories)
         )
         return render_template(
@@ -96,7 +96,9 @@ def _roll(dicenumber, dicesetid):
     try:
         roll = dice.throw_dice(int(dicenumber))
     except WrongDiceNumberError:
-        return _stories("Wrong dice number!")
+        return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">"+
+        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>"+
+        "<strong>Error!</strong> Wrong dice number!</div>")
 
     return render_template("create_story.html", form=form, set=dicesetid, roll=roll)
 
