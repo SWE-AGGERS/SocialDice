@@ -6,5 +6,5 @@ from pathlib import Path
 BASE_PATH = Path().absolute()
 
 # email and password for e-mail service
-_EMAIL = '???'
-_PASSWORD = '???'
+_EMAIL = 'abc'
+_PASSWORD = 'avvvv!'
