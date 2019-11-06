@@ -17,7 +17,18 @@ def _strava_auth_url(config):
     return '127.0.0.1:5000'
 
 
-@wall.route('/wall')
+# @wall.route('/wall/user_email', methods=['GET'])
+# @login_required
+# def get_wall_email(user_email):
+#     if current_user is not None and hasattr(current_user, 'id'):
+#         q = db.session.query(User).filter(User.email == user_email)
+#         user = q.first()
+#         if user is None:
+#             return User_not_found()
+#         return render_wall(user.id)
+
+
+@wall.route('/wall', methods=['GET'])
 @login_required
 def getmywall():
     if current_user is not None and hasattr(current_user, 'id'):
@@ -27,7 +38,7 @@ def getmywall():
     #     return User_not_found()
 
 
-@wall.route('/wall/<user_id>')
+@wall.route('/wall/<user_id>', methods=['GET'])
 @login_required
 def render_wall(user_id):
     q = db.session.query(User).filter(User.id == user_id)
@@ -43,7 +54,7 @@ def render_wall(user_id):
     return rend
 
 
-@wall.route('/thewall/<user_id>')
+@wall.route('/thewall/<user_id>', methods=['GET'])
 @login_required
 def getawall(user_id):
     # if user_id < 0:
@@ -69,5 +80,6 @@ def getawall(user_id):
 
     return jsonify(firstname=user.firstname,
                    lastname=user.lastname,
+                   id=user.id,
                    email=user.email,
                    stories=user_stories) # thewall.stories

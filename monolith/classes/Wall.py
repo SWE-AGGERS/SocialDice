@@ -41,28 +41,10 @@ class Wall:
 
     def acquire_from_json(self, resp: Response):
         _json = resp.get_json()
+        self.id = _json['id']
         self.email = _json['email']
         self.firstname = _json['firstname']
         self.lastname = _json['lastname']
         _stories = _json['stories']
         for st in _stories:
             self.stories.append(st)
-
-
-
-import unittest
-
-
-class TestWall(unittest.TestCase):
-
-    def test_die_init(self):
-        some_stories = ['story1', 'story2', 'story3', 'story4', 'story5', 'story6']
-        wall = Wall(42, 'abc@defg.com', 'user', 'name', some_stories)
-
-        wall.storyLimit = len(wall.stories_view)
-        wall.add_story('an extra story')
-        self.assertEqual(len(wall.stories_view), wall.storyLimit)
-
-
-if __name__ == '__main__':
-    unittest.main()
