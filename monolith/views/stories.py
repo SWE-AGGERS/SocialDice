@@ -6,9 +6,9 @@ from flask import Blueprint, redirect, render_template, request
 from monolith.auth import admin_required, current_user
 from flask_login import (current_user, login_user, logout_user,
                          login_required)
-from monolith.forms import UserForm, StoryForm, SelectDiceSetForm
+from monolith.forms import UserForm, StoryForm, SelectDiceSetForm, StoryFilter
 from monolith.database import db, Story, Reaction, User
-from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingSetError
+from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingSetError, WrongArgumentTypeError
 
 from monolith.views.follow import _is_follower
 import re
@@ -17,7 +17,7 @@ stories = Blueprint('stories', __name__)
 
 
 @stories.route('/stories', methods=['POST', 'GET'])
-def _stories(message=''):
+def _stories(message='', error=False, res_msg='', info_bar=False):
     form = SelectDiceSetForm()
     if 'POST' == request.method:
         # Create a new story
@@ -148,10 +148,6 @@ def filter_stories():
                                    info_bar=True,
                                    error=True,
                                    res_msg='Cant travel back in time! Doublecheck dates')
-
-
-
-
 
 
 def add_reaction(reacterid, storyid, reactiontype):
