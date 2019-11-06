@@ -22,31 +22,22 @@
       </li>
 
       <li class="nav-item">
-            <div class="dropdown">
-              <button class="nav-link active btn dropdown-toggle" type="button" id="FilterStoryButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Filter Stories
-              </button>
-              <div class="dropdown-menu" aria-labelledby="FilterStoryButton">
-                <a class="dropdown-item" href="/stories/filter">Time Intervals</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </div>
-            </div>
-        </li>
+        <div class="dropdown">
+          <button class="nav-link active btn dropdown-toggle" type="button" id="FilterStoryButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Filter Stories
+          </button>
+          <div class="dropdown-menu" aria-labelledby="FilterStoryButton">
+            <a class="dropdown-item" href="/stories/filter">Time Intervals</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </div>
+      </li>
 
         {% if current_user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" href="/logout" tabindex="-1" aria-disabled="true">Logout</a>
           </li>
         {% else %}
-
-
-
-            {% if current_user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/logout" tabindex="-1" aria-disabled="true">Logout</a>
-                </li>
-            {% else %}
-
         {% endif %}
 
     </ul>

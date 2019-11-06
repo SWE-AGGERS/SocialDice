@@ -1,11 +1,12 @@
-from flask import Blueprint, request, redirect, render_template, abort
+from flask import Blueprint, request, redirect, render_template, abort, json
 from flask_login import (current_user, login_required)
 
 from monolith.background import update_reactions
-from monolith.classes.DiceSet import DiceSet
-from monolith.database import Reaction
-from monolith.database import db, Story
-from monolith.forms import StoryForm
+from monolith.forms import StoryForm, SelectDiceSetForm, StoryFilter
+from monolith.database import db, Story, Reaction, User
+from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingSetError
+from monolith.views.follow import _is_follower
+import re
 
 stories = Blueprint('stories', __name__)
 
@@ -95,6 +96,28 @@ def _roll(dicenumber, dicesetid):
         "<strong>Error!</strong> Wrong dice number!</div>")
 
     return render_template("create_story.html", form=form, set=dicesetid, roll=roll)
+
+
+@stories.route('/stories/filter', methods=['GET', 'POST'])
+@login_required
+def filter_stories():
+    if request.method == 'GET':
+        form = StoryFilter()
+        return render_template('filter_stories.html', form=form)
+    if request.method == 'POST':
+        form = StoryFilter()
+        if form.validate_on_submit():
+            init_date = form.init_date.data
+            end_date = form.end_date.data
+            f_stories = Story.query.filter(Story.date >= init_date).filter(Story.date <= end_date)
+            if f_stories is not None:
+                return render_template('filter_stories.html', form=form, stories=f_stories)
+        else:
+            return render_template('filter_stories.html', form=form, error=True, error_message='Cant travel back in time! Doublecheck dates')
+
+
+
+
 
 
 def add_reaction(reacterid, storyid, reactiontype):
