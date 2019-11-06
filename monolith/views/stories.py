@@ -2,9 +2,14 @@ from flask import Blueprint, request, redirect, render_template, abort, json, js
 from flask_login import (current_user, login_required)
 
 from monolith.background import update_reactions
-from monolith.forms import StoryForm, SelectDiceSetForm, StoryFilter
+from flask import Blueprint, redirect, render_template, request
+from monolith.auth import admin_required, current_user
+from flask_login import (current_user, login_user, logout_user,
+                         login_required)
+from monolith.forms import UserForm, StoryForm, SelectDiceSetForm
 from monolith.database import db, Story, Reaction, User
 from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingSetError
+
 from monolith.views.follow import _is_follower
 import re
 
@@ -12,7 +17,7 @@ stories = Blueprint('stories', __name__)
 
 
 @stories.route('/stories', methods=['POST', 'GET'])
-def _stories(message='', error=False, res_msg='', info_bar=False):
+def _stories(message=''):
     form = SelectDiceSetForm()
     if 'POST' == request.method:
         # Create a new story
@@ -60,7 +65,7 @@ def _stories(message='', error=False, res_msg='', info_bar=False):
         )
 
 
-@stories.route('/stories/reaction/<storyid>/<reactiontype>', methods=['GET'])
+@stories.route('/stories/reaction/<storyid>/<reactiontype>', methods=['GET', 'PUSH'])
 @login_required
 def _reaction(storyid, reactiontype):
     try:
@@ -91,12 +96,15 @@ def _roll(dicenumber, dicesetid):
         abort(404)
 
     try:
-        roll = dice.throw_dice(int(dicenumber))
+        roll = dice.throw_dice(dicenumber)
     except WrongDiceNumberError:
         return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">"+
         "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>"+
         "<strong>Error!</strong> Wrong dice number!</div>")
-
+    except WrongArgumentTypeError:
+        return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">"+
+        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>"+
+        "<strong>Error!</strong> Argument Dice number needs to be an integer!</div>")
     return render_template("create_story.html", form=form, set=dicesetid, roll=roll)
 
 
