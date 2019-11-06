@@ -42,11 +42,11 @@
     color: #333;
 }
 
-follow::after {
+i.follow::after {
     content: "\f067";
 }
 
-unfollow::after {
+i.unfollow::after {
     content: "\f068";
 }
 
