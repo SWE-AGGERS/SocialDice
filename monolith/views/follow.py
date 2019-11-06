@@ -1,6 +1,7 @@
-from flask import Blueprint, jsonify, redirect
+from flask import Blueprint, redirect, render_template, request, jsonify
 from monolith.database import db, Followers, User
 from flask_login import current_user, login_required
+from sqlalchemy import and_
 
 follow = Blueprint('follow', __name__)
 
@@ -60,20 +61,23 @@ def _unfollow_user(userid):
     # return OK
     return redirect('/wall/'+str(userid))
 
-# Unfollow a writer (as post)
-# used to work with forms
-@follow.route('/unfollow/<int:userid>', methods=['POST'])
-@login_required
-def _unfollow_user_post(userid):
-    return _unfollow_user(userid)
-
 # TODO: add to the API doc
 # return the followers list
 @follow.route('/followers/list', methods=['GET'])
 @login_required
 def _followers_list():
     subject = current_user.id
-    return jsonify({"followers": get_followers(subject)})
+
+    temp = db.session.query(Followers, User).filter(Followers.follower_id==User.id).filter_by(followed_id=subject).all()
+    followers=[]
+
+    for f in temp:
+        d = {"id": f[1].id,"firstname": f[1].firstname, "lastname":f[1].lastname}
+        followers.append(d)
+
+    #return jsonify({"followers": followers})
+    
+    return render_template("follower.html", followers=followers, wall_url="/wall")
 
 # TODO: add to the API doc
 # Return the followed list
@@ -81,7 +85,14 @@ def _followers_list():
 @login_required
 def _followed_list():
     subject = current_user.id
-    return jsonify({"followed": get_followed(subject)})
+    temp = db.session.query(Followers, User).filter(Followers.followed_id==User.id).filter_by(follower_id=subject).all()
+    followed=[]
+
+    for f in temp:
+        d = {"id": f[1].id,"firstname": f[1].firstname, "lastname":f[1].lastname}
+        followed.append(d)
+
+    return jsonify({"followed": followed})
 
 
 
