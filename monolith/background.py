@@ -54,8 +54,6 @@ def update_reactions(story_id):
 @celery.task
 def send_emails():
     # STARTING MAIL SERVER
-    _EMAIL = input("Email: ")
-    _PASSWORD = input("Password: ")
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
     try:
@@ -66,19 +64,26 @@ def send_emails():
     # Get all users
     user_tab = get_users()
 
+    result = True
     # Send an email with news to all users
     for user in user_tab:
         msg = MIMEMultipart()
         msg['From'] = _EMAIL
-        msg['To'] = user_email
+        msg['To'] = user.email
         msg['Subject'] = 'SocialDice - News!'
-        message = make_message(user)
+        message = maker_message(user)
         msg.attach(MIMEText(message))
         try:
-            server.sendmail(msg)
+            server.sendmail(
+                from_addr=_EMAIL,
+                to_addrs=user.email,
+                msg=msg.as_string()
+                )
         except:
+            result = False
             continue
     server.quit()
+    return result
 
 
 def maker_message(user):
