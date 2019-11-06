@@ -45,7 +45,6 @@ class WallTestCase(unittest.TestCase):
             example.dislikes = 1
             example.dicenumber = 6
             example.author_id = user.id
-            print(example)
             db.session.add(example)
 
             example = Story()
@@ -54,7 +53,6 @@ class WallTestCase(unittest.TestCase):
             example.dislikes = 0
             example.dicenumber = 4
             example.author_id = user.id
-            print(example)
             db.session.add(example)
 
             db.session.commit()

@@ -1,7 +1,6 @@
 import wtforms as f
 from flask_wtf import FlaskForm
 from wtforms.validators import DataRequired, Length
-from flask import json
 
 
 class LoginForm(FlaskForm):
@@ -20,8 +19,7 @@ class UserForm(FlaskForm):
 
 
 class StoryForm(FlaskForm):
-    text = f.TextAreaField('text', validators=[Length(
-        max=1000, message=(u'Your story is too long!')), DataRequired()])
+    text = f.TextAreaField('text', validators=[Length(max=1000, message=(u'Your story is too long!')), DataRequired()])
     display = ['text']
 
 
@@ -29,3 +27,18 @@ class SelectDiceSetForm(FlaskForm):
     dicenumber = f.IntegerField(id="dicenumber", label="Insert dice number: ")
     dicesetid = f.SelectField(id="dicesetid", label="Select dice set: ", choices=[('basic', 'Basic set'), ('halloween', 'Halloween set')], default='basic')
     display = ['dicenumber', 'dicesetid']
+
+
+class StoryFilter(FlaskForm):
+    init_date = f.DateField('init_date')
+    end_date = f.DateField('end_date')
+    display = ['init_date', 'end_date']
+
+    def validate_on_submit(self):
+        result = super(StoryFilter, self).validate()
+        try:
+            result = result and (self.init_date.data <= self.end_date.data)
+        except TypeError:
+            result = False
+        return result
+
