@@ -23,7 +23,7 @@ celery.conf.beat_schedule = {
     # Executes every morning at 7:30 a.m.
     'add-every-morning': {
         'task': 'tasks.send_emails',
-        'schedule': crontab(minute="*")#crontab(hour=7, minute=30)
+        'schedule': crontab(hour=7, minute=30)
     },
 }
 celery.conf.timezone = 'UTC'
