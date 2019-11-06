@@ -16,23 +16,23 @@ class TestReactions(unittest.TestCase):
             assert b'Trial story of example admin user' in reply.data
 
             # add reaction to a story
-            reply = client.get('/story/1/reaction/1')
+            reply = client.get('/stories/reaction/1/1')
             assert b'Reaction to story created' in reply.data
 
             # add same reaction to a story - delete that reaction
-            reply = client.get('/story/1/reaction/1')
+            reply = client.get('/stories/reaction/1/1')
             assert b'You already react in this way' in reply.data
 
             # add different reaction to a story
-            reply = client.get('/story/1/reaction/2')
+            reply = client.get('/stories/reaction/1/2')
             assert b'Reaction to story created' in reply.data
 
             # change the reaction to a story
-            reply = client.get('/story/1/reaction/1')
+            reply = client.get('/stories/reaction/1/1')
             assert b'You change your reaction' in reply.data
 
             # add reaction to non-existing story
-            reply = client.get('/story/3/reaction/1')
+            reply = client.get('/stories/reaction/3/1')
             assert b'Story doent exist' in reply.data
 
 

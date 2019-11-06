@@ -4,8 +4,7 @@ import json
 from flask import request, jsonify
 from monolith.app import create_app
 from monolith.classes.Wall import Wall
-from monolith.database import db, User, Story, Reaction
-
+from monolith.database import db, User, Story
 
 test_app = create_app()
 test_app.app_context().push()
@@ -72,8 +71,6 @@ class MyTestCase(unittest.TestCase):
             "email": user.email,
             "stories": stories #thewalltest.stories
         })
-
-
 
 
 if __name__ == '__main__':

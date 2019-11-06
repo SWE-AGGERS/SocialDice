@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+<h5>You've got:</h5>
+<div class="container">
+  {% for face in roll %}
+  {% set i = (loop.index-1)|string  %}
+  <img src="{{ url_for('static', filename = 'css/images/'+set+'_set/die'+i+'/'+face+'.png') }}" class="img-thumbnail" width="152" height="118">
+  {% endfor %}  
+</div>
+
+
+  <form action="http://127.0.0.1:5000/stories" method="POST">
+    {{ form.csrf_token }}
+    <div style="display:none">
+        <input type="hidden" name="roll" value="{{ roll }}">{{ roll }}
+    </div>
+     {% for field in form.display %}
+     <div class="form-group">
+            <label for="text">Type your story: </label>
+            <br>
+            {{ form[field]() }}
+     </div>
+     <br>
+     {% endfor %}
+     <label for="text">Example of a stupid and meaningless story: </label>
+      <p> {{ phrase }} </p>
+     <br>
+    <input type=submit value="Publish">
+  </form>
+
+{% endblock %}

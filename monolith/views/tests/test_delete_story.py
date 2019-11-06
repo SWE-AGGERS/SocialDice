@@ -42,7 +42,7 @@ class TestDeleteStory(unittest.TestCase):
 
 
             # add reaction to a story
-            reply = client.get('/story/1/reaction/1')
+            reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
 
@@ -68,7 +68,10 @@ class TestDeleteStory(unittest.TestCase):
             users = User.query.all()
             self.assertEqual(len(users),1)
 
-            reply = client.get('stories/1/remove/stories')
+            reply = client.post('stories/1/remove/stories', follow_redirects=True)
+
+
+
             self.assertEqual(reply.status_code, 200)
 
             assert b'The story has been canceled.' in reply.data
@@ -114,12 +117,13 @@ class TestDeleteStory(unittest.TestCase):
 
 
             # add reaction to a story
-            reply = client.get('/story/1/reaction/1')
+            reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
 
 
-            reply = client.get('stories/2/remove/stories')
+
+            reply = client.post('stories/2/remove/stories', follow_redirects=True)
             self.assertEqual(reply.status_code, 404)
 
             story = db.session.query(Story).filter_by(id=1).first()
@@ -135,7 +139,7 @@ class TestDeleteStory(unittest.TestCase):
             users = User.query.all()
             self.assertEqual(len(users),1)
 
-            reply = client.get('stories/1/remove/stories')
+            reply = client.post('stories/1/remove/stories', follow_redirects=True)
             self.assertEqual(reply.status_code, 200)
 
             assert b'The story has been canceled.' in reply.data
@@ -173,7 +177,7 @@ class TestDeleteStory(unittest.TestCase):
 
 
             # add reaction to a story
-            reply = client.get('/story/1/reaction/1')
+            reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
             users = User.query.all()
@@ -236,7 +240,7 @@ class TestDeleteStory(unittest.TestCase):
 
 
             # add reaction to a story
-            reply = client.get('/story/1/reaction/1')
+            reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
 
@@ -255,7 +259,7 @@ class TestDeleteStory(unittest.TestCase):
             reactions = Reaction.query.filter_by(story_id=1).all()
             self.assertEqual(len(reactions),2)
 
-            reply = client.get('stories/1/remove/stories')
+            reply = client.post('stories/1/remove/stories', follow_redirects=True)
             self.assertEqual(reply.status_code, 200)
 
             assert b'The story has been canceled.' in reply.data
@@ -294,7 +298,7 @@ class TestDeleteStory(unittest.TestCase):
 
 
             # add reaction to a story
-            reply = client.get('/story/1/reaction/1')
+            reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
             users = User.query.all()
@@ -355,11 +359,10 @@ class TestDeleteStory(unittest.TestCase):
 
 
             # add reaction to a story
-            reply = client.get('/story/1/reaction/1')
+            reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
-
-            reply = client.get('stories/1/remove/stories')
+            reply = client.post('stories/1/remove/stories', follow_redirects=True)
             self.assertEqual(reply.status_code, 200)
 
             assert b'The story was written by another user and cannot be deleted.' in reply.data
@@ -403,7 +406,7 @@ class TestDeleteStory(unittest.TestCase):
 
 
             # add reaction to a story
-            reply = client.get('/story/1/reaction/1')
+            reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
 
@@ -429,7 +432,7 @@ class TestDeleteStory(unittest.TestCase):
             users = User.query.all()
             self.assertEqual(len(users),1)
 
-            reply = client.get('stories/1/remove/index')
+            reply = client.post('stories/1/remove/index', follow_redirects=True)
             self.assertEqual(reply.status_code, 200)
 
 
@@ -474,12 +477,10 @@ class TestDeleteStory(unittest.TestCase):
 
 
             # add reaction to a story
-            reply = client.get('/story/1/reaction/1')
+            reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
-
-
-            reply = client.get('stories/2/remove/index')
+            reply = client.post('stories/2/remove/index', follow_redirects=True)
             self.assertEqual(reply.status_code, 404)
 
             story = db.session.query(Story).filter_by(id=1).first()
@@ -495,7 +496,7 @@ class TestDeleteStory(unittest.TestCase):
             users = User.query.all()
             self.assertEqual(len(users),1)
 
-            reply = client.get('stories/1/remove/index')
+            reply = client.post('stories/1/remove/index', follow_redirects=True)
             self.assertEqual(reply.status_code, 200)
 
 
@@ -532,7 +533,7 @@ class TestDeleteStory(unittest.TestCase):
 
 
             # add reaction to a story
-            reply = client.get('/story/1/reaction/1')
+            reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
             users = User.query.all()
@@ -595,7 +596,7 @@ class TestDeleteStory(unittest.TestCase):
 
 
             # add reaction to a story
-            reply = client.get('/story/1/reaction/1')
+            reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
 
@@ -614,7 +615,7 @@ class TestDeleteStory(unittest.TestCase):
             reactions = Reaction.query.filter_by(story_id=1).all()
             self.assertEqual(len(reactions),2)
 
-            reply = client.get('stories/1/remove/index')
+            reply = client.post('stories/1/remove/index', follow_redirects=True)
             self.assertEqual(reply.status_code, 200)
 
 
@@ -652,7 +653,7 @@ class TestDeleteStory(unittest.TestCase):
 
 
             # add reaction to a story
-            reply = client.get('/story/1/reaction/1')
+            reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
             users = User.query.all()
@@ -713,11 +714,10 @@ class TestDeleteStory(unittest.TestCase):
 
 
             # add reaction to a story
-            reply = client.get('/story/1/reaction/1')
+            reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
-
-            reply = client.get('stories/1/remove/index')
+            reply = client.post('stories/1/remove/index', follow_redirects=True)
             self.assertEqual(reply.status_code, 200)
 
 

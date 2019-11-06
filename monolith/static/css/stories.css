@@ -1,0 +1,44 @@
+.feed {
+    padding: 0;
+}
+
+.author .name {
+    font-weight: bold;
+}
+
+.story-container {
+    list-style: none;
+    border: 1px solid lightgrey;
+    padding: 16px;
+    margin-left: 0px;
+    max-width: 700px;
+    border-radius: 32px;
+}
+
+.follow.hidden{
+    display: none;
+    visibility: none;
+}
+
+.story {
+    text-decoration: none;
+    color: black;
+}
+
+.story::hover {
+    text-decoration: none;
+    color: #333;
+}
+
+
+.inline > * {
+    display: inline;
+}
+
+.like {
+    text-decoration: none;
+}
+
+.dislike {
+    text-decoration: none;
+}

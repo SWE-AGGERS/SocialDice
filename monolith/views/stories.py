@@ -1,45 +1,247 @@
-from flask import Blueprint, request, redirect, render_template, abort
+from flask import Blueprint, request, redirect, render_template, abort, json
 from flask_login import (current_user, login_required)
 
 from monolith.background import update_reactions
-from monolith.classes.DiceSet import DiceSet
-from monolith.database import Reaction
-from monolith.database import db, Story
-from monolith.forms import StoryForm
-from monolith.views.home import index
-import sys
+from flask import Blueprint, redirect, render_template, request
+from monolith.auth import admin_required, current_user
+from flask_login import (current_user, login_user, logout_user,
+                         login_required)
+from monolith.forms import UserForm, StoryForm, SelectDiceSetForm
+from monolith.database import db, Story, Reaction, User
+from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingSetError
 
+from monolith.views.follow import _is_follower
+import re
+from monolith.views.home import index
+from monolith.views.check_stories import check_storyV2
+from monolith.views.check_stories import TooSmallStoryError
+from monolith.views.check_stories import TooLongStoryError
+from monolith.views.check_stories import WrongFormatDiceError
+from monolith.views.check_stories import WrongFormatSingleDiceError
+from monolith.views.check_stories import WrongFormatStoryError
+import sys
 
 
 stories = Blueprint('stories', __name__)
 
 
+
+
 @stories.route('/stories', methods=['POST', 'GET'])
 def _stories(message=''):
-    form = StoryForm()
+    form = SelectDiceSetForm()
     if 'POST' == request.method:
         # Create a new story
         new_story = Story()
         new_story.author_id = current_user.id
         new_story.likes = 0
         new_story.dislikes = 0
-        new_story.roll = {'dice': ['bike', 'tulip', 'happy', 'cat', 'ladder', 'rain']}
+
         if form.validate_on_submit():
-            text = form.data['text']
-            new_story.text = text
-        db.session.add(new_story)
-        db.session.commit()
-        return redirect('/stories')
+            text = request.form.get('text')
+            roll = request.form.get('roll')
+            # for the tests
+            if re.search('"', roll):
+                roll = json.loads(request.form.get('roll'))
+        arr = roll.split("'")
+        arr_final = []
+        i = 0
+        for elem in range(0,len(arr)):
+            if ((i%2!=0)):
+                arr_final.append(arr[i])
+            i = i + 1
+        dicenumber = len(arr_final)
+        try:
+            if check_storyV2(text, arr_final):
+                new_story.text = text
+                new_story.roll = {'dice': roll}
+                new_story.dicenumber = dicenumber
+                db.session.add(new_story)
+                db.session.commit()
+                message = "Story created!"
+                allstories = db.session.query(Story, User).join(User).all()
+                allstories = list(
+                    map(lambda x: (
+                        x[0],
+                        x[1],
+                        "hidden" if x[1].id == current_user.id else "",
+                        "delete" if _is_follower(current_user.id, x[1].id) else "post",
+                    ), allstories)
+                )
+                return render_template(
+                    "stories.html",
+                    message=message,
+                    form=form,
+                    stories=allstories,
+                    id=current_user.id,
+                    active_button="stories",
+                    like_it_url="/stories/reaction",
+                    details_url="/stories"
+                )
+            else:
+                message = "Invalid story. Try again!"
+                allstories = db.session.query(Story, User).join(User).all()
+                allstories = list(
+                    map(lambda x: (
+                        x[0],
+                        x[1],
+                        "hidden" if x[1].id == current_user.id else "",
+                        "delete" if _is_follower(current_user.id, x[1].id) else "post",
+                    ), allstories)
+                )
+                return render_template(
+                    "stories.html",
+                    message=message,
+                    form=form,
+                    stories=allstories,
+                    id=current_user.id,
+                    active_button="stories",
+                    like_it_url="/stories/reaction",
+                    details_url="/stories"
+                )
+        except WrongFormatStoryError:
+            print('ERROR 1', file=sys.stderr)
+            message = "There was an error. Try again."
+            allstories = db.session.query(Story, User).join(User).all()
+            allstories = list(
+                map(lambda x: (
+                    x[0],
+                    x[1],
+                    "hidden" if x[1].id == current_user.id else "",
+                    "delete" if _is_follower(current_user.id, x[1].id) else "post",
+                ), allstories)
+            )
+            return render_template(
+                "stories.html",
+                message=message,
+                form=form,
+                stories=allstories,
+                id=current_user.id,
+                active_button="stories",
+                like_it_url="/stories/reaction",
+                details_url="/stories"
+            )
+        except WrongFormatDiceError:
+            print('ERROR 2', file=sys.stderr)
+            message = "There was an error. Try again."
+            allstories = db.session.query(Story, User).join(User).all()
+            allstories = list(
+                map(lambda x: (
+                    x[0],
+                    x[1],
+                    "hidden" if x[1].id == current_user.id else "",
+                    "delete" if _is_follower(current_user.id, x[1].id) else "post",
+                ), allstories)
+            )
+            return render_template(
+                "stories.html",
+                message=message,
+                form=form,
+                stories=allstories,
+                id=current_user.id,
+                active_button="stories",
+                like_it_url="/stories/reaction",
+                details_url="/stories"
+            )
+        except TooLongStoryError:
+            print('ERROR 3', file=sys.stderr)
+            message = "The story is too long. The length is > 1000 characters."
+            allstories = db.session.query(Story, User).join(User).all()
+            allstories = list(
+                map(lambda x: (
+                    x[0],
+                    x[1],
+                    "hidden" if x[1].id == current_user.id else "",
+                    "delete" if _is_follower(current_user.id, x[1].id) else "post",
+                ), allstories)
+            )
+            return render_template(
+                "stories.html",
+                message=message,
+                form=form,
+                stories=allstories,
+                id=current_user.id,
+                active_button="stories",
+                like_it_url="/stories/reaction",
+                details_url="/stories"
+            )
+        except TooSmallStoryError:
+            print('ERROR 4', file=sys.stderr)
+            message = "The number of words of the story must greater or equal of the number of resulted faces."
+            allstories = db.session.query(Story, User).join(User).all()
+            allstories = list(
+                map(lambda x: (
+                    x[0],
+                    x[1],
+                    "hidden" if x[1].id == current_user.id else "",
+                    "delete" if _is_follower(current_user.id, x[1].id) else "post",
+                ), allstories)
+            )
+            return render_template(
+                "stories.html",
+                message=message,
+                form=form,
+                stories=allstories,
+                id=current_user.id,
+                active_button="stories",
+                like_it_url="/stories/reaction",
+                details_url="/stories"
+            )
+        except WrongFormatSingleDiceError:
+            print('ERROR 5', file=sys.stderr)
+            message = "There was an error. Try again."
+            allstories = db.session.query(Story, User).join(User).all()
+            allstories = list(
+                map(lambda x: (
+                    x[0],
+                    x[1],
+                    "hidden" if x[1].id == current_user.id else "",
+                    "delete" if _is_follower(current_user.id, x[1].id) else "post",
+                ), allstories)
+            )
+            return render_template(
+                "stories.html",
+                message=message,
+                form=form,
+                stories=allstories,
+                id=current_user.id,
+                active_button="stories",
+                like_it_url="/stories/reaction",
+                details_url="/stories"
+            )
 
-    if 'GET' == request.method:
-        # Go to the feed
-        allstories = db.session.query(Story)
-        return render_template("stories.html", form=form, message=message, stories=allstories, id = current_user.id,
-                               like_it_url="http://127.0.0.1:5000/stories/like/")
+    elif 'GET' == request.method:
+        allstories = db.session.query(Story, User).join(User).all()
+        allstories = list(
+            map(lambda x: (
+                x[0],
+                x[1],
+                "hidden" if x[1].id == current_user.id else "",
+                "delete" if _is_follower(current_user.id, x[1].id) else "post",
+            ), allstories)
+        )
+        return render_template(
+            "stories.html",
+            message=message,
+            form=form,
+            stories=allstories,
+            id=current_user.id,
+            active_button="stories",
+            like_it_url="/stories/reaction",
+            details_url="/stories"
+        )
 
 
 
-@stories.route('/story/<storyid>/reaction/<reactiontype>', methods=['GET', 'PUSH'])
+
+
+
+
+
+
+
+
+@stories.route('/stories/reaction/<storyid>/<reactiontype>', methods=['GET', 'PUSH'])
 @login_required
 def _reaction(storyid, reactiontype):
     # check if story exist
@@ -49,7 +251,8 @@ def _reaction(storyid, reactiontype):
         return _stories(message)
     # TODO need to be changed to PUSH (debug motivation)
     if 'GET' == request.method:
-        old_reaction = Reaction.query.filter_by(user_id=current_user.id, story_id=storyid).first()
+        old_reaction = Reaction.query.filter_by(
+            user_id=current_user.id, story_id=storyid).first()
 
         if old_reaction is None:
             new_reaction = Reaction()
@@ -77,16 +280,38 @@ def _reaction(storyid, reactiontype):
 # todo add dices details on render
 @stories.route('/stories/<storyid>', methods=['GET'])
 def get_story_detail(storyid):
-    # Detail of story id
-    if 'GET' == request.method:
-        q = db.session.query(Story).filter_by(id=storyid)
-        story = q.first()
-        if story is not None:
-            return render_template("story_detail.html", story=story)
-        else:
-            abort(404)
+    q = db.session.query(Story).filter_by(id=storyid)
+    story = q.first()
+    if story is not None:
+        return render_template("story_detail.html", story=story)
+    else:
+        abort(404)
 
-@stories.route('/stories/<storyid>/remove/<page>', methods=['GET'])
+
+@stories.route('/rolldice/<dicenumber>/<dicesetid>', methods=['GET'])
+def _roll(dicenumber, dicesetid):
+    form = StoryForm()
+    try:
+        dice = DiceSet(dicesetid)
+    except NonExistingSetError:
+        abort(404)
+
+    try:
+        roll = dice.throw_dice(int(dicenumber))
+    except WrongDiceNumberError:
+        return _stories("Wrong dice number!")
+
+    phrase = ""
+    for elem in roll:
+        phrase = phrase + elem + " "
+
+
+
+
+    return render_template("create_story.html", form=form, set=dicesetid, roll=roll, phrase = phrase)
+
+
+@stories.route('/stories/<storyid>/remove/<page>', methods=['POST'])
 @login_required
 def get_remove_story(storyid,page):
     # Remove story
@@ -94,27 +319,38 @@ def get_remove_story(storyid,page):
     story = q.first()
     if story is not None:
         if story.author_id == current_user.id:
-            print("story query: "+str(story))
-            print("story_id "+str(storyid))
-            print("author id "+ str(story.author_id))
-            print("current user id " + str(current_user.id))
             reactions = Reaction.query.filter_by(story_id=storyid).all()
-            print("Number of reactions of the story: "+str(len(reactions)))
-            print("Reactions:")
-            print(reactions)
             if reactions is not None:
                 for reac in reactions:
                         db.session.delete(reac)
                         db.session.commit()
             reactions = Reaction.query.filter_by(story_id=storyid).all()
-            print("Number of reactions after the cancellation of the story: "+str(len(reactions)))
-            print(reactions)
             db.session.delete(story)
             db.session.commit()
             #return redirect('/')
             if page == "stories":
                 message = "The story has been canceled."
-                return _stories(message)
+                #return _stories(message)
+                form = SelectDiceSetForm()
+                allstories = db.session.query(Story, User).join(User).all()
+                allstories = list(
+                    map(lambda x: (
+                        x[0],
+                        x[1],
+                        "hidden" if x[1].id == current_user.id else "",
+                        "delete" if _is_follower(current_user.id, x[1].id) else "post",
+                    ), allstories)
+                )
+                return render_template(
+                    "stories.html",
+                    message=message,
+                    form=form,
+                    stories=allstories,
+                    id=current_user.id,
+                    active_button="stories",
+                    like_it_url="/stories/reaction",
+                    details_url="/stories"
+                )
             else:
                 return index()
         else:
@@ -122,18 +358,28 @@ def get_remove_story(storyid,page):
             #abort(404)
             #return redirect('/stories')
             message = "The story was written by another user and cannot be deleted."
-            return _stories(message)
+            #return _stories(message)
+            form = SelectDiceSetForm()
+            allstories = db.session.query(Story, User).join(User).all()
+            allstories = list(
+                map(lambda x: (
+                    x[0],
+                    x[1],
+                    "hidden" if x[1].id == current_user.id else "",
+                    "delete" if _is_follower(current_user.id, x[1].id) else "post",
+                ), allstories)
+            )
+            return render_template(
+                "stories.html",
+                message=message,
+                form=form,
+                stories=allstories,
+                id=current_user.id,
+                active_button="stories",
+                like_it_url="/stories/reaction",
+                details_url="/stories"
+            )
 
     else:
         # Story doensn't exist
         abort(404)
-
-
-
-
-
-@stories.route('/rolldice/<int:dicenumber>/<string:dicesetid>', methods=['GET'])
-@login_required
-def _roll(dicenumber, dicesetid):
-    dice = DiceSet(dicesetid)
-    return dice.throw_dice()
