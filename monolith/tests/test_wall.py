@@ -75,6 +75,14 @@ class MyTestCase(unittest.TestCase):
             "stories": stories #thewalltest.stories
         })
 
+    def test_json_wall_fail(self):
+        app = test_app.test_client()
+        reply = login(app, 'user@waltest.com', 'daddysflownacrosstheocean')
+
+        reply = app.get('/thewall/' + '-1')
+
+        self.assertIn('User NOT Found', str(reply.data))
+
     def test_mywall(self):
 
         app = test_app.test_client()
@@ -87,12 +95,24 @@ class MyTestCase(unittest.TestCase):
 
     def test_wall(self):
         app = test_app.test_client()
+
+        reply = login(app, 'user@waltest.com', 'daddysflownacrosstheocean')
+
         q = db.session.query(User).filter(User.email == 'user@waltest.com')
         user: User = q.first()
 
-        reply = app.get('/thewall/' + str(user.id))
+        reply = app.get('/wall/' + str(user.id))
 
         self.assertIn(user.email, str(reply.data))
+
+    def test_wall_fail(self):
+        app = test_app.test_client()
+
+        reply = login(app, 'user@waltest.com', 'daddysflownacrosstheocean')
+
+        reply = app.get('/wall/' + '-1')
+
+        self.assertIn('User NOT Found', str(reply.data))
 
 
 if __name__ == '__main__':

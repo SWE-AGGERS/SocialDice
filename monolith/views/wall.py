@@ -23,8 +23,8 @@ def getmywall():
     if current_user is not None and hasattr(current_user, 'id'):
         # return getawall(current_user.id)
         return render_wall(current_user.id)
-    else:
-        return User_not_found()
+    # else:
+    #     return User_not_found()
 
 
 @wall.route('/wall/<user_id>')
