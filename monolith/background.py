@@ -54,6 +54,8 @@ def update_reactions(story_id):
 @celery.task
 def send_emails():
     # STARTING MAIL SERVER
+    _EMAIL = input("Email: ")
+    _PASSWORD = input("Password: ")
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
     try:
@@ -76,6 +78,7 @@ def send_emails():
             server.sendmail(msg)
         except:
             continue
+    server.quit()
 
 
 def maker_message(user):

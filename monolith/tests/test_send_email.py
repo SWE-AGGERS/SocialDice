@@ -277,6 +277,30 @@ class TestEmail(unittest.TestCase):
                 correct = [user_b_id, user_c_id, user_d_id]
                 self.assertEqual(res, correct)
 
+    def test_email_sender(self):
+        global _app
+        if _app is None:
+            tested_app = create_app(debug=True)
+            _app = tested_app
+        else:
+            tested_app = _app
+        restart_db_tables(db, tested_app)
+
+        with tested_app.test_client() as client:
+            with client.session_transaction() as session:
+                example2 = User()
+                example2.firstname = 'Daniele'
+                example2.lastname = 'Arioli'
+                example2.email = 'danimorpg@gmail.com'
+                example2.dateofbirth = datetime.datetime(2020, 10, 5)
+                example2.is_admin = True
+                example2.set_password('admin')
+                db.session.add(example2)
+                db.session.commit()
+
+            send_email()
+
+
 
 
 # Return a story object
