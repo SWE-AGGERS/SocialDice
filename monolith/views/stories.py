@@ -109,9 +109,28 @@ def filter_stories():
         if form.validate_on_submit():
             init_date = form.init_date.data
             end_date = form.end_date.data
-            f_stories = Story.query.filter(Story.date >= init_date).filter(Story.date <= end_date)
+            f_stories = db.session.query(Story, User)\
+                .filter(Story.date >= init_date)\
+                .filter(Story.date <= end_date)\
+                .join(User)\
+                .all()
             if f_stories is not None:
-                return render_template('filter_stories.html', form=form, stories=f_stories)
+                f_stories = list(
+                    map(lambda x: (
+                        x[0],
+                        x[1],
+                        "hidden" if x[1].id == current_user.id else "",
+                        "unfollow" if _is_follower(current_user.id, x[1].id) else "follow",
+                    ), f_stories))
+                return render_template('filter_stories.html',
+                                       form=form,
+                                       stories=f_stories,
+                                       active_button="/stories",
+                                       like_it_url="/stories/reaction",
+                                       details_url="/stories",
+                                       error=False,
+                                       info_bar=False
+                                       )
         else:
             return render_template('filter_stories.html', form=form, error=True, error_message='Cant travel back in time! Doublecheck dates')
 
@@ -148,7 +167,6 @@ def add_reaction(reacterid, storyid, reactiontype):
             message = 'Reaction changed!'
         # # Update DB counters
     res = update_reactions.delay(story_id=storyid)
-    res.get()
     return message
 
 

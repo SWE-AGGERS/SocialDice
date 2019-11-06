@@ -87,40 +87,6 @@
       {{ message|safe }}
     </div>
 
-    <ul class="feed">
-      {% for story, user, cannot_follow, method in stories %}
-      <li class="story-container">
-        <div class="author inline">
-          <div class="name">{{user.firstname}} {{user.lastname}}</div>
-          <div class="follow {{cannot_follow}} inline">
-            <form method="POST" action="/{{method}}/{{user.id}}">
-              <button type="submit">
-                <i class="fa {{method}}"></i>
-              </button>
-            </form>
-          </div>
-        </div>
-        <a class="story" href="{{details_url}}/{{story.id}}">
-          {{story.text}}
-        </a>
-        <div class="inline">
-          <div class="like">
-            {{story.likes}}
-            <a href="{{like_it_url}}/{{story.id}}/1">
-              <i class="far fa-thumbs-up"></i>
-            </a>
-          </div>
-          <div class="dislike">
-            {{story.dislikes}}
-            <a href="{{like_it_url}}/{{story.id}}/2">
-              <i class="far fa-thumbs-down"></i>
-            </a>
-          </div>
-        </div>
-      </li>
-      {% endfor %}
-    </ul>
-
     <!-- Button to Open the Modal -->
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">New story</button>
 

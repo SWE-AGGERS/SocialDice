@@ -7,7 +7,7 @@ from monolith.tests.restart_db import restart_db_tables
 
 _app = None
 
-class TestReactions(unittest.TestCase):
+class TestStoryFilter(unittest.TestCase):
     def test1(self):
         global _app
         if _app is None:
