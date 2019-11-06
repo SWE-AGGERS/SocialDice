@@ -91,6 +91,68 @@ class TestFollow(unittest.TestCase):
             self.assertFalse(_is_follower(user_a_id, user_not_exist_id))
             self.assertIn("/stories", str(reply.data))
             logout(client)        
+
+    def test_followers_list(self):
+        global _app
+        if _app is None:
+            tested_app = create_app(debug=True)
+            _app = tested_app
+        else:
+            tested_app = _app
+            restart_db_tables(db, tested_app)
+
+            with tested_app.test_client() as client:
+                with client.session_transaction() as session:
+                    # push in the users_table 3 users
+                    user_a = User()
+                    user_a.firstname = "Pippo"
+                    user_a.lastname = "Pippo"
+                    user_a.email = 'testa@test.com'
+                    user_a.set_password('test')
+
+                    user_b = User()
+                    user_b.firstname = "Pluto"
+                    user_b.lastname = "Mouse"
+                    user_b.email = 'testb@test.com'
+                    user_b.set_password('test')
+
+                    user_c = User()
+                    user_c.email = 'testc@test.com'
+                    user_c.set_password('test')
+
+                    db.session.add(user_a)
+                    db.session.add(user_b)
+                    db.session.add(user_c)
+                    db.session.commit()
+
+                    # Get users ID
+                    user_a_id = User.query.filter_by(email=user_a.email).first().get_id()
+                    user_b_id = User.query.filter_by(email=user_b.email).first().get_id()
+
+                
+                # login as user_1
+                login(client, user_a.email, 'test')
+
+                # call /follow/user_id_2
+                # assert True, redirtect to user_2 wall 
+                reply = client.post('/follow/'+str(user_b_id))
+                data = "/wall/"+str(user_b_id)
+                self.assertTrue(_is_follower(user_a_id, user_b_id))
+                self.assertIn(data, str(reply.data))
+
+                # get followed list
+                reply = client.get("/followed/list")
+                self.assertIn(user_b.firstname, str(reply.data))
+
+                # logout user1
+                logout(client)
+
+                # login as user2
+                login(client, user_b.email, 'test')
+
+                # get followers list
+                reply = client.get("/followers/list")
+                self.assertIn(user_a.firstname, str(reply.data))
                           
 
 """                    
@@ -187,3 +249,6 @@ def login(client, username, password):
 
 def logout(client):
     return client.get('/logout', follow_redirects=True)
+
+if __name__ == '__main__':
+    unittest.main()
