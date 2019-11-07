@@ -33,7 +33,12 @@ def _stories(message='', error=False, res_msg='', info_bar=False):
             if re.search('"', roll):
                 roll = json.loads(request.form.get('roll'))
 
+        if(type(roll) is str):
+            aux = roll.split(",")
+            roll = aux
+
         dicenumber = len(roll)
+
         new_story.text = text
         new_story.roll = {'dice': roll}
         new_story.dicenumber = dicenumber

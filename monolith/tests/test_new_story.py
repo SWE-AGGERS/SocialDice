@@ -13,8 +13,6 @@ class TestNewStory(unittest.TestCase):
             # login
             reply = login(client, 'example@example.com', 'admin')
             assert b'Hi Admin!' in reply.data
-            reply = client.get('/stories')
-            assert b'Trial story of example admin user' in reply.data
 
             # correct roll
             reply = client.get('/rolldice/5/basic')
@@ -38,8 +36,6 @@ class TestNewStory(unittest.TestCase):
             # login
             reply = login(client, 'example@example.com', 'admin')
             assert b'Hi Admin!' in reply.data
-            reply = client.get('/stories')
-            assert b'Trial story of example admin user' in reply.data
 
             # post a new story 
             roll = json.dumps(["bike", "tulip", "happy", "cat", "ladder", "rain"])
