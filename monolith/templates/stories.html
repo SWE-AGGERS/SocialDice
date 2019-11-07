@@ -107,9 +107,11 @@
 </body>
 
 <script>
+  // DEFAULT VALUE IS 1 
+  if (!$('#dicenumber').val()) value = 1
   $(document).ready(() => {
     $("#rollButton").on('click', function () {
-      $("#rollForm").attr('action', $("#rollForm").attr('action') + "/" + $('#dicenumber').val() + "/" + $('#dicesetid').val());
+      $("#rollForm").attr('action', $("#rollForm").attr('action') + "/" + value+ "/" + $('#dicesetid').val());
       $("#rollForm").submit();
     });
   })
