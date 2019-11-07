@@ -1,5 +1,6 @@
 from flask import Blueprint, request, redirect, render_template, abort, json, jsonify
 from flask_login import (current_user, login_required)
+from sqlalchemy import func
 
 from monolith.background import update_reactions
 from flask import Blueprint, redirect, render_template, request
@@ -110,6 +111,15 @@ def _roll(dicenumber, dicesetid):
                         "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>" +
                         "<strong>Error!</strong> Argument Dice number needs to be an integer!</div>")
     return render_template("create_story.html", form=form, set=dicesetid, roll=roll)
+
+
+@stories.route('/stories/random', methods=['GET'])
+def random_story():
+    q = db.session.query(Story).order_by(func.random()).limit(
+        1)
+    random_story_from_db = q.first()
+    return redirect('/stories/'+str(random_story_from_db.id))
+#    return render_template("story_detail.html", story=random_story_from_db)
 
 
 @stories.route('/stories/filter', methods=['GET', 'POST'])

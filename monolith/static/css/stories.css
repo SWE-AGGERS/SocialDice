@@ -16,6 +16,10 @@
     margin: 8px;
 }
 
+.no-hover{
+    pointer-events: none;
+}
+
 .follow.hidden{
     display: none;
     visibility: none;
