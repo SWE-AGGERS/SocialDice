@@ -4,7 +4,7 @@ from monolith.views.check_stories import TooSmallStoryError
 from monolith.views.check_stories import WrongFormatDiceError
 from monolith.views.check_stories import WrongFormatSingleDiceError
 from monolith.views.check_stories import WrongFormatStoryError
-from monolith.views.check_stories import WrongFormatSingleFaceError
+from monolith.views.check_stories import WrongFormatSingleFaceError, InvalidStory
 import os
 from monolith.classes import DiceSet as d
 import unittest
@@ -22,7 +22,7 @@ class TestStory(unittest.TestCase):
         die5 = 'rain heart glasses poo ball sun'
         storySet = die0 + " " + die1 + " " + die2 + " " + die3 + " " + die4 + " " + die5
         roll = diceSet.throw_dice("6")
-        self.assertEqual(cs.check_storyV2(storySet,roll),True)
+        self.assertEqual(cs.check_storyV2(storySet,roll),None)
 
 
     def test_invalid_story(self):
@@ -32,7 +32,8 @@ class TestStory(unittest.TestCase):
             string = "a"
             storySet = storySet + string + " "
         roll = diceSet.throw_dice("6")
-        self.assertEqual(cs.check_storyV2(storySet,roll),False)
+        with self.assertRaises(InvalidStory):
+            cs.check_storyV2(storySet, roll)
 
 
 
