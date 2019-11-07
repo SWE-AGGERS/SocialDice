@@ -35,11 +35,11 @@ class TestReactions(unittest.TestCase):
 
             # post a new story
             roll = json.dumps(["bike", "tulip", "happy", "cat", "ladder", "rain"])
-            reply = client.post('/stories', data=dict(text="Just a new story for test purposes!", roll=roll), follow_redirects=True)
-            assert b'Just a new story for test purposes!' in reply.data
+            reply = client.post('/stories', data=dict(text="bike tulip happy cat ladder rain", roll=roll), follow_redirects=True)
+            assert b'bike tulip happy cat ladder rain' in reply.data
 
             reply = client.get('/stories')
-            assert b'Just a new story for test purposes!' in reply.data
+            assert b'bike tulip happy cat ladder rain' in reply.data
 
             # add reaction to a story
             reply = client.get('/stories/reaction/1/1')
