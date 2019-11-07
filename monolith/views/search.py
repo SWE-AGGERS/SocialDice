@@ -14,7 +14,7 @@ def index():
     if search_text:
         users = find_user(text=search_text)
         stories = find_story(text=search_text)
-        if users and stories :
+        if users and stories:
             return render_template("search.html", users=users, stories=stories)
         elif users:
             return render_template("search.html", users=users)

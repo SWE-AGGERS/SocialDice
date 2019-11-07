@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+  <link rel="stylesheet" href="../static/css/stories.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+  <title>Stories</title>
+</head>
+
+
+<body>
+
+{% include "includes/nav.html" %}
+
+{% block content %}
+<div class="container">
+        {{ message|safe }}
+      {% if info_bar == true %}
+      {% if error == true %}
+        <div class="container">
+            <div class="row h-25"></div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-danger" role="alert">{{ res_msg }}</div>
+                </div>
+            </div>
+        </div>
+      {% else %}
+        <div class="container">
+            <div class="row h-25"></div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-success" role="alert">{{ res_msg }}</div>
+                </div>
+            </div>
+        </div>
+      {% endif %}
+      {% endif %}
+</div>
+
+{% if current_user.is_authenticated %}
+   <div class="container mt-4" >
+   <form  action="" method="post" role="form">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+          <label for="init_date">From:</label>
+          <input type="date" class="form-control" id="init_date" name="init_date" placeholder="Initial Date">
+            <br>
+          <label for="end_date">To:</label>
+          <input type="date" class="form-control" id="end_date" name="end_date" placeholder="End Date">
+        <br>
+    </div>
+        <br>
+        <div style="text-align: center;">
+          <button type="submit" class="btn btn-success">Search</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="container">
+      {{ message|safe }}
+    </div>
+
+
+{% include "story_list.html" %}
+
+{% else %}
+  Hi Anonymous, <a href="/login">Log in</a>
+{% endif %}
+
+
+
+
+
+
+{% endblock %}
+
