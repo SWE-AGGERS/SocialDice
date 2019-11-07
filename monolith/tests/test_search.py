@@ -13,14 +13,14 @@ class SearchTestCase(unittest.TestCase):
     def testStorySearch(self):
         client = self.getTester
         login(client, "example@example.com", "admin")
-        response = search(client, "Admin")
-        assert b'Admin' in response.data
+        response = search(client, "education")
+        assert b'education' in response.data
 
     def test_story_and_user_search(self):
         client = self.getTester
         login(client, "example@example.com", "admin")
         response = search(client, "admin")
-        assert b'admin' in response.data
+        assert b'Admin' in response.data
 
     def testNotFound(self):
         client = self.getTester
