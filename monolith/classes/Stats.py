@@ -37,17 +37,17 @@ class Stats:
             self.numDice = 0
 
         if self.numStories != 0:
-            self.avgLike = self.likes/self.numStories
-            self.avgDislike = self.dislikes / self.numStories
-            self.avgDice = self.numDice / self.numStories
+            self.avgLike = round(self.likes/self.numStories, 2)
+            self.avgDislike = round(self.dislikes / self.numStories, 2)
+            self.avgDice = round(self.numDice / self.numStories,2)
         else:
-            self.avgLike = -1
-            self.avgDislike = -1
-            self.avgDice = -1
+            self.avgLike = 0
+            self.avgDislike = 0
+            self.avgDice = 0
 
         if self.dislikes != 0:
-            self.ratio_likeDislike = self.likes / self.dislikes
+            self.ratio_likeDislike = round(self.likes / self.dislikes,2)
         else:
-            self.ratio_likeDislike = -1
+            self.ratio_likeDislike = 0
 
         self.love_level = self.likes - self.dislikes
