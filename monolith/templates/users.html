@@ -24,35 +24,7 @@
     <div class="container">
         {% include "includes/nav.html" %}
 
-        {% block content %}
-        <h1>User List</h1>
-        <ul class="feed">
-            {% for user, story in users %}
-            <li class="story-container">
-                <div class="author">{{user.firstname}} {{user.lastname}}</div>
-                <div class="story">
-                    {{story.text}}
-                </div>
-                <div class="inline">
-                    <div class="like">
-                        {{story.likes}}
-                        <a href="{{like_it_url}}/{{story.id}}/1">
-                            <i class="far fa-thumbs-up"></i>
-                        </a>
-                        </a>
-                        <div class="dislike">
-                            {{story.dislikes}}
-                            <a href="{{like_it_url}}/{{story.id}}/2">
-                                <i class="far fa-thumbs-down"></i>
-                            </a>
-                            </a>
-                        </div>
-            </li>
-            {% endfor %}
-        </ul>
-        {% endblock %}
-
-        {% include "includes/footer.html" %}
+        {% include "story_list.html" %} 
     </div>
 </body>
 

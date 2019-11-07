@@ -2,9 +2,10 @@ import glob
 import os
 import random as rnd
 import natsort
+import re
 
 # list of all available dice sets
-_DICE_SETS = [{'id': 1, 'name': 'basic', 'folder': './monolith/resources/basic_set'}]
+_DICE_SETS = [{'id': 1, 'name': 'basic', 'folder': './monolith/resources/basic_set'}, {'id': 2, 'name':'halloween', 'folder': './monolith/resources/halloween_set'}]
 
 
 class Die:
@@ -50,15 +51,29 @@ class DiceSet:
             self.dice.append(die)
 
     def throw_dice(self, dicenumber):
-        if(dicenumber<=len(self.dice)):
-            for i in range(dicenumber):
-                self.pips.append(self.dice[i].throw_die())
+        pattern = re.compile("^[0-9]*$")
+
+        if(pattern.match(dicenumber)):
+            dicenumber = int(dicenumber)
+            if(dicenumber<=0 or dicenumber>len(self.dice)):
+                raise WrongDiceNumberError("Wrong dice number!")
+            else:
+                for i in range(dicenumber):
+                    self.pips.append(self.dice[i].throw_die())
         else:
-            raise WrongDiceNumberError("Not enough dice!")
+            raise WrongArgumentTypeError("Dice number needs to be an integer!")
+
         return self.pips
 
 
 class NonExistingSetError(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
+class WrongArgumentTypeError(Exception):
     def __init__(self, value):
         self.value = value
 

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-  <link rel="stylesheet" href="../static/css/stories.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/stories.css') }}">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -26,31 +26,32 @@
     {% include "includes/nav.html" %}
 
     {% block content %}
-    <p> {{ message }} </p>
-    <ul class="feed">
-      {% for story, user in stories %}
-      <li class="story-container">
-        <div class="author">{{user.firstname}} {{user.lastname}}</div>
-        <div class="story">
-          {{story.text}}
-        </div>
-        <div class="inline">
-          <div class="like">
-            {{story.likes}}
-            <a href="{{like_it_url}}/{{story.id}}/1">
-              <i class="far fa-thumbs-up"></i>
-            </a>
-            <div class="dislike">
-              {{story.dislikes}}
-              <a href="{{like_it_url}}/{{story.id}}/2">
-                <i class="far fa-thumbs-down"></i>
-              </a>
+      <div class="container">
+        {{ message|safe }}
+      </div>
+      {% if info_bar == true %}
+      {% if error == true %}
+        <div class="container">
+            <div class="row h-25"></div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-danger" role="alert">{{ res_msg }}</div>
+                </div>
             </div>
-          </div>
         </div>
-      </li>
-      {% endfor %}
-    </ul>
+      {% else %}
+        <div class="container">
+            <div class="row h-25"></div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-success" role="alert">{{ res_msg }}</div>
+                </div>
+            </div>
+        </div>
+      {% endif %}
+      {% endif %}
+
+     {% include "story_list.html" %}
 
     <!-- Button to Open the Modal -->
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">New story</button>
@@ -91,24 +92,23 @@
             <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
           </div>
 
-            </div>
         </div>
-
       </div>
+
     </div>
+  </div>
   </div>
   {% endblock %}
   </div>
 </body>
 
 <script>
-  $(document).ready(function(){
-      $("#rollButton").on('click', function(){
-          console.log("ciao");
-          $("#rollForm").attr('action',$("#rollForm").attr('action')+"/"+$('#dicenumber').val()+"/"+$('#dicesetid').val());
-          $("#rollForm").submit();
-      });
-  });
+  $(document).ready(() => {
+    $("#rollButton").on('click', function () {
+      $("#rollForm").attr('action', $("#rollForm").attr('action') + "/" + $('#dicenumber').val() + "/" + $('#dicesetid').val());
+      $("#rollForm").submit();
+    });
+  })
 </script>
 
 </html>

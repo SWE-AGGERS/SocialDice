@@ -1,32 +1,41 @@
 import unittest
-
 from monolith import app
-from monolith.database import User
 
 
-class SingupTestCase(unittest.TestCase):
+class SignupTestCase(unittest.TestCase):
 
     def testSignupPage(self):
-        applitation = app.create_app()
-        tester = applitation.test_client()
+        tester = self.getTester()
         response = tester.get('/signup', content_type='html/text')
         self.assertEqual(response.status_code, 200)
 
-    def setUp(self):
-        user1 = User()
-        user1.firstname = "selman"
-        user1.lastname = "alpdundar"
-        user1.email = "selman.alp@hotmail.com.tr"
-        user1.dateofbirth = "1994"
-        user1.password = user1.set_password("12345")
+    def testSuccessfulSignup(self):
+        tester = self.getTester()
+        user = dict(firstname="Selman",
+                    lastname="Alpdündar",
+                    email="selman@hotmail.com",
+                    dateofbirth=1994,
+                    password="123456")
+        response = signup(client=tester, data=user)
+        assert b'Index Page' in response.data
 
-        user2 = User()
-        user2.firstname = "ahmet"
-        user2.lastname = "kaya"
-        user2.email = "kaya@gmail.com"
-        user2.dateofbirth = "1978"
-        user2.password = user2.set_password("67891")
+    def testUnsuccessfulSignup(self):
+        tester = self.getTester()
+        user = dict(firstname="Selman",
+                    lastname="Alpdündar",
+                    email="selman@hotmail.com",
+                    dateofbirth=1994,
+                    password="123456")
+        response = signup(client=tester, data=user)
+        assert b'The email was used before. Please change the email!' in response.data
+
+    def getTester(self):
+        application = app.create_app()
+        tester = application.test_client(self)
+        return tester
 
 
-if __name__ == '__main__':
-    unittest.main()
+def signup(client, data):
+    return client.post('/signup',
+                       data=data,
+                       follow_redirects=True)

@@ -2,7 +2,7 @@
     padding: 0;
 }
 
-.author {
+.author .name {
     font-weight: bold;
 }
 
@@ -13,18 +13,82 @@
     margin-left: 0px;
     max-width: 700px;
     border-radius: 32px;
+    margin: 8px;
 }
 
 .no-hover{
     pointer-events: none;
 }
 
-.like {
-    display: inline;
+.follow.hidden{
+    display: none;
+    visibility: none;
+}
+
+.follow button {
+    border: 1px solid lightgray;
+    background: white;
+    border-radius: 16px;
+    float: right;
+}
+
+.follow button:hover {
+    background-color: lightgray;
+}
+
+.story {
     text-decoration: none;
+    color: black;
+}
+
+.story:hover {
+    text-decoration: none;
+    color: #333;
+}
+
+i.follow::after {
+    content: "\f067";
+}
+
+i.unfollow::after {
+    content: "\f068";
+}
+
+
+.inline > * {
+    display: inline;
+}
+
+.like {
+    text-decoration: none;
+    border: none;
+    background: white;
+}
+
+.like i::after {
+    content: "\f164";
+    font-weight:300;
+    color: #04f;
+}
+
+.like.active i::after {
+    font-weight:900;
+    color: #04f;
 }
 
 .dislike {
-    display: inline;
     text-decoration: none;
+    border: none;
+    background: white;
+}
+
+.dislike i::after {
+    content: "\f165";
+    font-weight:300;
+    color: #04f;
+}
+
+.dislike.active i::after {
+    font-weight:900;
+    color: #04f;
 }
