@@ -3,6 +3,7 @@
     Wall
 {% endblock %}
 
+
 {% block content %}
 <h1>The Wall</h1>
 
@@ -48,21 +49,21 @@
     <h2>All of {{ stats.numStories }} {{ user.firstname }}'s Stories</h2>
     ... have you time to read all this stories?!
     <br><br>
-    {% for story in stories%}
-      <div class="story-container">
-        <li>
-            <div class="story_detail-text">
-            {{story.text}}
-            </div>
-            <button type="button" class="btn btn-primary"> Likes:{{story.likes}} </button>
-            --
-            <button type="button" class="btn btn-danger"> Dislikes:{{story.dislikes}} </button>
-        </li>
-      <br>
-      </div>
-    {% endfor %}
+{#    {% for story in stories%}#}
+{#      <div class="story-container">#}
+{#        <li>#}
+{#            <div class="story_detail-text">#}
+{#            {{story.text}}#}
+{#            </div>#}
+{#            <button type="button" class="btn btn-primary"> Likes:{{story.likes}} </button>#}
+{#            --#}
+{#            <button type="button" class="btn btn-danger"> Dislikes:{{story.dislikes}} </button>#}
+{#        </li>#}
+{#      <br>#}
+{#      </div>#}
+{#    {% endfor %}#}
 
-{#    {% include "story_list.html" %}#}
+    {% include "story_list.html" %}
 
 {% else %}
   Hi Anonymous, <a href="/login">Log in</a>

@@ -6,6 +6,8 @@ from monolith.classes.Wall import Wall
 from monolith.database import db, Story, User
 from monolith.auth import current_user
 from monolith.forms import SelectDiceSetForm
+from monolith.views.follow import _is_follower
+from monolith.views.stories import reacted
 
 wall = Blueprint('wall', __name__)
 
@@ -54,15 +56,42 @@ def render_wall(user_id):
 
     # rend = render_template("wall.html", user=user, stories=stories, stats=stats)
 
+    stories = db.session.query(Story, User).join(User).filter(Story.author_id == user.id).all()
+    stories = list(
+        map(lambda x: (
+            x[0],
+            x[1],
+            "hidden" if x[1].id == current_user.id else "",
+            "unfollow" if _is_follower(
+                current_user.id, x[1].id) else "follow",
+            reacted(current_user.id, x[0].id)
+        ), stories)
+    )
+
     # TODO: fix this to uncomment & use story_list.html in wall.html
+    # rend = render_template(
+    #     "wall.html",
+    #     message="message",
+    #     form=form,
+    #     stories=stories,
+    #     active_button="stories",
+    #     like_it_url="/stories/reaction",
+    #     details_url="/stories",
+    #     user=user,
+    #     stats=stats
+    # )
+
     rend = render_template(
-        "wall.html",
-        message="message",
+        "wall_n.html",
+        message='',
         form=form,
         stories=stories,
         active_button="stories",
         like_it_url="/stories/reaction",
         details_url="/stories",
+        error=False,
+        info_bar=False,
+        res_msg=str(''),
         user=user,
         stats=stats
     )
