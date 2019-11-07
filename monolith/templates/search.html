@@ -1,0 +1,28 @@
+{% if current_user.is_authenticated %}
+{% extends "layout.html" %}
+{% block title %}
+    Search Page
+{% endblock %}
+
+{% block content %}
+<h1>Search Results</h1>
+
+
+    <h2>Users</h2>
+        {% if users is defined %}
+            {% for user in users %}
+                    {{ user.firstname }}
+            {% endfor %}
+
+        {% endif %}
+    <h2>Stories</h2>
+    {% if stories is defined %}
+        {%  for story in stories %}
+            {{ story.text }}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+{% else %}
+  Hi Anonymous, <a href="/login">Log in</a>
+{% endif %}
+
