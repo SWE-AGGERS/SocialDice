@@ -34,10 +34,7 @@ def _strava_auth_url(config):
 @login_required
 def getmywall():
     if current_user is not None and hasattr(current_user, 'id'):
-        # return getawall(current_user.id)
         return render_wall(current_user.id)
-    # else:
-    #     return User_not_found()
 
 
 @wall.route('/wall/<user_id>', methods=['GET'])
@@ -48,13 +45,9 @@ def render_wall(user_id):
     if user is None:
         return User_not_found()
 
-    stories = db.session.query(Story).filter(Story.author_id == user.id)
-
     stats = Stats(user_id)
 
     form = SelectDiceSetForm()
-
-    # rend = render_template("wall.html", user=user, stories=stories, stats=stats)
 
     stories = db.session.query(Story, User).join(User).filter(Story.author_id == user.id).all()
     stories = list(
@@ -68,21 +61,8 @@ def render_wall(user_id):
         ), stories)
     )
 
-    # TODO: fix this to uncomment & use story_list.html in wall.html
-    # rend = render_template(
-    #     "wall.html",
-    #     message="message",
-    #     form=form,
-    #     stories=stories,
-    #     active_button="stories",
-    #     like_it_url="/stories/reaction",
-    #     details_url="/stories",
-    #     user=user,
-    #     stats=stats
-    # )
-
     rend = render_template(
-        "wall_n.html",
+        "wall.html",
         message='',
         form=form,
         stories=stories,
@@ -96,7 +76,6 @@ def render_wall(user_id):
         stats=stats
     )
 
-    # rend = render_template("wall.html", user=user, stories=stories, stats=stats)
     return rend
 
 
