@@ -35,8 +35,13 @@ def _stories(message='', error=False, res_msg='', info_bar=False):
                 roll = json.loads(request.form.get('roll'))
 
         if(type(roll) is str):
+            roll = roll.replace("[", "")
+            roll = roll.replace("]", "")
+            roll = roll.replace("'", "")
+            roll = roll.replace(" ", "")
             aux = roll.split(",")
             roll = aux
+            #print(roll)
 
         dicenumber = len(roll)
 
