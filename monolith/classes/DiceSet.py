@@ -51,16 +51,19 @@ class DiceSet:
             self.dice.append(die)
 
     def throw_dice(self, dicenumber):
-        if isinstance(dicenumber, int):
-            if (dicenumber <= len(self.dice)):
+        pattern = re.compile("^[0-9]*$")
+
+        if(pattern.match(dicenumber)):
+            dicenumber = int(dicenumber)
+            if(dicenumber<=0 or dicenumber>len(self.dice)):
+                raise WrongDiceNumberError("Wrong dice number!")
+            else:
                 for i in range(dicenumber):
                     self.pips.append(self.dice[i].throw_die())
-            else:
-                raise WrongDiceNumberError("Not enough dice!")
-            return self.pips
         else:
             raise WrongArgumentTypeError("Dice number needs to be an integer!")
 
+        return self.pips
 
 
 class NonExistingSetError(Exception):

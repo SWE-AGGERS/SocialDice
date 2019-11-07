@@ -6,17 +6,12 @@ from monolith.database import User
 from flask_login import current_user
 from monolith.tests.restart_db import restart_db_tables
 
-
-
 _app = None
 
- 
+
 class TestDeleteStory(unittest.TestCase):
- 
+
     def test_delete_story_positive(self):
-
-
-
 
         global _app
         if _app is None:
@@ -28,69 +23,44 @@ class TestDeleteStory(unittest.TestCase):
 
         with tested_app.test_client() as client:
 
-
             # login
             reply = login(client, 'example@example.com', 'admin')
             self.assertEqual(reply.status_code, 200)
 
-
-
             users = User.query.all()
-            self.assertEqual(len(users),1)
-
-
-
+            self.assertEqual(len(users), 1)
 
             # add reaction to a story
             reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
-
-
             story = db.session.query(Story).filter_by(id=1).first()
-            self.assertNotEqual(story,None)
-
-
-
-
-
-
+            self.assertNotEqual(story, None)
 
             stories = Story.query.filter_by(id=1).all()
-            self.assertEqual(len(stories),1)
-
+            self.assertEqual(len(stories), 1)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),1)
-
-
+            self.assertEqual(len(reactions), 1)
 
             users = User.query.all()
-            self.assertEqual(len(users),1)
+            self.assertEqual(len(users), 1)
 
             reply = client.post('stories/1/remove/stories', follow_redirects=True)
-
-
 
             self.assertEqual(reply.status_code, 200)
 
             assert b'The story has been canceled.' in reply.data
 
             story = db.session.query(Story).filter_by(id=1).first()
-            self.assertEqual(story,None)
+            self.assertEqual(story, None)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),0)
+            self.assertEqual(len(reactions), 0)
 
             # logout
             reply = logout(client)
             self.assertEqual(reply.status_code, 200)
-
-
-
-
-
-
 
     def test_delete_story_negative(self):
 
@@ -104,58 +74,46 @@ class TestDeleteStory(unittest.TestCase):
 
         with tested_app.test_client() as client:
 
-
             # login
             reply = login(client, 'example@example.com', 'admin')
             self.assertEqual(reply.status_code, 200)
 
-
-
-
             users = User.query.all()
-            self.assertEqual(len(users),1)
-
+            self.assertEqual(len(users), 1)
 
             # add reaction to a story
             reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
-
-
-
             reply = client.post('stories/2/remove/stories', follow_redirects=True)
             self.assertEqual(reply.status_code, 404)
 
             story = db.session.query(Story).filter_by(id=1).first()
-            self.assertNotEqual(story,None)
+            self.assertNotEqual(story, None)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),1)
+            self.assertEqual(len(reactions), 1)
 
             stories = Story.query.filter_by(id=1).all()
-            self.assertEqual(len(stories),1)
-
+            self.assertEqual(len(stories), 1)
 
             users = User.query.all()
-            self.assertEqual(len(users),1)
+            self.assertEqual(len(users), 1)
 
             reply = client.post('stories/1/remove/stories', follow_redirects=True)
             self.assertEqual(reply.status_code, 200)
 
             assert b'The story has been canceled.' in reply.data
 
-
             story = db.session.query(Story).filter_by(id=1).first()
-            self.assertEqual(story,None)
+            self.assertEqual(story, None)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),0)
+            self.assertEqual(len(reactions), 0)
 
             # logout
             reply = logout(client)
             self.assertEqual(reply.status_code, 200)
-
-
 
     def test_delete_story_multiple_users_reactions(self):
 
@@ -169,35 +127,23 @@ class TestDeleteStory(unittest.TestCase):
 
         with tested_app.test_client() as client:
 
-
-
             # login
             reply = login(client, 'example@example.com', 'admin')
             self.assertEqual(reply.status_code, 200)
-
 
             # add reaction to a story
             reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
             users = User.query.all()
-            self.assertEqual(len(users),1)
-
+            self.assertEqual(len(users), 1)
 
             story = db.session.query(Story).filter_by(id=1).first()
             self.assertNotEqual(story, None)
 
-
-
-
-
             # logout
             reply = logout(client)
             self.assertEqual(reply.status_code, 200)
-
-
-
-
 
             # signup
             user1 = User()
@@ -206,44 +152,30 @@ class TestDeleteStory(unittest.TestCase):
             user1.email = "mario.rossi@gmail.com"
             user1.dateofbirth = "1994"
             user1.password = user1.set_password("12345")
-            reply = signup(client,user1)
+            reply = signup(client, user1)
             self.assertEqual(reply.status_code, 200)
 
-
-
-
-
-
             users = User.query.all()
-            self.assertEqual(len(users),2)
-
+            self.assertEqual(len(users), 2)
 
             story = db.session.query(Story).filter_by(id=1).first()
             self.assertNotEqual(story, None)
-
 
             stories = Story.query.filter_by(id=1).all()
-            self.assertEqual(len(stories),1)
-
+            self.assertEqual(len(stories), 1)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),1)
-
-
-
+            self.assertEqual(len(reactions), 1)
 
             story = db.session.query(Story).filter_by(id=1).first()
             self.assertNotEqual(story, None)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),1)
-
+            self.assertEqual(len(reactions), 1)
 
             # add reaction to a story
             reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
-
-
 
             # logout
             reply = logout(client)
@@ -257,13 +189,12 @@ class TestDeleteStory(unittest.TestCase):
             self.assertNotEqual(story, None)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),2)
+            self.assertEqual(len(reactions), 2)
 
             reply = client.post('stories/1/remove/stories', follow_redirects=True)
             self.assertEqual(reply.status_code, 200)
 
             assert b'The story has been canceled.' in reply.data
-
 
             story = db.session.query(Story).filter_by(id=1).first()
             self.assertEqual(story, None)
@@ -271,11 +202,6 @@ class TestDeleteStory(unittest.TestCase):
             # logout
             reply = logout(client)
             self.assertEqual(reply.status_code, 200)
-
-
-
-
-
 
     def test_delete_wrong_author_story(self):
 
@@ -289,36 +215,23 @@ class TestDeleteStory(unittest.TestCase):
 
         with tested_app.test_client() as client:
 
-
-
             # login
             reply = login(client, 'example@example.com', 'admin')
             self.assertEqual(reply.status_code, 200)
-
-
 
             # add reaction to a story
             reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
             users = User.query.all()
-            self.assertEqual(len(users),1)
-
+            self.assertEqual(len(users), 1)
 
             story = db.session.query(Story).filter_by(id=1).first()
             self.assertNotEqual(story, None)
 
-
-
-
-
             # logout
             reply = logout(client)
             self.assertEqual(reply.status_code, 200)
-
-
-
-
 
             # signup
             user1 = User()
@@ -327,36 +240,26 @@ class TestDeleteStory(unittest.TestCase):
             user1.email = "mario.rossi@gmail.com"
             user1.dateofbirth = "1994"
             user1.password = user1.set_password("12345")
-            reply = signup(client,user1)
+            reply = signup(client, user1)
             self.assertEqual(reply.status_code, 200)
 
-
-
-
             users = User.query.all()
-            self.assertEqual(len(users),2)
-
+            self.assertEqual(len(users), 2)
 
             story = db.session.query(Story).filter_by(id=1).first()
             self.assertNotEqual(story, None)
-
 
             stories = Story.query.filter_by(id=1).all()
-            self.assertEqual(len(stories),1)
-
+            self.assertEqual(len(stories), 1)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),1)
-
-
-
+            self.assertEqual(len(reactions), 1)
 
             story = db.session.query(Story).filter_by(id=1).first()
             self.assertNotEqual(story, None)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),1)
-
+            self.assertEqual(len(reactions), 1)
 
             # add reaction to a story
             reply = client.get('/stories/reaction/1/1')
@@ -374,13 +277,7 @@ class TestDeleteStory(unittest.TestCase):
             reply = logout(client)
             self.assertEqual(reply.status_code, 200)
 
-
-
-
     def test_delete_story_positive_index(self):
-
-
-
 
         global _app
         if _app is None:
@@ -392,65 +289,41 @@ class TestDeleteStory(unittest.TestCase):
 
         with tested_app.test_client() as client:
 
-
             # login
             reply = login(client, 'example@example.com', 'admin')
             self.assertEqual(reply.status_code, 200)
 
-
-
             users = User.query.all()
-            self.assertEqual(len(users),1)
-
-
-
+            self.assertEqual(len(users), 1)
 
             # add reaction to a story
             reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
-
-
             story = db.session.query(Story).filter_by(id=1).first()
-            self.assertNotEqual(story,None)
-
-
-
-
-
-
+            self.assertNotEqual(story, None)
 
             stories = Story.query.filter_by(id=1).all()
-            self.assertEqual(len(stories),1)
-
+            self.assertEqual(len(stories), 1)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),1)
-
-
+            self.assertEqual(len(reactions), 1)
 
             users = User.query.all()
-            self.assertEqual(len(users),1)
+            self.assertEqual(len(users), 1)
 
             reply = client.post('stories/1/remove/index', follow_redirects=True)
             self.assertEqual(reply.status_code, 200)
 
-
             story = db.session.query(Story).filter_by(id=1).first()
-            self.assertEqual(story,None)
+            self.assertEqual(story, None)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),0)
+            self.assertEqual(len(reactions), 0)
 
             # logout
             reply = logout(client)
             self.assertEqual(reply.status_code, 200)
-
-
-
-
-
-
 
     def test_delete_story_negative_index(self):
 
@@ -464,17 +337,12 @@ class TestDeleteStory(unittest.TestCase):
 
         with tested_app.test_client() as client:
 
-
             # login
             reply = login(client, 'example@example.com', 'admin')
             self.assertEqual(reply.status_code, 200)
 
-
-
-
             users = User.query.all()
-            self.assertEqual(len(users),1)
-
+            self.assertEqual(len(users), 1)
 
             # add reaction to a story
             reply = client.get('/stories/reaction/1/1')
@@ -484,34 +352,29 @@ class TestDeleteStory(unittest.TestCase):
             self.assertEqual(reply.status_code, 404)
 
             story = db.session.query(Story).filter_by(id=1).first()
-            self.assertNotEqual(story,None)
+            self.assertNotEqual(story, None)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),1)
+            self.assertEqual(len(reactions), 1)
 
             stories = Story.query.filter_by(id=1).all()
-            self.assertEqual(len(stories),1)
-
+            self.assertEqual(len(stories), 1)
 
             users = User.query.all()
-            self.assertEqual(len(users),1)
+            self.assertEqual(len(users), 1)
 
             reply = client.post('stories/1/remove/index', follow_redirects=True)
             self.assertEqual(reply.status_code, 200)
 
-
-
             story = db.session.query(Story).filter_by(id=1).first()
-            self.assertEqual(story,None)
+            self.assertEqual(story, None)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),0)
+            self.assertEqual(len(reactions), 0)
 
             # logout
             reply = logout(client)
             self.assertEqual(reply.status_code, 200)
-
-
 
     def test_delete_story_multiple_users_reactions_index(self):
 
@@ -525,35 +388,23 @@ class TestDeleteStory(unittest.TestCase):
 
         with tested_app.test_client() as client:
 
-
-
             # login
             reply = login(client, 'example@example.com', 'admin')
             self.assertEqual(reply.status_code, 200)
-
 
             # add reaction to a story
             reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
             users = User.query.all()
-            self.assertEqual(len(users),1)
-
+            self.assertEqual(len(users), 1)
 
             story = db.session.query(Story).filter_by(id=1).first()
             self.assertNotEqual(story, None)
 
-
-
-
-
             # logout
             reply = logout(client)
             self.assertEqual(reply.status_code, 200)
-
-
-
-
 
             # signup
             user1 = User()
@@ -562,44 +413,30 @@ class TestDeleteStory(unittest.TestCase):
             user1.email = "mario.rossi@gmail.com"
             user1.dateofbirth = "1994"
             user1.password = user1.set_password("12345")
-            reply = signup(client,user1)
+            reply = signup(client, user1)
             self.assertEqual(reply.status_code, 200)
 
-
-
-
-
-
             users = User.query.all()
-            self.assertEqual(len(users),2)
-
+            self.assertEqual(len(users), 2)
 
             story = db.session.query(Story).filter_by(id=1).first()
             self.assertNotEqual(story, None)
-
 
             stories = Story.query.filter_by(id=1).all()
-            self.assertEqual(len(stories),1)
-
+            self.assertEqual(len(stories), 1)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),1)
-
-
-
+            self.assertEqual(len(reactions), 1)
 
             story = db.session.query(Story).filter_by(id=1).first()
             self.assertNotEqual(story, None)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),1)
-
+            self.assertEqual(len(reactions), 1)
 
             # add reaction to a story
             reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
-
-
 
             # logout
             reply = logout(client)
@@ -613,12 +450,10 @@ class TestDeleteStory(unittest.TestCase):
             self.assertNotEqual(story, None)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),2)
+            self.assertEqual(len(reactions), 2)
 
             reply = client.post('stories/1/remove/index', follow_redirects=True)
             self.assertEqual(reply.status_code, 200)
-
-
 
             story = db.session.query(Story).filter_by(id=1).first()
             self.assertEqual(story, None)
@@ -626,11 +461,6 @@ class TestDeleteStory(unittest.TestCase):
             # logout
             reply = logout(client)
             self.assertEqual(reply.status_code, 200)
-
-
-
-
-
 
     def test_delete_wrong_author_story_index(self):
 
@@ -644,36 +474,23 @@ class TestDeleteStory(unittest.TestCase):
 
         with tested_app.test_client() as client:
 
-
-
             # login
             reply = login(client, 'example@example.com', 'admin')
             self.assertEqual(reply.status_code, 200)
-
-
 
             # add reaction to a story
             reply = client.get('/stories/reaction/1/1')
             self.assertEqual(reply.status_code, 200)
 
             users = User.query.all()
-            self.assertEqual(len(users),1)
-
+            self.assertEqual(len(users), 1)
 
             story = db.session.query(Story).filter_by(id=1).first()
             self.assertNotEqual(story, None)
 
-
-
-
-
             # logout
             reply = logout(client)
             self.assertEqual(reply.status_code, 200)
-
-
-
-
 
             # signup
             user1 = User()
@@ -682,36 +499,26 @@ class TestDeleteStory(unittest.TestCase):
             user1.email = "mario.rossi@gmail.com"
             user1.dateofbirth = "1994"
             user1.password = user1.set_password("12345")
-            reply = signup(client,user1)
+            reply = signup(client, user1)
             self.assertEqual(reply.status_code, 200)
 
-
-
-
             users = User.query.all()
-            self.assertEqual(len(users),2)
-
+            self.assertEqual(len(users), 2)
 
             story = db.session.query(Story).filter_by(id=1).first()
             self.assertNotEqual(story, None)
-
 
             stories = Story.query.filter_by(id=1).all()
-            self.assertEqual(len(stories),1)
-
+            self.assertEqual(len(stories), 1)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),1)
-
-
-
+            self.assertEqual(len(reactions), 1)
 
             story = db.session.query(Story).filter_by(id=1).first()
             self.assertNotEqual(story, None)
 
             reactions = Reaction.query.filter_by(story_id=1).all()
-            self.assertEqual(len(reactions),1)
-
+            self.assertEqual(len(reactions), 1)
 
             # add reaction to a story
             reply = client.get('/stories/reaction/1/1')
@@ -719,7 +526,6 @@ class TestDeleteStory(unittest.TestCase):
 
             reply = client.post('stories/1/remove/index', follow_redirects=True)
             self.assertEqual(reply.status_code, 200)
-
 
             story = db.session.query(Story).filter_by(id=1).first()
             self.assertNotEqual(story, None)
@@ -729,18 +535,15 @@ class TestDeleteStory(unittest.TestCase):
             self.assertEqual(reply.status_code, 200)
 
 
-
-
 if __name__ == '__main__':
     unittest.main()
 
 
-def signup(client, user:User):
+def signup(client, user: User):
     return client.post('/signup', data=dict(
-        firstname = user.firstname,
-        lastname = user.lastname,
-        email = user.email,
-        dateofbirth = user.dateofbirth,
-        password = user.password
+        firstname=user.firstname,
+        lastname=user.lastname,
+        email=user.email,
+        dateofbirth=user.dateofbirth,
+        password=user.password
     ), follow_redirects=True)
-

@@ -1,5 +1,5 @@
+from monolith.classes import DiceSet as ds
 import nltk
-import sys
 nltk.download('wordnet')
 
 
@@ -10,32 +10,34 @@ def check_storyV2(story,diceSet):
     # Tests on parameters
     if not isinstance(story, str):
         raise WrongFormatStoryError("The story must be a string.\n")
-    if len(story)>1000:
-        raise TooLongStoryError("The story is too long. The length is > 1000 characters\n")
-    if not isinstance(diceSet, list):
-        raise WrongFormatDiceError("The dice set must be a list.\n")
     res = len(story.split())
-    if res < len(diceSet):
+    if not isinstance(diceSet,ds.DiceSet):
+        raise WrongFormatDiceError("The dice set must be a DiceSet object.\n")
+    if res < len(diceSet.pips):
         raise TooSmallStoryError(
             "The number of words of the story must greater or equal of the number of resulted faces.\n")
-    for elem in diceSet:
-        if not isinstance(elem,str):
+    if len(diceSet.pips) != len(diceSet.dice):
+        raise SizeDiceSetFacesError("The number of resulting faces must be equal to the number of dice.\n")
+    for elem in diceSet.dice:
+        if not isinstance(elem,ds.Die):
             raise WrongFormatSingleDiceError("Every dice of the dice set must be a die.\n")
-
+    for elem in diceSet.pips:
+        if not isinstance(elem,str):
+            raise WrongFormatSingleFaceError("Every resulting face of the dice set must be a string.\n")
 
 
 
     found = True
     i = 0
-    while found and i<len(diceSet):
+    while found and i<len(diceSet.pips):
         arr = []
-        synset = nltk.corpus.wordnet.synsets(diceSet[i])
+        synset = nltk.corpus.wordnet.synsets(diceSet.pips[i])
         if len(synset) > 0:
             for j in range(0,len(synset[0].lemmas())):
                 arr.append(synset[0].lemmas()[j].name())
-        if(diceSet[i] not in arr):
-            arr.append(diceSet[i])
-        print("Synonyms of word "+diceSet[i]+":")
+        if(diceSet.pips[i] not in arr):
+            arr.append(diceSet.pips[i])
+        print("Synonyms of word "+diceSet.pips[i]+":")
         print(arr)
         foundWord = False
         k = 0
@@ -65,21 +67,24 @@ class TooSmallStoryError(Exception):
     def __str__(self):
         return repr(self.value)
 
-
-class TooLongStoryError(Exception):
-    def __init__(self, value):
-        self.value = value
-
-    def __str__(self):
-        return repr(self.value)
-
-
 class WrongFormatDiceError(Exception):
     def __init__(self, value):
         self.value = value
 
     def __str__(self):
         return repr(self.value)
+
+
+
+
+
+class SizeDiceSetFacesError(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
 
 
 class WrongFormatSingleDiceError(Exception):
@@ -90,3 +95,9 @@ class WrongFormatSingleDiceError(Exception):
         return repr(self.value)
 
 
+class WrongFormatSingleFaceError(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)

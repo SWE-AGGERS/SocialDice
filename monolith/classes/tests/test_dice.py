@@ -35,7 +35,7 @@ class TestDice(unittest.TestCase):
         die3 = ['cat', 'pencil', 'baloon', 'bananas', 'phone', 'icecream']
         #die4 = ['ladder', 'car', 'fire', 'bang', 'hat', 'hamburger']
         #die5 = ['rain', 'heart', 'glasses', 'poo', 'ball', 'sun']
-        result = dice.throw_dice(4)
+        result = dice.throw_dice("4")
         #print(result)
         self.assertEqual(len(result), 4)
         self.assertIn(result[0], die0)
@@ -51,7 +51,7 @@ class TestDice(unittest.TestCase):
 
         # wrong dice number
         with self.assertRaises(WrongDiceNumberError):
-            dice.throw_dice(10)
+            dice.throw_dice("10")
 
 
 if __name__ == '__main__':
