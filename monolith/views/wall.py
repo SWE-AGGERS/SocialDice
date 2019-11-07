@@ -54,6 +54,7 @@ def render_wall(user_id):
 
     # rend = render_template("wall.html", user=user, stories=stories, stats=stats)
 
+    # TODO: fix this to uncomment & use story_list.html in wall.html
     rend = render_template(
         "wall.html",
         message="message",
