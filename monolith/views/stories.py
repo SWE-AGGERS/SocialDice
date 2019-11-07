@@ -1,5 +1,6 @@
 from flask import Blueprint, request, redirect, render_template, abort, json, jsonify
 from flask_login import (current_user, login_required)
+from sqlalchemy import func
 
 from monolith.background import update_reactions
 from flask import Blueprint, redirect, render_template, request
@@ -33,7 +34,12 @@ def _stories(message='', error=False, res_msg='', info_bar=False):
             if re.search('"', roll):
                 roll = json.loads(request.form.get('roll'))
 
+        if(type(roll) is str):
+            aux = roll.split(",")
+            roll = aux
+
         dicenumber = len(roll)
+
         new_story.text = text
         new_story.roll = {'dice': roll}
         new_story.dicenumber = dicenumber
@@ -47,13 +53,12 @@ def _stories(message='', error=False, res_msg='', info_bar=False):
                 x[0],
                 x[1],
                 "hidden" if x[1].id == current_user.id else "",
-                "unfollow" if _is_follower(current_user.id, x[1].id) else "follow",
-                reacted(x[1].id, x[0].id)
+                "unfollow" if _is_follower(
+                    current_user.id, x[1].id) else "follow",
+                reacted(current_user.id, x[0].id)
             ), allstories)
         )
-        for x in allstories:
-            print(x[0].likes)
-        
+
         return render_template(
             "stories.html",
             message=message,
@@ -72,14 +77,14 @@ def _stories(message='', error=False, res_msg='', info_bar=False):
 @login_required
 def _reaction(storyid, reactiontype):
     try:
-        message = add_reaction(reacterid=current_user.id, storyid=storyid, reactiontype=reactiontype)
+        message = add_reaction(reacterid=current_user.id,
+                               storyid=storyid, reactiontype=reactiontype)
         # return _stories(error=False, res_msg=message, info_bar=True)
         return jsonify({'reply': message, 'reaction': reactiontype, 'story_id': storyid})
     except StoryNonExistsError as err_msg:
         return _stories(error=True, res_msg=err_msg, info_bar=True)
 
 
-# todo add dices details on render
 @stories.route('/stories/<storyid>', methods=['GET'])
 def get_story_detail(storyid):
     q = db.session.query(Story).filter_by(id=storyid)
@@ -101,14 +106,23 @@ def _roll(dicenumber, dicesetid):
     try:
         roll = dice.throw_dice(dicenumber)
     except WrongDiceNumberError:
-        return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">"+
-        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>"+
-        "<strong>Error!</strong> Wrong dice number!</div>")
+        return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">" +
+                        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>" +
+                        "<strong>Error!</strong> Wrong dice number!</div>")
     except WrongArgumentTypeError:
-        return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">"+
-        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>"+
-        "<strong>Error!</strong> Argument Dice number needs to be an integer!</div>")
+        return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">" +
+                        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>" +
+                        "<strong>Error!</strong> Argument Dice number needs to be an integer!</div>")
     return render_template("create_story.html", form=form, set=dicesetid, roll=roll)
+
+
+@stories.route('/stories/random', methods=['GET'])
+def random_story():
+    q = db.session.query(Story).order_by(func.random()).limit(
+        1)
+    random_story_from_db = q.first()
+    return redirect('/stories/'+str(random_story_from_db.id))
+#    return render_template("story_detail.html", story=random_story_from_db)
 
 
 @stories.route('/stories/filter', methods=['GET', 'POST'])
@@ -133,8 +147,9 @@ def filter_stories():
                         x[0],
                         x[1],
                         "hidden" if x[1].id == current_user.id else "",
-                        "unfollow" if _is_follower(current_user.id, x[1].id) else "follow",
-                        reacted(x[1].id, x[0].id)
+                        "unfollow" if _is_follower(
+                            current_user.id, x[1].id) else "follow",
+                        reacted(current_user.id, x[0].id)
                     ), f_stories))
                 return render_template('filter_stories.html',
                                        form=form,
@@ -159,7 +174,8 @@ def add_reaction(reacterid, storyid, reactiontype):
     if q is None:
         raise StoryNonExistsError('Story not exists!')
 
-    old_reaction = Reaction.query.filter_by(user_id=reacterid, story_id=storyid).first()
+    old_reaction = Reaction.query.filter_by(
+        user_id=reacterid, story_id=storyid).first()
 
     if old_reaction is None:
         new_reaction = Reaction()
@@ -193,7 +209,9 @@ class StoryNonExistsError(Exception):
 
 
 def reacted(user_id, story_id):
-    q = db.session.query(Reaction).filter_by(story_id=story_id, user_id=user_id).all()
+    q = db.session.query(Reaction).filter_by(
+        story_id=story_id, user_id=user_id).all()
+    
     if len(q) > 0:
         return q[0].type
     return 0
