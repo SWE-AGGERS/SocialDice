@@ -58,8 +58,6 @@ def _stories(message='', error=False, res_msg='', info_bar=False):
                 reacted(current_user.id, x[0].id)
             ), allstories)
         )
-        for x in allstories:
-            print(x)
 
         return render_template(
             "stories.html",

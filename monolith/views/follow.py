@@ -132,15 +132,13 @@ def _followed_numer():
 # =============================================================================
 # UTILITY FUNC
 # =============================================================================
-
 # Get the list of followers of the user_id
-def _get_followers_of(user_id):
+def get_followers_of(user_id):
     L = Followers.query.filter_by(follower_id=user_id).all()
     return L
 
+
 # Get the list of users who follows the user_id
-
-
 def _get_followed_by(user_id):
     L = Followers.query.filter_by(followed_id=user_id).all()
     return L
@@ -153,7 +151,7 @@ def _get_followers_number(user_id):
 
 # Get the number of followed
 def _get_followed_number(user_id):
-    return len(_get_followers_of(user_id))
+    return len(get_followers_of(user_id))
 
 # check if user_a follow user_b
 
