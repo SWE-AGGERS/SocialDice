@@ -11,7 +11,7 @@ from monolith.forms import UserForm, StoryForm, SelectDiceSetForm, StoryFilter
 from monolith.database import db, Story, Reaction, User
 from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingSetError, WrongArgumentTypeError
 from monolith.views.home import index
-from monolith.views.check_stories import check_storyV2, TooLongStoryError, TooSmallStoryError, WrongFormatDiceError, WrongFormatSingleDiceError, WrongFormatSingleFaceError, WrongFormatStoryError
+from monolith.views.check_stories import check_storyV2, InvalidStory, TooLongStoryError, TooSmallStoryError, WrongFormatDiceError, WrongFormatSingleDiceError, WrongFormatSingleFaceError, WrongFormatStoryError
 from monolith.views.follow import _is_follower
 import re
 

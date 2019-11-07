@@ -44,7 +44,7 @@ def check_storyV2(story,diceSet):
             i = i+1
 
     if not found:
-        return InvalidStory
+        raise InvalidStory("Invalid story")
 
 
 

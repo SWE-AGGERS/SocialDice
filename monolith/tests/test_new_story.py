@@ -125,6 +125,8 @@ class TestNewStory(unittest.TestCase):
 
             self.assertEqual(reply.status_code, 200)
 
+            #print(reply.data)
+
             assert b'Invalid story. Try again!' in reply.data
 
             # check database entry
