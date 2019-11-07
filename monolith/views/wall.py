@@ -52,17 +52,21 @@ def render_wall(user_id):
 
     form = SelectDiceSetForm()
 
-    render = render_template(
+    # rend = render_template("wall.html", user=user, stories=stories, stats=stats)
+
+    rend = render_template(
         "wall.html",
         message="message",
         form=form,
         stories=stories,
         active_button="stories",
         like_it_url="/stories/reaction",
-        details_url="/stories"
+        details_url="/stories",
+        user=user,
+        stats=stats
     )
 
-    rend = render_template("wall.html", user=user, stories=stories, stats=stats)
+    # rend = render_template("wall.html", user=user, stories=stories, stats=stats)
     return rend
 
 
