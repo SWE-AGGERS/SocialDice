@@ -354,9 +354,6 @@ class TestDeleteStory(unittest.TestCase):
             reply = client.post('stories/1/remove/index', follow_redirects=True)
             self.assertEqual(reply.status_code, 200)
 
-            story = db.session.query(Story).filter_by(id=1).first()
-            self.assertEqual(story, None)
-
             reactions = Reaction.query.filter_by(story_id=1).all()
             self.assertEqual(len(reactions), 0)
 
