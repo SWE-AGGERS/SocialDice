@@ -114,6 +114,14 @@ class WallTestCase(unittest.TestCase):
 
         self.assertIn(user.email, str(reply.data))
 
+        q = db.session.query(Story).filter(Story.author_id == user.id)
+
+        for s in q:
+            s: Story
+            self.assertIn(s.text, str(reply.data))
+
+
+
     def test_wall_fail(self):
         app = test_app.test_client()
 
