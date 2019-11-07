@@ -47,13 +47,14 @@ def _stories(message='', error=False, res_msg='', info_bar=False):
                 x[0],
                 x[1],
                 "hidden" if x[1].id == current_user.id else "",
-                "unfollow" if _is_follower(current_user.id, x[1].id) else "follow",
-                reacted(x[1].id, x[0].id)
+                "unfollow" if _is_follower(
+                    current_user.id, x[1].id) else "follow",
+                reacted(current_user.id, x[0].id)
             ), allstories)
         )
         for x in allstories:
-            print(x[0].likes)
-        
+            print(x)
+
         return render_template(
             "stories.html",
             message=message,
@@ -72,7 +73,8 @@ def _stories(message='', error=False, res_msg='', info_bar=False):
 @login_required
 def _reaction(storyid, reactiontype):
     try:
-        message = add_reaction(reacterid=current_user.id, storyid=storyid, reactiontype=reactiontype)
+        message = add_reaction(reacterid=current_user.id,
+                               storyid=storyid, reactiontype=reactiontype)
         # return _stories(error=False, res_msg=message, info_bar=True)
         return jsonify({'reply': message, 'reaction': reactiontype, 'story_id': storyid})
     except StoryNonExistsError as err_msg:
@@ -100,13 +102,13 @@ def _roll(dicenumber, dicesetid):
     try:
         roll = dice.throw_dice(dicenumber)
     except WrongDiceNumberError:
-        return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">"+
-        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>"+
-        "<strong>Error!</strong> Wrong dice number!</div>")
+        return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">" +
+                        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>" +
+                        "<strong>Error!</strong> Wrong dice number!</div>")
     except WrongArgumentTypeError:
-        return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">"+
-        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>"+
-        "<strong>Error!</strong> Argument Dice number needs to be an integer!</div>")
+        return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">" +
+                        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>" +
+                        "<strong>Error!</strong> Argument Dice number needs to be an integer!</div>")
     return render_template("create_story.html", form=form, set=dicesetid, roll=roll)
 
 
@@ -132,8 +134,9 @@ def filter_stories():
                         x[0],
                         x[1],
                         "hidden" if x[1].id == current_user.id else "",
-                        "unfollow" if _is_follower(current_user.id, x[1].id) else "follow",
-                        reacted(x[1].id, x[0].id)
+                        "unfollow" if _is_follower(
+                            current_user.id, x[1].id) else "follow",
+                        reacted(current_user.id, x[0].id)
                     ), f_stories))
                 return render_template('filter_stories.html',
                                        form=form,
@@ -158,7 +161,8 @@ def add_reaction(reacterid, storyid, reactiontype):
     if q is None:
         raise StoryNonExistsError('Story not exists!')
 
-    old_reaction = Reaction.query.filter_by(user_id=reacterid, story_id=storyid).first()
+    old_reaction = Reaction.query.filter_by(
+        user_id=reacterid, story_id=storyid).first()
 
     if old_reaction is None:
         new_reaction = Reaction()
@@ -192,7 +196,9 @@ class StoryNonExistsError(Exception):
 
 
 def reacted(user_id, story_id):
-    q = db.session.query(Reaction).filter_by(story_id=story_id, user_id=user_id).all()
+    q = db.session.query(Reaction).filter_by(
+        story_id=story_id, user_id=user_id).all()
+    
     if len(q) > 0:
         return q[0].type
     return 0

@@ -24,44 +24,7 @@
     <div class="container">
         {% include "includes/nav.html" %}
 
-        {% block content %}
-        <h1>User List</h1>
-        <ul class="feed">
-            {% for story, user, cannot_follow, method in users %}
-            <li class="story-container">
-                <div class="author inline">
-                    <div class="name">{{user.firstname}} {{user.lastname}}</div>
-                    <div class="follow {{cannot_follow}} inline">
-                        <form method="POST" action="/{{method}}/{{user.id}}">
-                            <button type="submit">
-                                <i class="fa {{method}}"></i>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                <a class="story" href="{{details_url}}/{{story.id}}">
-                    {{story.text}}
-                </a>
-                <div class="inline">
-                    <div class="like">
-                        {{story.likes}}
-                        <a href="{{like_it_url}}/{{story.id}}/1">
-                            <i class="far fa-thumbs-up"></i>
-                        </a>
-                    </div>
-                    <div class="dislike">
-                        {{story.dislikes}}
-                        <a href="{{like_it_url}}/{{story.id}}/2">
-                            <i class="far fa-thumbs-down"></i>
-                        </a>
-                    </div>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-        {% endblock %}
-
-        {% include "includes/footer.html" %}
+        {% include "story_list.html" %} 
     </div>
 </body>
 
