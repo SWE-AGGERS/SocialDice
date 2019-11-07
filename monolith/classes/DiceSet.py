@@ -55,8 +55,8 @@ class DiceSet:
 
         if(pattern.match(dicenumber)):
             dicenumber = int(dicenumber)
-            if(dicenumber>len(self.dice)):
-                raise WrongDiceNumberError("Not enough dice!")
+            if(dicenumber<=0 or dicenumber>len(self.dice)):
+                raise WrongDiceNumberError("Wrong dice number!")
             else:
                 for i in range(dicenumber):
                     self.pips.append(self.dice[i].throw_die())
