@@ -97,7 +97,6 @@ def _reaction(storyid, reactiontype):
         return _stories(message)
 
 
-# todo add dices details on render
 @stories.route('/stories/<storyid>', methods=['GET'])
 def get_story_detail(storyid):
     q = db.session.query(Story).filter_by(id=storyid)
