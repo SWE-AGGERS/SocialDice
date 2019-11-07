@@ -51,6 +51,9 @@ def _stories(message='', error=False, res_msg='', info_bar=False):
                 reacted(x[1].id, x[0].id)
             ), allstories)
         )
+        for x in allstories:
+            print(x[0].likes)
+        
         return render_template(
             "stories.html",
             message=message,
@@ -65,7 +68,7 @@ def _stories(message='', error=False, res_msg='', info_bar=False):
         )
 
 
-@stories.route('/stories/reaction/<storyid>/<reactiontype>', methods=['GET', 'PUSH'])
+@stories.route('/stories/reaction/<storyid>/<reactiontype>', methods=['GET', 'POST'])
 @login_required
 def _reaction(storyid, reactiontype):
     try:
@@ -191,7 +194,6 @@ class StoryNonExistsError(Exception):
 
 def reacted(user_id, story_id):
     q = db.session.query(Reaction).filter_by(story_id=story_id, user_id=user_id).all()
-    print(q)
     if len(q) > 0:
         return q[0].type
     return 0
