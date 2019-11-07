@@ -10,7 +10,7 @@ from flask_login import (current_user, login_user, logout_user,
 from monolith.forms import UserForm, StoryForm, SelectDiceSetForm, StoryFilter
 from monolith.database import db, Story, Reaction, User
 from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingSetError, WrongArgumentTypeError
-
+from monolith.views.check_stories import check_storyV2
 from monolith.views.follow import _is_follower
 import re
 
