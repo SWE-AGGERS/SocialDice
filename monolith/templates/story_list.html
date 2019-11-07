@@ -1,0 +1,97 @@
+<ul class="feed">
+  {% for story, user, cannot_follow, method, react in stories %}
+  <li class="story-container">
+    <div class="author inline">
+      <div class="name">{{user.firstname}} {{user.lastname}}</div>
+      <div class="follow {{cannot_follow}} inline">
+        <form method="POST" action="/{{method}}/{{user.id}}">
+          <button type="submit">
+            <i class="fa {{method}}"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+    <a class="story" href="{{details_url}}/{{story.id}}">
+      {{story.text}}
+    </a>
+    <div class="inline">
+      <button class="like {{ 'active' if react==1 }}" id="button_{{ story.id }}_1"
+        onclick="return react(this, '{{ story.id }}', 1)">
+        <span>{{story.likes}}</span>
+        <i class="far"></i>
+      </button>
+      <button class="dislike {{ 'active' if react==2 }}" id="button_{{ story.id }}_2"
+        onclick="return react(this, '{{ story.id }}', 2)">
+        <span>{{story.dislikes}}</span>
+        <i class="far"></i>
+      </button>
+      {% if user.id == story.author_id %}
+                 <a href="#myModal{{ story.id }}" class="trigger-btn" data-toggle="modal">Delete story</a>
+                        <div id="myModal{{ story.id }}" class="modal fade">
+                            <div class="modal-dialog modal-confirm">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Delete story</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Do you really want to delete this story? This process cannot be undone.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                                        <div class="remove_story inline">
+                                            <form method="POST" action="/stories/{{ story.id }}/remove/stories">
+                                                <button type="submit" class="btn btn-info">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            {% endif %}
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
+<script type="text/javascript">
+  function react(button, story_id, react_type) {
+    $.ajax({
+      dataType: 'json',
+      type: "GET",
+      url: "/stories/reaction/" + story_id + "/" + react_type,
+      success: function (data) {
+        console.log(data)
+        switch (data.reply) {
+          case 'Reaction created!':
+            console.log(button.innerText)
+            button.firstElementChild.innerHTML = parseInt(button.innerText) + 1;
+            button.classList.toggle("active")
+            break;
+          case 'Reaction changed!':
+            button.firstElementChild.innerHTML = parseInt(button.innerText) + 1;
+            let button1 = document.getElementById("button_" + story_id + "_1");
+            let button2 = document.getElementById("button_" + story_id + "_2");
+            if (react_type == 1) {
+              let val = parseInt(button2.innerText) - 1;
+              console.log(button2.firstElementChild.innerHTML)
+              button2.firstElementChild.innerHTML = val.toString();
+            } else {
+              console.log(button1)
+              let val = parseInt(button1.innerText) - 1;
+              button1.firstElementChild.innerHTML = val.toString();
+            }
+            button1.classList.toggle("active")
+            button2.classList.toggle("active")
+            break;
+          case 'Reaction removed!':
+            console.log(button.innerText)
+            button.firstElementChild.innerHTML = parseInt(button.innerText) - 1;
+            button.classList.toggle("active")
+            break;
+        }
+      },
+    });
+  }
+</script>

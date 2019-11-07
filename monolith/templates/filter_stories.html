@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/stories.css') }}">
+  <link rel="stylesheet" href="../static/css/stories.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -19,16 +19,14 @@
   <title>Stories</title>
 </head>
 
+
 <body>
 
-  <div class="container">
+{% include "includes/nav.html" %}
 
-    {% include "includes/nav.html" %}
-
-    {% block content %}
-      <div class="container">
+{% block content %}
+<div class="container">
         {{ message|safe }}
-      </div>
       {% if info_bar == true %}
       {% if error == true %}
         <div class="container">
@@ -50,64 +48,42 @@
         </div>
       {% endif %}
       {% endif %}
+</div>
 
-        This is {{ user.firstname }}'s Wall!!!
-    <br><br>
-    Talk with the author: {{ user.email }}
-    <br><br>
-    Some stats:
-    <table>
-        <tr>
-            <th>ALL Likes : </th><td>{{ stats.likes }}</td>
-        </tr>
-        <tr>
-            <th>ALL DisLikes : </th><td>{{ stats.dislikes }}</td>
-        </tr>
-        <tr>
-            <th>ALL Dice Thrown : </th><td>{{ stats.numDice }}</td>
-        </tr>
-        <tr>
-            <th>AVG Likes : </th><td>{{ stats.avgLike }}</td>
-        </tr>
-        <tr>
-            <th>AVG DisLikes : </th><td>{{ stats.avgDislike }}</td>
-        </tr>
-        <tr>
-            <th>AVG Dice Thrown : </th><td>{{ stats.avgDice }}</td>
-        </tr>
-        <tr>
-            <th>Ratio Like/Dislike : </th><td>{{ stats.ratio_likeDislike }}</td>
-        </tr>
-        <tr>
-            <th>Readers Love-Level <3 : </th><td>{{ stats.love_level }}</td>
-        </tr>
+{% if current_user.is_authenticated %}
+   <div class="container mt-4" >
+   <form  action="" method="post" role="form">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+          <label for="init_date">From:</label>
+          <input type="date" class="form-control" id="init_date" name="init_date" placeholder="Initial Date">
+            <br>
+          <label for="end_date">To:</label>
+          <input type="date" class="form-control" id="end_date" name="end_date" placeholder="End Date">
+        <br>
+    </div>
+        <br>
+        <div style="text-align: center;">
+          <button type="submit" class="btn btn-success">Search</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="container">
+      {{ message|safe }}
+    </div>
 
 
-    </table>
+{% include "story_list.html" %}
+
+{% else %}
+  Hi Anonymous, <a href="/login">Log in</a>
+{% endif %}
 
 
 
-    <br><br><br>
-    <h2>All of {{ stats.numStories }} {{ user.firstname }}'s Stories</h2>
-    ... have you time to read all this stories?!
-    <br><br>
-
-     {% include "story_list.html" %}
 
 
-  </div>
-  </div>
-  {% endblock %}
-  </div>
-</body>
 
-<script>
-  $(document).ready(() => {
-    $("#rollButton").on('click', function () {
-      $("#rollForm").attr('action', $("#rollForm").attr('action') + "/" + $('#dicenumber').val() + "/" + $('#dicesetid').val());
-      $("#rollForm").submit();
-    });
-  })
-</script>
+{% endblock %}
 
-</html>

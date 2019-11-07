@@ -10,10 +10,32 @@
 
 
         <h2>Your Stories</h2>
+
         {% for story in stories %}
             <div>
                 <li>
-                    {{ story.text }} -- Likes:{{ story.likes }}
+                    {{ story.text }} -- Likes:{{ story.likes }} -- <a href="#myModal{{ story.id }}" class="trigger-btn" data-toggle="modal">Delete story</a>
+                    <div id="myModal{{ story.id }}" class="modal fade">
+                        <div class="modal-dialog modal-confirm">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Delete story</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Do you really want to delete this story? This process cannot be undone.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                                    <div class="remove_story inline">
+                                        <form method="POST" action="/stories/{{ story.id }}/remove/index">
+                                            <button type="submit" class="btn btn-info">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </li>
             </div>
         {% endfor %}
