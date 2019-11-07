@@ -1,6 +1,6 @@
 import re
 
-from flask import Blueprint, redirect, render_template, request
+from flask import Blueprint, redirect, render_template, request, url_for
 from flask import abort, json
 from flask_login import (current_user, login_required)
 from sqlalchemy import func
@@ -111,4 +111,5 @@ def random_story():
     q = db.session.query(Story).order_by(func.random()).limit(
         1)
     random_story_from_db = q.first()
-    return render_template("story_detail.html", story=random_story_from_db)
+    return redirect('/stories/'+str(random_story_from_db.id))
+#    return render_template("story_detail.html", story=random_story_from_db)
