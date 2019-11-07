@@ -15,10 +15,25 @@
       </li>
        <li class="nav-item  {% if active_button == "users" %} active {% endif %}">
         <a class="nav-link" href="/users">Users</a>
-
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">Profile</a>
+      </li>
+      <li class="nav-item  {% if active_button == "followers" %} active {% endif %}">
+        <a class="nav-link" href="/followers/list">My followers</a>
+      </li>
+      
+
+      <li class="nav-item">
+        <div class="dropdown">
+          <button class="nav-link active btn dropdown-toggle" type="button" id="FilterStoryButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Filter Stories
+          </button>
+          <div class="dropdown-menu" aria-labelledby="FilterStoryButton">
+            <a class="dropdown-item" href="/stories/filter">Time Intervals</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </div>
       </li>
 
         {% if current_user.is_authenticated %}
@@ -26,7 +41,6 @@
             <a class="nav-link" href="/logout" tabindex="-1" aria-disabled="true">Logout</a>
           </li>
         {% else %}
-
         {% endif %}
 
     </ul>
@@ -35,5 +49,5 @@
       <button class="btn btn-outline-primary my-2 my-sm-0 bg-light" type="submit">Search</button>
     </form>
 
-  </div>
+    </div>
 </nav>
