@@ -6,10 +6,7 @@ from monolith.database import db, User, Story
 from monolith.tests.restart_db import restart_db_tables
 import sys
 
-
 _app = None
-
-
 
 class TestNewStory(unittest.TestCase):
     def test_roll(self):
@@ -47,6 +44,9 @@ class TestNewStory(unittest.TestCase):
 
     def test_valid_post(self):
 
+
+
+
         global _app
         if _app is None:
             tested_app = create_app(debug=True)
@@ -57,16 +57,26 @@ class TestNewStory(unittest.TestCase):
 
         with tested_app.test_client() as client:
 
+
+
+
+
             # login
             reply = login(client, 'example@example.com', 'admin')
             assert b'Hi Admin!' in reply.data
             reply = client.get('/stories')
             assert b'Trial story of example admin user' in reply.data
 
+
+
+
             # post a new story
             roll = json.dumps(["bird", "whale", "coffee", "bananas", "ladder", "glasses"])
 
+
+
             reply = client.post('/stories', data=dict(text="bird whale coffee bananas ladder glasses", roll=roll), follow_redirects=True)
+
 
             self.assertEqual(reply.status_code, 200)
 
@@ -76,7 +86,13 @@ class TestNewStory(unittest.TestCase):
             self.assertEqual(q.text, "bird whale coffee bananas ladder glasses")
             self.assertEqual(q.dicenumber, 6)
 
+
+
+
     def test_invalid_post(self):
+
+
+
 
         global _app
         if _app is None:
@@ -88,11 +104,18 @@ class TestNewStory(unittest.TestCase):
 
         with tested_app.test_client() as client:
 
+
+
+
+
             # login
             reply = login(client, 'example@example.com', 'admin')
             assert b'Hi Admin!' in reply.data
             reply = client.get('/stories')
             assert b'Trial story of example admin user' in reply.data
+
+
+
 
             # post a new story
             roll = json.dumps(["bird", "whale", "coffee", "bananas", "ladder", "glasses"])
@@ -109,7 +132,17 @@ class TestNewStory(unittest.TestCase):
             self.assertNotEqual(q.text, "Just a new story for test purposes!")
 
 
+
+
+
+
+
+
     def test_invalid_post_short_story(self):
+
+
+
+
         global _app
         if _app is None:
             tested_app = create_app(debug=True)
@@ -119,13 +152,23 @@ class TestNewStory(unittest.TestCase):
         restart_db_tables(db, tested_app)
 
         with tested_app.test_client() as client:
+
+
+
+
+
             # login
             reply = login(client, 'example@example.com', 'admin')
             assert b'Hi Admin!' in reply.data
             reply = client.get('/stories')
             assert b'Trial story of example admin user' in reply.data
+
+
+
+
             # post a new story
             roll = json.dumps(["bird", "whale", "coffee", "bananas", "ladder", "glasses"])
+
 
             reply = client.post('/stories', data=dict(text="short story", roll=roll), follow_redirects=True)
 
@@ -137,7 +180,16 @@ class TestNewStory(unittest.TestCase):
             q = db.session.query(Story).order_by(Story.id.desc()).first()
             self.assertNotEqual(q.text, "short story")
 
+
+
+
+
+
+
     def test_invalid_post_too_long_story(self):
+
+
+
 
         global _app
         if _app is None:
@@ -149,11 +201,18 @@ class TestNewStory(unittest.TestCase):
 
         with tested_app.test_client() as client:
 
+
+
+
+
             # login
             reply = login(client, 'example@example.com', 'admin')
             assert b'Hi Admin!' in reply.data
             reply = client.get('/stories')
             assert b'Trial story of example admin user' in reply.data
+
+
+
 
             # post a new story
             roll = json.dumps(["bird", "whale", "coffee", "bananas", "ladder", "glasses"])
@@ -174,6 +233,12 @@ class TestNewStory(unittest.TestCase):
             # check database entry
             q = db.session.query(Story).order_by(Story.id.desc()).first()
             self.assertNotEqual(q.text, text)
+
+
+
+
+
+
 
 
 def login(client, username, password):

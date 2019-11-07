@@ -61,5 +61,18 @@ class TestStory(unittest.TestCase):
         roll = "a"
         self.assertRaises(WrongFormatDiceError, cs.check_storyV2,storySet,roll)
 
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
 if __name__ == '__main__':
     unittest.main()
