@@ -14,6 +14,13 @@ from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingS
 from monolith.views.follow import _is_follower
 import re
 from monolith.views.home import index
+from monolith.views.check_stories import check_storyV2
+from monolith.views.check_stories import TooSmallStoryError
+from monolith.views.check_stories import TooLongStoryError
+from monolith.views.check_stories import WrongFormatDiceError
+from monolith.views.check_stories import WrongFormatSingleDiceError
+from monolith.views.check_stories import WrongFormatStoryError
+import sys
 
 stories = Blueprint('stories', __name__)
 
@@ -35,18 +42,205 @@ def _stories(message='', error=False, res_msg='', info_bar=False):
             if re.search('"', roll):
                 roll = json.loads(request.form.get('roll'))
 
-        if(type(roll) is str):
+        print("roll vale "+str(roll))
+
+        if (type(roll) is str):
+            roll = roll.replace("[", "")
+            roll = roll.replace("]", "")
+            roll = roll.replace("'", "")
+            roll = roll.replace(" ", "")
             aux = roll.split(",")
             roll = aux
 
+        print("roll vale " + str(roll))
+
+
         dicenumber = len(roll)
 
-        new_story.text = text
-        new_story.roll = {'dice': roll}
-        new_story.dicenumber = dicenumber
-        db.session.add(new_story)
-        db.session.commit()
-        return redirect('/stories')
+        try:
+            if check_storyV2(text, roll):
+                new_story.text = text
+                new_story.roll = {'dice': roll}
+                new_story.dicenumber = dicenumber
+                db.session.add(new_story)
+                db.session.commit()
+                return redirect('/stories')
+            else:
+                message = "Invalid story. Try again!"
+                allstories = db.session.query(Story, User).join(User).all()
+                allstories = list(
+                    map(lambda x: (
+                        x[0],
+                        x[1],
+                        "hidden" if x[1].id == current_user.id else "",
+                        "unfollow" if _is_follower(
+                            current_user.id, x[1].id) else "follow",
+                        reacted(current_user.id, x[0].id)
+                    ), allstories)
+                )
+                for x in allstories:
+                    print(x)
+
+                return render_template(
+                    "stories.html",
+                    message=message,
+                    form=form,
+                    stories=allstories,
+                    active_button="stories",
+                    like_it_url="/stories/reaction",
+                    details_url="/stories",
+                    error=error,
+                    info_bar=info_bar,
+                    res_msg=str(res_msg)
+                )
+        except WrongFormatStoryError:
+            print('ERROR 1', file=sys.stderr)
+            message = "There was an error. Try again."
+            allstories = db.session.query(Story, User).join(User).all()
+            allstories = list(
+                map(lambda x: (
+                    x[0],
+                    x[1],
+                    "hidden" if x[1].id == current_user.id else "",
+                    "unfollow" if _is_follower(
+                        current_user.id, x[1].id) else "follow",
+                    reacted(current_user.id, x[0].id)
+                ), allstories)
+            )
+            for x in allstories:
+                print(x)
+
+            return render_template(
+                "stories.html",
+                message=message,
+                form=form,
+                stories=allstories,
+                active_button="stories",
+                like_it_url="/stories/reaction",
+                details_url="/stories",
+                error=error,
+                info_bar=info_bar,
+                res_msg=str(res_msg)
+            )
+        except WrongFormatDiceError:
+            print('ERROR 2', file=sys.stderr)
+            message = "There was an error. Try again."
+            allstories = db.session.query(Story, User).join(User).all()
+            allstories = list(
+                map(lambda x: (
+                    x[0],
+                    x[1],
+                    "hidden" if x[1].id == current_user.id else "",
+                    "unfollow" if _is_follower(
+                        current_user.id, x[1].id) else "follow",
+                    reacted(current_user.id, x[0].id)
+                ), allstories)
+            )
+            for x in allstories:
+                print(x)
+
+            return render_template(
+                "stories.html",
+                message=message,
+                form=form,
+                stories=allstories,
+                active_button="stories",
+                like_it_url="/stories/reaction",
+                details_url="/stories",
+                error=error,
+                info_bar=info_bar,
+                res_msg=str(res_msg)
+            )
+        except TooLongStoryError:
+            print('ERROR 3', file=sys.stderr)
+            message = "The story is too long. The length is > 1000 characters."
+            allstories = db.session.query(Story, User).join(User).all()
+            allstories = list(
+                map(lambda x: (
+                    x[0],
+                    x[1],
+                    "hidden" if x[1].id == current_user.id else "",
+                    "unfollow" if _is_follower(
+                        current_user.id, x[1].id) else "follow",
+                    reacted(current_user.id, x[0].id)
+                ), allstories)
+            )
+            for x in allstories:
+                print(x)
+
+            return render_template(
+                "stories.html",
+                message=message,
+                form=form,
+                stories=allstories,
+                active_button="stories",
+                like_it_url="/stories/reaction",
+                details_url="/stories",
+                error=error,
+                info_bar=info_bar,
+                res_msg=str(res_msg)
+            )
+        except TooSmallStoryError:
+            print('ERROR 4', file=sys.stderr)
+            message = "The number of words of the story must greater or equal of the number of resulted faces."
+            allstories = db.session.query(Story, User).join(User).all()
+            allstories = list(
+                map(lambda x: (
+                    x[0],
+                    x[1],
+                    "hidden" if x[1].id == current_user.id else "",
+                    "unfollow" if _is_follower(
+                        current_user.id, x[1].id) else "follow",
+                    reacted(current_user.id, x[0].id)
+                ), allstories)
+            )
+            for x in allstories:
+                print(x)
+
+            return render_template(
+                "stories.html",
+                message=message,
+                form=form,
+                stories=allstories,
+                active_button="stories",
+                like_it_url="/stories/reaction",
+                details_url="/stories",
+                error=error,
+                info_bar=info_bar,
+                res_msg=str(res_msg)
+            )
+        except WrongFormatSingleDiceError:
+            print('ERROR 5', file=sys.stderr)
+            message = "There was an error. Try again."
+            allstories = db.session.query(Story, User).join(User).all()
+            allstories = list(
+                map(lambda x: (
+                    x[0],
+                    x[1],
+                    "hidden" if x[1].id == current_user.id else "",
+                    "unfollow" if _is_follower(
+                        current_user.id, x[1].id) else "follow",
+                    reacted(current_user.id, x[0].id)
+                ), allstories)
+            )
+            for x in allstories:
+                print(x)
+
+            return render_template(
+                "stories.html",
+                message=message,
+                form=form,
+                stories=allstories,
+                active_button="stories",
+                like_it_url="/stories/reaction",
+                details_url="/stories",
+                error=error,
+                info_bar=info_bar,
+                res_msg=str(res_msg)
+            )
+
+
+
     elif 'GET' == request.method:
         allstories = db.session.query(Story, User).join(User).all()
         allstories = list(
@@ -108,6 +302,12 @@ def _roll(dicenumber, dicesetid):
 
     try:
         roll = dice.throw_dice(dicenumber)
+        phrase = ""
+        for elem in roll:
+            phrase = phrase + elem + " "
+
+
+
     except WrongDiceNumberError:
         return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">" +
                         "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>" +
@@ -116,7 +316,7 @@ def _roll(dicenumber, dicesetid):
         return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">" +
                         "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>" +
                         "<strong>Error!</strong> Argument Dice number needs to be an integer!</div>")
-    return render_template("create_story.html", form=form, set=dicesetid, roll=roll)
+    return render_template("create_story.html", form=form, set=dicesetid, roll=roll, phrase = phrase)
 
 
 @stories.route('/stories/random', methods=['GET'])
