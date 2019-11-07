@@ -38,7 +38,7 @@ def _follow_user(userid):
 @follow.route('/follow/<int:userid>', methods=['DELETE'])
 @login_required
 def _unfollow_user(userid):
-    #get the user who want to unfollow userid
+    # get the user who want to unfollow userid
     subject = current_user.id
 
     if userid == subject:
@@ -56,7 +56,6 @@ def _unfollow_user(userid):
     if _delete_follow(subject, userid) == -1:
         # db delete error
         return redirect('/wall/'+str(userid))
-
 
     # return OK
     return redirect('/wall/'+str(userid))
@@ -76,15 +75,17 @@ def _unfollow_user_post(userid):
 def _followers_list():
     subject = current_user.id
 
-    temp = db.session.query(Followers, User).filter(Followers.follower_id==User.id).filter_by(followed_id=subject).all()
-    followers=[]
+    temp = db.session.query(Followers, User).filter(
+        Followers.follower_id == User.id).filter_by(followed_id=subject).all()
+    followers = []
 
     for f in temp:
-        d = {"id": f[1].id,"firstname": f[1].firstname, "lastname":f[1].lastname}
+        d = {"id": f[1].id, "firstname": f[1].firstname,
+             "lastname": f[1].lastname}
         followers.append(d)
 
-    #return jsonify({"followers": followers})
-    
+    # return jsonify({"followers": followers})
+
     return render_template("follower.html", followers=followers, wall_url="/wall")
 
 # TODO: add to the API doc
@@ -93,15 +94,16 @@ def _followers_list():
 @login_required
 def _followed_list():
     subject = current_user.id
-    temp = db.session.query(Followers, User).filter(Followers.followed_id==User.id).filter_by(follower_id=subject).all()
-    followed=[]
+    temp = db.session.query(Followers, User).filter(
+        Followers.followed_id == User.id).filter_by(follower_id=subject).all()
+    followed = []
 
     for f in temp:
-        d = {"id": f[1].id,"firstname": f[1].firstname, "lastname":f[1].lastname}
+        d = {"id": f[1].id, "firstname": f[1].firstname,
+             "lastname": f[1].lastname}
         followed.append(d)
 
     return jsonify({"followed": followed})
-
 
 
 # TODO: add to API doc
@@ -111,7 +113,8 @@ def _followed_list():
 def _followers_numer():
     # return json with OK, and the number
     subject = current_user.id
-    temp = db.session.query(Followers, User).filter(Followers.follower_id==User.id).filter_by(followed_id=subject).all()
+    temp = db.session.query(Followers, User).filter(
+        Followers.follower_id == User.id).filter_by(followed_id=subject).all()
     return jsonify({"followers_num": len(temp)})
 
 
@@ -121,10 +124,9 @@ def _followers_numer():
 @login_required
 def _followed_numer():
     subject = current_user.id
-    temp = db.session.query(Followers, User).filter(Followers.followed_id==User.id).filter_by(follower_id=subject).all()
+    temp = db.session.query(Followers, User).filter(
+        Followers.followed_id == User.id).filter_by(follower_id=subject).all()
     return jsonify({"followed_num": len(temp)})
-
-
 
 
 # =============================================================================
@@ -136,7 +138,9 @@ def _get_followers_of(user_id):
     L = Followers.query.filter_by(follower_id=user_id).all()
     return L
 
-"""# Get the list of users who follows the user_id
+# Get the list of users who follows the user_id
+
+
 def _get_followed_by(user_id):
     L = Followers.query.filter_by(followed_id=user_id).all()
     return L
@@ -149,12 +153,15 @@ def _get_followers_number(user_id):
 
 # Get the number of followed
 def _get_followed_number(user_id):
-    return len(_get_followers_of(user_id))"""
+    return len(_get_followers_of(user_id))
 
 # check if user_a follow user_b
+
+
 def _is_follower(user_a, user_b):
     """check if user_a follow user_b"""
-    item = Followers.query.filter_by(follower_id=user_a, followed_id=user_b).first()
+    item = Followers.query.filter_by(
+        follower_id=user_a, followed_id=user_b).first()
     if item is None:
         return False
     else:
@@ -182,7 +189,8 @@ def _add_follow(user_a, user_b):
 # TODO: use celerity
 def _delete_follow(user_a, user_b):
     try:
-        item = Followers.query.filter_by(follower_id=user_a, followed_id=user_b).first()
+        item = Followers.query.filter_by(
+            follower_id=user_a, followed_id=user_b).first()
         print(item)
         db.session.delete(item)
         db.session.commit()
