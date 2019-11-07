@@ -8,11 +8,11 @@ from flask_login import (current_user, login_user, logout_user,
                          login_required)
 from monolith.forms import UserForm, StoryForm, SelectDiceSetForm
 from monolith.database import db, Story, Reaction, User
-from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingSetError
+from monolith.classes.DiceSet import DiceSet, WrongDiceNumberError, NonExistingSetError, WrongArgumentTypeError
 
 from monolith.views.follow import _is_follower
-import re
 from monolith.views.home import index
+import re
 from monolith.views.check_stories import check_storyV2
 from monolith.views.check_stories import TooSmallStoryError
 from monolith.views.check_stories import TooLongStoryError
@@ -21,10 +21,7 @@ from monolith.views.check_stories import WrongFormatSingleDiceError
 from monolith.views.check_stories import WrongFormatStoryError
 import sys
 
-
 stories = Blueprint('stories', __name__)
-
-
 
 
 @stories.route('/stories', methods=['POST', 'GET'])
@@ -43,11 +40,12 @@ def _stories(message=''):
             # for the tests
             if re.search('"', roll):
                 roll = json.loads(request.form.get('roll'))
+
         arr = roll.split("'")
         arr_final = []
         i = 0
-        for elem in range(0,len(arr)):
-            if ((i%2!=0)):
+        for elem in range(0, len(arr)):
+            if ((i % 2 != 0)):
                 arr_final.append(arr[i])
             i = i + 1
         dicenumber = len(arr_final)
@@ -209,7 +207,6 @@ def _stories(message=''):
                 like_it_url="/stories/reaction",
                 details_url="/stories"
             )
-
     elif 'GET' == request.method:
         allstories = db.session.query(Story, User).join(User).all()
         allstories = list(
@@ -217,7 +214,7 @@ def _stories(message=''):
                 x[0],
                 x[1],
                 "hidden" if x[1].id == current_user.id else "",
-                "delete" if _is_follower(current_user.id, x[1].id) else "post",
+                "unfollow" if _is_follower(current_user.id, x[1].id) else "follow",
             ), allstories)
         )
         return render_template(
@@ -230,15 +227,6 @@ def _stories(message=''):
             like_it_url="/stories/reaction",
             details_url="/stories"
         )
-
-
-
-
-
-
-
-
-
 
 
 @stories.route('/stories/reaction/<storyid>/<reactiontype>', methods=['GET', 'PUSH'])
@@ -298,17 +286,23 @@ def _roll(dicenumber, dicesetid):
 
     try:
         roll = dice.throw_dice(int(dicenumber))
+
+        phrase = ""
+        for elem in roll:
+            phrase = phrase + elem + " "
+
+
     except WrongDiceNumberError:
-        return _stories("Wrong dice number!")
-
-    phrase = ""
-    for elem in roll:
-        phrase = phrase + elem + " "
-
-
-
-
+        return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">"+
+        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>"+
+        "<strong>Error!</strong> Wrong dice number!</div>")
+    except (WrongArgumentTypeError,ValueError):
+        return _stories("<div class=\"alert alert-danger alert-dismissible fade show\">"+
+        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>"+
+        "<strong>Error!</strong> Argument Dice number needs to be an integer!</div>")
     return render_template("create_story.html", form=form, set=dicesetid, roll=roll, phrase = phrase)
+
+
 
 
 @stories.route('/stories/<storyid>/remove/<page>', methods=['POST'])
@@ -324,7 +318,6 @@ def get_remove_story(storyid,page):
                 for reac in reactions:
                         db.session.delete(reac)
                         db.session.commit()
-            reactions = Reaction.query.filter_by(story_id=storyid).all()
             db.session.delete(story)
             db.session.commit()
             #return redirect('/')

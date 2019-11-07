@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-  <link rel="stylesheet" href="../static/css/stories.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename = 'css/stories.css') }}">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -26,15 +26,21 @@
     {% include "includes/nav.html" %}
 
     {% block content %}
-    <p> {{ message }} </p>
+
+    <div class="container">
+      {{ message|safe }}
+    </div>
+
     <ul class="feed">
       {% for story, user, cannot_follow, method in stories %}
       <li class="story-container">
         <div class="author inline">
           <div class="name">{{user.firstname}} {{user.lastname}}</div>
-          <div class="follow {{cannot_follow}}">
-            <form method="{{method}}" action="/follow/{{user.id}}" data-user="{{user.id}}">
-              <input type="submit" value="Follow"/>
+          <div class="follow {{cannot_follow}} inline">
+            <form method="POST" action="/{{method}}/{{user.id}}">
+              <button type="submit">
+                <i class="fa {{method}}"></i>
+              </button>
             </form>
           </div>
         </div>
@@ -55,8 +61,8 @@
             </a>
           </div>
             {% if id == story.author_id %}
-                 <a href="#myModal1" class="trigger-btn" data-toggle="modal">Delete story</a>
-                        <div id="myModal1" class="modal fade">
+                 <a href="#myModal{{ story.id }}" class="trigger-btn" data-toggle="modal">Delete story</a>
+                        <div id="myModal{{ story.id }}" class="modal fade">
                             <div class="modal-dialog modal-confirm">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -69,7 +75,7 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
                                         <div class="remove_story inline">
-                                            <form method="POST" action="stories/{{ story.id }}/remove/stories">
+                                            <form method="POST" action="/stories/{{ story.id }}/remove/stories">
                                                 <button type="submit" class="btn btn-info">Delete</button>
                                             </form>
                                         </div>

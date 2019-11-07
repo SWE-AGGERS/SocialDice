@@ -33,7 +33,7 @@ class TestNewStory(unittest.TestCase):
 
             # wrong dice number
             reply = client.get('/rolldice/12/basic')
-            assert b'Wrong dice number!' in reply.data
+            assert b'Error!' in reply.data
 
             # non-existing dice set
             reply = client.get('/rolldice/6/pippo')
@@ -41,7 +41,10 @@ class TestNewStory(unittest.TestCase):
 
             # correct roll
             reply = client.get('/rolldice/5/basic')
-            assert b'You\'ve got' in reply.data
+
+            self.assertEqual(reply.status_code, 200)
+
+            #assert b'Type your story' in reply.data
 
     def test_valid_post(self):
 
