@@ -57,8 +57,34 @@ i.unfollow::after {
 
 .like {
     text-decoration: none;
+    border: none;
+    background: white;
+}
+
+.like i::after {
+    content: "\f164";
+    font-weight:300;
+    color: #04f;
+}
+
+.like.active i::after {
+    font-weight:900;
+    color: #04f;
 }
 
 .dislike {
     text-decoration: none;
+    border: none;
+    background: white;
+}
+
+.dislike i::after {
+    content: "\f165";
+    font-weight:300;
+    color: #04f;
+}
+
+.dislike.active i::after {
+    font-weight:900;
+    color: #04f;
 }
